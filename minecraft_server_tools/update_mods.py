@@ -339,7 +339,7 @@ def update_all(mods_dirs, interact=None):
         update_mods(mods_dir, updated_mods_dir, old_mods_dir, interact=interact)
 
 
-if __name__ == "__main__":
+def main():
     update_all([
         EXTRA_CLIENT_MODS_DIR,
         EXTRA_MODS_DIR,
@@ -347,3 +347,7 @@ if __name__ == "__main__":
 
     # from coconut import embed
     # embed()
+
+
+if __name__ == "__main__":
+    main()

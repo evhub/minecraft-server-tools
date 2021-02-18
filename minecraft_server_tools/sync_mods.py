@@ -54,7 +54,7 @@ def set_mods_from_to(target_mod_location_table, current_mod_location_table, set_
             shutil.copy(tar_path, new_path)
 
 
-def sync_mods():
+def main():
     ensure_dirs()
 
     print("\nFixing base client only mods...")
@@ -95,4 +95,4 @@ def sync_mods():
 
 
 if __name__ == "__main__":
-    sync_mods()
+    main()

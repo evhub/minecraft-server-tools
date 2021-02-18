@@ -1,6 +1,7 @@
 import os
 import re
-import json
+
+from jsoncomment import JsonComment
 
 
 # Load secrets
@@ -10,7 +11,7 @@ ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRETS_FILE = os.path.join(ROOT_DIR, "secrets.json")
 
 with open(SECRETS_FILE, "r") as fp:
-    secrets = json.load(fp)
+    secrets = JsonComment().load(fp)
 
 
 # Mod sync constants
