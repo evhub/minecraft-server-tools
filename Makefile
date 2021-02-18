@@ -13,3 +13,7 @@ install-aws:
 	npm install --global yarn
 	yarn add mc-curseforge-api
 	sudo python3 -m pip install -Ue .
+
+.PHONY: update-repo
+update-repo:
+	git pull

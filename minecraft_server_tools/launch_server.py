@@ -30,10 +30,6 @@ def install_forge_server():
     run_java(["-jar", FORGE_INSTALLER_JAR, "--installServer"])
 
 
-def install_forge_client():
-    run_java(["-jar", FORGE_INSTALLER_JAR, "--installClient"])
-
-
 def ensure_forge_server():
     if not os.path.exists(FORGE_INSTALLER_JAR):
         urlretrieve(FORGE_INSTALLER_URL, FORGE_INSTALLER_JAR)
