@@ -19,7 +19,9 @@ except FileNotFoundError:
 
 # Mod sync constants
 
-if os.name == "nt":
+WINDOWS = os.name == "nt"
+
+if WINDOWS:
     SERVER_DIR = "C:\\Users\\evanj\\OneDrive\\Minecraft\\ATM6 Mod Server"
 else:
     SERVER_DIR = os.path.expanduser("~/atm6_server")
@@ -32,14 +34,14 @@ CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "mods-client")
 BASE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "mods-client-base")
 EXTRA_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "mods-client-extra")
 
-ALL_MOD_DIRS = (
+ALL_MOD_DIRS = [
     MODS_DIR,
     BASE_MODS_DIR,
     EXTRA_MODS_DIR,
     CLIENT_MODS_DIR,
     BASE_CLIENT_MODS_DIR,
     EXTRA_CLIENT_MODS_DIR,
-)
+]
 
 
 # Auto updater Constants
@@ -108,15 +110,54 @@ MAX_DEBUG_RESULTS = 50
 
 JAVA_EXECUTABLE = "java"
 
-MAX_RAM = "13G"
+if WINDOWS:
+    MAX_RAM = "7G"
+else:
+    MAX_RAM = "13G"
 
-JAVA_ARGS = "-d64 -server -XX:+AggressiveOpts -XX:+UnlockExperimentalVMOptions -XX:+OptimizeStringConcat -XX:+AlwaysPreTouch -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses -XX:+ParallelRefProcEnabled -XX:+UseCompressedOops -XX:+ScavengeBeforeFullGC -XX:+PerfDisableSharedMem -XX:+UseLargePagesInMetaspace -XX:MaxMetaspaceExpansion=64M -XX:TargetSurvivorRatio=90 -XX:MaxGCPauseMillis=40 -XX:+UseG1GC -XX:+UseStringDeduplication -XX:InitiatingHeapOccupancyPercent=20 -XX:G1HeapRegionSize=32M -XX:G1MixedGCLiveThresholdPercent=35 -XX:G1ReservePercent=20 -XX:G1NewSizePercent=20 -XX:G1MaxNewSizePercent=60 -Dfml.queryResult=confirm -Dfml.readTimeout=300"
+JAVA_ARGS = [
+    "-d64",
+    "-server",
+    "-XX:+AggressiveOpts",
+    "-XX:+UnlockExperimentalVMOptions",
+    "-XX:+OptimizeStringConcat",
+    "-XX:+AlwaysPreTouch",
+    "-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses",
+    "-XX:+ParallelRefProcEnabled",
+    "-XX:+UseCompressedOops",
+    "-XX:+ScavengeBeforeFullGC",
+    "-XX:+PerfDisableSharedMem",
+    "-XX:+UseLargePagesInMetaspace",
+    "-XX:MaxMetaspaceExpansion=64M",
+    "-XX:TargetSurvivorRatio=90",
+    "-XX:MaxGCPauseMillis=40",
+    "-XX:+UseG1GC",
+    "-XX:+UseStringDeduplication",
+    "-XX:InitiatingHeapOccupancyPercent=20",
+    "-XX:G1HeapRegionSize=32M",
+    "-XX:G1MixedGCLiveThresholdPercent=35",
+    "-XX:G1ReservePercent=20",
+    "-XX:G1NewSizePercent=20",
+    "-XX:G1MaxNewSizePercent=60",
+    "-Dfml.queryResult=confirm",
+    "-Dfml.readTimeout=300",
+]
 
-FORGE_ARGS = "nogui"
+FORGE_ARGS = ["nogui"]
 
 FORGE_VERSION = "36.0.21"
 
-FORGE_URL_TEMPLATE = "https://files.minecraftforge.net/maven/net/minecraftforge/forge/{mc_version}-{forge_version}/forge-{mc_version}-{forge_version}-installer.jar"
+FORGE_INSTALLER_URL = "https://files.minecraftforge.net/maven/net/minecraftforge/forge/{mc_version}-{forge_version}/forge-{mc_version}-{forge_version}-installer.jar".format(
+    mc_version=MC_VERSION,
+    forge_version=FORGE_VERSION,
+)
 
-FORGE_JAR_TEMPLATE = "forge-{mc_version}-{forge_version}.jar"
-FORGE_INSTALLER_TEMPLATE = "forge-{mc_version}-{forge_version}-installer.jar"
+FORGE_JAR = os.path.join(SERVER_DIR, "forge-{mc_version}-{forge_version}.jar".format(
+    mc_version=MC_VERSION,
+    forge_version=FORGE_VERSION,
+))
+
+FORGE_INSTALLER_JAR = os.path.join(SERVER_DIR, "forge-{mc_version}-{forge_version}-installer.jar".format(
+    mc_version=MC_VERSION,
+    forge_version=FORGE_VERSION,
+))

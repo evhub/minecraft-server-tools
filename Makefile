@@ -1,5 +1,5 @@
-.PHONY: install
-install:
+.PHONY: install-local
+install-local:
 	npm install --global yarn
 	yarn add mc-curseforge-api
 	python3 -m pip install -Ue .
