@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "mc-curseforge-api": "^2.2.3"
+  }
+}
