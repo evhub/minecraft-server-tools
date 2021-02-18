@@ -145,19 +145,14 @@ JAVA_ARGS = [
 
 FORGE_ARGS = ["nogui"]
 
-FORGE_VERSION = "36.0.21"
+FORGE_VERSION = (36, 0, 21)
 
-FORGE_INSTALLER_URL = "https://files.minecraftforge.net/maven/net/minecraftforge/forge/{mc_version}-{forge_version}/forge-{mc_version}-{forge_version}-installer.jar".format(
-    mc_version=MC_VERSION,
-    forge_version=FORGE_VERSION,
-)
+def format_vers(template):
+    return template.format(
+        mc_version=ver_join(MC_VERSION),
+        forge_version=ver_join(FORGE_VERSION),
+    )
 
-FORGE_JAR = os.path.join(SERVER_DIR, "forge-{mc_version}-{forge_version}.jar".format(
-    mc_version=MC_VERSION,
-    forge_version=FORGE_VERSION,
-))
-
-FORGE_INSTALLER_JAR = os.path.join(SERVER_DIR, "forge-{mc_version}-{forge_version}-installer.jar".format(
-    mc_version=MC_VERSION,
-    forge_version=FORGE_VERSION,
-))
+FORGE_INSTALLER_URL = format_vers("https://files.minecraftforge.net/maven/net/minecraftforge/forge/{mc_version}-{forge_version}/forge-{mc_version}-{forge_version}-installer.jar")
+FORGE_JAR = os.path.join(SERVER_DIR, format_vers("forge-{mc_version}-{forge_version}.jar"))
+FORGE_INSTALLER_JAR = os.path.join(SERVER_DIR, format_vers("forge-{mc_version}-{forge_version}-installer.jar"))
