@@ -10,8 +10,11 @@ ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 
 SECRETS_FILE = os.path.join(ROOT_DIR, "secrets.json")
 
-with open(SECRETS_FILE, "r") as fp:
-    secrets = JsonComment().load(fp)
+try:
+    with open(SECRETS_FILE, "r") as fp:
+        SECRETS = JsonComment().load(fp)
+except FileNotFoundError:
+    SECRETS = {}
 
 
 # Mod sync constants
@@ -77,8 +80,6 @@ NAME_ELEMS_TO_SPACE = [
 ]
 
 SEARCH_URL_TEMPLATE = "https://www.googleapis.com/customsearch/v1/siterestrict?key={google_api_key}&cx={search_engine_id}&q={query}"
-SEARCH_ENGINE_ID = secrets["search_engine_id"]
-GOOGLE_API_KEY = secrets["google_api_key"]
 
 EXTRA_QUERY_INFO = "forge " + ver_join(MC_VERSION[:-1])
 
