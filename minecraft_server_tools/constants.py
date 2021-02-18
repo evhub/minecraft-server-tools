@@ -22,7 +22,7 @@ except FileNotFoundError:
 if os.name == "nt":
     SERVER_DIR = "C:\\Users\\evanj\\OneDrive\\Minecraft\\ATM6 Mod Server"
 else:
-    SERVER_DIR = "~/atm6_server"
+    SERVER_DIR = os.path.expanduser("~/atm6_server")
 
 MODS_DIR = os.path.join(SERVER_DIR, "mods")
 BASE_MODS_DIR = os.path.join(SERVER_DIR, "mods-base")
