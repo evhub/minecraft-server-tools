@@ -2,4 +2,4 @@
 install:
 	npm install --global yarn
 	yarn add mc-curseforge-api
-	pip install -Ue .
+	python3 -m pip install -Ue .
