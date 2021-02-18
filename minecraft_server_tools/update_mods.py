@@ -13,9 +13,9 @@ from minecraft_server_tools.constants import (
     COMPONENT_SEPS,
     NON_NAME_COMPONENT_REGEX,
     NAME_ELEMS_TO_SPACE,
-    SEARCH_URL,
+    SEARCH_URL_TEMPLATE,
     SEARCH_ENGINE_ID,
-    API_KEY,
+    GOOGLE_API_KEY,
     EXTRA_QUERY_INFO,
     NON_CURSEFORGE_MODS,
     WRONG_MODLOADER_VERSION,
@@ -35,8 +35,8 @@ from minecraft_server_tools.constants import (
 
 def google(query):
     print(f"Sending google search query {query!r}...")
-    return requests.get(SEARCH_URL.format(
-        api_key=API_KEY,
+    return requests.get(SEARCH_URL_TEMPLATE.format(
+        google_api_key=GOOGLE_API_KEY,
         search_engine_id=SEARCH_ENGINE_ID,
         query=quote_plus(query),
     )).json()

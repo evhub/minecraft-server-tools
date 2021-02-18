@@ -76,9 +76,9 @@ NAME_ELEMS_TO_SPACE = [
     "  ",
 ]
 
-SEARCH_URL = "https://www.googleapis.com/customsearch/v1/siterestrict?key={api_key}&cx={search_engine_id}&q={query}"
+SEARCH_URL_TEMPLATE = "https://www.googleapis.com/customsearch/v1/siterestrict?key={google_api_key}&cx={search_engine_id}&q={query}"
 SEARCH_ENGINE_ID = secrets["search_engine_id"]
-API_KEY = secrets["api_key"]
+GOOGLE_API_KEY = secrets["google_api_key"]
 
 EXTRA_QUERY_INFO = "forge " + ver_join(MC_VERSION[:-1])
 
@@ -98,3 +98,22 @@ UPDATED_MODS_DIR_SUFFIX = "-updates"
 OLD_MODS_DIR_SUFFIX = "-old"
 
 MAX_DEBUG_RESULTS = 50
+
+
+# Server start constants
+
+MAX_RAM = "13G"
+
+JAVA_ARGS = "-d64 -server -XX:+AggressiveOpts -XX:+UnlockExperimentalVMOptions -XX:+OptimizeStringConcat -XX:+AlwaysPreTouch -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses -XX:+ParallelRefProcEnabled -XX:+UseCompressedOops -XX:+ScavengeBeforeFullGC -XX:+PerfDisableSharedMem -XX:+UseLargePagesInMetaspace -XX:MaxMetaspaceExpansion=64M -XX:TargetSurvivorRatio=90 -XX:MaxGCPauseMillis=40 -XX:+UseG1GC -XX:+UseStringDeduplication -XX:InitiatingHeapOccupancyPercent=20 -XX:G1HeapRegionSize=32M -XX:G1MixedGCLiveThresholdPercent=35 -XX:G1ReservePercent=20 -XX:G1NewSizePercent=20 -XX:G1MaxNewSizePercent=60 -Dfml.queryResult=confirm -Dfml.readTimeout=300"
+
+FORGE_ARGS = "nogui"
+
+FORGE_VERSION = "36.0.21"
+
+FORGE_URL = "https://files.minecraftforge.net/maven/net/minecraftforge/forge/{mc_version}-{forge_version}/forge-{mc_version}-{forge_version}-installer.jar"
+
+JAVA_EXECUTABLE = "java"
+
+FORGE_JAR_TEMPLATE = "forge-{mc_version}-{forge_version}.jar"
+
+FORGE_INSTALLER_TEMPLATE = "forge-{mc_version}-{forge_version}-installer.jar"
