@@ -167,5 +167,4 @@ FORGE_INSTALLER_URL = format_vers("https://files.minecraftforge.net/maven/net/mi
 FORGE_JAR = os.path.join(SERVER_DIR, format_vers("forge-{mc_version}-{forge_version}.jar"))
 FORGE_INSTALLER_JAR = os.path.join(SERVER_DIR, format_vers("forge-{mc_version}-{forge_version}-installer.jar"))
 
-OLD_FORGE_JAR_REGEX = full_regex(format_vers("forge-(?!{mc_version}-{forge_version})[0-9.]+-[0-9.]+\.jar"))
-OLD_FORGE_INSTALLER_JAR_REGEX = full_regex(format_vers("forge-(?!{mc_version}-{forge_version})[0-9.]+-[0-9.]+-installer\.jar"))
+OLD_JARS_REGEX = full_regex(format_vers("(forge-(?!{mc_version}-{forge_version})[0-9.]+-[0-9.]+(-installer)?|minecraft_server\.(?!{mc_version})[0-9.]+)\.jar"))

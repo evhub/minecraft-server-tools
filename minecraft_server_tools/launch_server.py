@@ -12,8 +12,7 @@ from minecraft_server_tools.constants import (
     FORGE_INSTALLER_URL,
     FORGE_JAR,
     FORGE_INSTALLER_JAR,
-    OLD_FORGE_JAR_REGEX,
-    OLD_FORGE_INSTALLER_JAR_REGEX,
+    OLD_JARS_REGEX,
     SERVER_DIR,
 )
 
@@ -37,10 +36,7 @@ def install_forge_server():
 
 def clean_forge_jars():
     for fname in os.listdir(SERVER_DIR):
-        if (
-            OLD_FORGE_JAR_REGEX.match(fname) is not None
-            or OLD_FORGE_INSTALLER_JAR_REGEX.match(fname) is not None
-        ):
+        if OLD_JARS_REGEX.match(fname) is not None:
             print(f"Removing old jar {fname}...")
             os.remove(os.path.join(SERVER_DIR, fname))
 
