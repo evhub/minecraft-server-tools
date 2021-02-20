@@ -15,8 +15,9 @@ from minecraft_server_tools.constants import (
     NAME_ELEMS_TO_SPACE,
     SEARCH_URL_TEMPLATE,
     SECRETS,
-    EXTRA_QUERY_INFO,
+    GOOGLE_QUERY_TEMPLATE,
     NON_CURSEFORGE_MODS,
+    MODLOADER,
     WRONG_MODLOADERS,
     MOD_PAGE_NAME_SUFFIX,
     CURSEFORGE_NAMES_FILE,
@@ -72,7 +73,12 @@ def get_mod_name(jar_name):
 def get_curseforge_name(mod_name, jar_name):
     if mod_name in NON_CURSEFORGE_MODS:
         return None
-    query = mod_name + " " + jar_name + " " + EXTRA_QUERY_INFO
+    query = GOOGLE_QUERY_TEMPLATE.format(
+        mod_name=mod_name,
+        jar_name=jar_name,
+        modloader=MODLOADER,
+        mc_version=ver_join(MC_VERSION),
+    )
     search_json = google(query)
     i = 0
     while True:
@@ -157,19 +163,20 @@ def run_curseforge_api_cmd(cmd):
         raise
 
 
-def get_matching_mod(results, curseforge_name):
+def get_matching_mod(results, curseforge_name, allow_inexact_name=True):
     for mod in results:
         if mod["name"] == curseforge_name:
             return mod
-    for mod in results:
-        if mod["name"].startswith(curseforge_name) or mod["name"].endswith(curseforge_name):
-            print(f"Found mod with different name {mod['name']!r} for mod {curseforge_name!r}.")
-            return mod
+    if allow_inexact_name:
+        for mod in results:
+            if mod["name"].startswith(curseforge_name) or mod["name"].endswith(curseforge_name):
+                print(f"Found mod with different name {mod['name']!r} for mod {curseforge_name!r}.")
+                return mod
 
 
 def get_curseforge_mod(curseforge_name):
     version_results = run_curseforge_api_cmd(["search", curseforge_name, ver_join(MC_VERSION)])
-    mod = get_matching_mod(version_results, curseforge_name)
+    mod = get_matching_mod(version_results, curseforge_name, allow_inexact_name=False)
     if mod is not None:
         return mod
     print(f"Could not find mod {curseforge_name!r} in version-specific results.")

@@ -79,18 +79,31 @@ COMPONENT_SEPS = [
     ("+", 2),
     ("_", 2),
     ("-", 1),
+    (" ", 2),
+    ("+", 1),
+    ("_", 1),
+    (" ", 1),
 ]
-NON_NAME_COMPONENT_REGEX = full_regex("(forge|fabric|[mcv0-9.+_\-x()]*)")
+
+NON_NAME_COMPONENT_REGEX = full_regex("(forge|fabric|dist(ro)?|release|alpha|beta|(mc|v|r)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+")
+
 NAME_ELEMS_TO_SPACE = [
     "-",
     "+",
     "_",
+    "(",
+    ")",
     "forge",
     "FORGE",
     "Forge",
     "fabric",
     "FABRIC",
     "Fabric",
+    "dist",
+    "distro",
+    "release",
+    "alpha",
+    "beta",
     ver_join(MC_VERSION[:-1]),
     ".0",
     ".1",
@@ -106,12 +119,12 @@ NAME_ELEMS_TO_SPACE = [
     "  ",
 ]
 
-SEARCH_URL_TEMPLATE = "https://www.googleapis.com/customsearch/v1/siterestrict?key={google_api_key}&cx={search_engine_id}&q={query}"
+SEARCH_URL_TEMPLATE = "https://www.googleapis.com/customsearch/v1/siterestrict?key={google_api_key}&cx={search_engine_id}&q={query}&nfpr=1&nirf={query}"
 
 MODLOADER = "forge"
 WRONG_MODLOADERS = ["fabric"]
 
-EXTRA_QUERY_INFO = MODLOADER + " " + ver_join(MC_VERSION[:-1])
+GOOGLE_QUERY_TEMPLATE = "{mod_name} {modloader} {mc_version}"
 
 NON_CURSEFORGE_MODS = ["OptiFine", "preview OptiFine"]
 
@@ -126,7 +139,7 @@ TIMESTAMP_FORMAT_REGEX = full_regex("(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\
 UPDATED_MODS_DIR_SUFFIX = "-updates"
 OLD_MODS_DIR_SUFFIX = "-old"
 
-MAX_DEBUG_RESULTS = 50
+MAX_DEBUG_RESULTS = 20
 
 
 # Server start constants
