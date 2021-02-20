@@ -4,11 +4,25 @@ import re
 from jsoncomment import JsonComment
 
 
+# Commonly changed constants
+
+MC_VERSION = (1, 16, 5)
+
+FORGE_VERSION = (36, 0, 21)
+
+WINDOWS = os.name == "nt"
+
+if WINDOWS:
+    SERVER_DIR = "C:\\Users\\evanj\\OneDrive\\Minecraft\\ATM6 Mod Server"
+    MAX_RAM = "7G"
+else:
+    SERVER_DIR = os.path.expanduser("~/atm6_server")
+    MAX_RAM = "13G"
+
+
 # Load secrets
 
-ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
-
-SECRETS_FILE = os.path.join(ROOT_DIR, "secrets.json")
+SECRETS_FILE = os.path.join(SERVER_DIR, "secrets.json")
 
 try:
     with open(SECRETS_FILE, "r") as fp:
@@ -18,13 +32,6 @@ except FileNotFoundError:
 
 
 # Mod sync constants
-
-WINDOWS = os.name == "nt"
-
-if WINDOWS:
-    SERVER_DIR = "C:\\Users\\evanj\\OneDrive\\Minecraft\\ATM6 Mod Server"
-else:
-    SERVER_DIR = os.path.expanduser("~/atm6_server")
 
 MODS_DIR = os.path.join(SERVER_DIR, "mods")
 BASE_MODS_DIR = os.path.join(SERVER_DIR, "mods-base")
@@ -46,7 +53,7 @@ ALL_MOD_DIRS = [
 
 # Auto updater Constants
 
-MC_VERSION = (1, 16, 5)
+ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 
 def ver_join(ver):
     return ".".join(str(i) for i in ver)
@@ -61,7 +68,7 @@ COMPONENT_SEPS = [
     ("_", 2),
     ("-", 1),
 ]
-NON_NAME_COMPONENT_REGEX = re.compile("^(forge|[mcv0-9.+_\-x()]*)$")
+NON_NAME_COMPONENT_REGEX = re.compile("^(forge|fabric|[mcv0-9.+_\-x()]*)$")
 NAME_ELEMS_TO_SPACE = [
     "-",
     "+",
@@ -69,6 +76,9 @@ NAME_ELEMS_TO_SPACE = [
     "forge",
     "FORGE",
     "Forge",
+    "fabric",
+    "FABRIC",
+    "Fabric",
     ver_join(MC_VERSION[:-1]),
     ".0",
     ".1",
@@ -86,11 +96,12 @@ NAME_ELEMS_TO_SPACE = [
 
 SEARCH_URL_TEMPLATE = "https://www.googleapis.com/customsearch/v1/siterestrict?key={google_api_key}&cx={search_engine_id}&q={query}"
 
-EXTRA_QUERY_INFO = "forge " + ver_join(MC_VERSION[:-1])
+MODLOADER = "forge"
+WRONG_MODLOADERS = ["fabric"]
+
+EXTRA_QUERY_INFO = MODLOADER + " " + ver_join(MC_VERSION[:-1])
 
 NON_CURSEFORGE_MODS = ["OptiFine", "preview OptiFine"]
-
-WRONG_MODLOADER_VERSION = "fabric"
 
 MOD_PAGE_NAME_SUFFIX = " - minecraft - curseforge"
 
@@ -109,11 +120,6 @@ MAX_DEBUG_RESULTS = 50
 # Server start constants
 
 JAVA_EXECUTABLE = "java"
-
-if WINDOWS:
-    MAX_RAM = "7G"
-else:
-    MAX_RAM = "13G"
 
 JAVA_ARGS = [
     "-d64",
@@ -144,8 +150,6 @@ JAVA_ARGS = [
 ]
 
 FORGE_ARGS = ["nogui"]
-
-FORGE_VERSION = (36, 0, 21)
 
 def format_vers(template):
     return template.format(

@@ -234,3 +234,4 @@ __pypackages__/
 
 # Secrets
 secrets.json
+*.pem

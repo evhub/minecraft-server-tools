@@ -17,7 +17,7 @@ from minecraft_server_tools.constants import (
     SECRETS,
     EXTRA_QUERY_INFO,
     NON_CURSEFORGE_MODS,
-    WRONG_MODLOADER_VERSION,
+    WRONG_MODLOADERS,
     MOD_PAGE_NAME_SUFFIX,
     CURSEFORGE_NAMES_FILE,
     CURSEFORGE_API_FILE,
@@ -234,7 +234,7 @@ def get_latest_version(mod_name, curseforge_id):
     curseforge_files_and_versions = []
     for file_data in curseforge_files:
         versions = [v.lower() for v in file_data["minecraft_versions"]]
-        if WRONG_MODLOADER_VERSION not in versions:
+        if not any(wrong_modloader in versions for wrong_modloader in WRONG_MODLOADERS):
             curseforge_files_and_versions.append((file_data, versions))
 
     correctly_versioned_files = []
