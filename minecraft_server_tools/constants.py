@@ -20,6 +20,24 @@ else:
     MAX_RAM = "13G"
 
 
+# Utilities
+
+def ver_join(ver):
+    return ".".join(str(i) for i in ver)
+
+def ver_split(ver_str):
+    return tuple(int(i) for i in ver_str.split("."))
+
+def full_regex(re_str):
+    return re.compile("^" + re_str + "$")
+
+def format_vers(template):
+    return template.format(
+        mc_version=ver_join(MC_VERSION),
+        forge_version=ver_join(FORGE_VERSION),
+    )
+
+
 # Load secrets
 
 SECRETS_FILE = os.path.join(SERVER_DIR, "secrets.json")
@@ -55,12 +73,6 @@ ALL_MOD_DIRS = [
 
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 
-def ver_join(ver):
-    return ".".join(str(i) for i in ver)
-
-def ver_split(ver_str):
-    return tuple(int(i) for i in ver_str.split("."))
-
 COMPONENT_SEPS = [
     ("-", 2),
     ("(", 1),
@@ -68,7 +80,7 @@ COMPONENT_SEPS = [
     ("_", 2),
     ("-", 1),
 ]
-NON_NAME_COMPONENT_REGEX = re.compile("^(forge|fabric|[mcv0-9.+_\-x()]*)$")
+NON_NAME_COMPONENT_REGEX = full_regex("(forge|fabric|[mcv0-9.+_\-x()]*)")
 NAME_ELEMS_TO_SPACE = [
     "-",
     "+",
@@ -109,7 +121,7 @@ CURSEFORGE_NAMES_FILE = os.path.join(ROOT_DIR, "curseforge_names.json")
 
 CURSEFORGE_API_FILE = os.path.join(ROOT_DIR, "curseforge_api.js")
 
-TIMESTAMP_FORMAT_REGEX = re.compile("^(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)\.?(\d+)?Z$")
+TIMESTAMP_FORMAT_REGEX = full_regex("(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)\.?(\d+)?Z")
 
 UPDATED_MODS_DIR_SUFFIX = "-updates"
 OLD_MODS_DIR_SUFFIX = "-old"
@@ -151,12 +163,9 @@ JAVA_ARGS = [
 
 FORGE_ARGS = ["nogui"]
 
-def format_vers(template):
-    return template.format(
-        mc_version=ver_join(MC_VERSION),
-        forge_version=ver_join(FORGE_VERSION),
-    )
-
 FORGE_INSTALLER_URL = format_vers("https://files.minecraftforge.net/maven/net/minecraftforge/forge/{mc_version}-{forge_version}/forge-{mc_version}-{forge_version}-installer.jar")
 FORGE_JAR = os.path.join(SERVER_DIR, format_vers("forge-{mc_version}-{forge_version}.jar"))
 FORGE_INSTALLER_JAR = os.path.join(SERVER_DIR, format_vers("forge-{mc_version}-{forge_version}-installer.jar"))
+
+OLD_FORGE_JAR_REGEX = full_regex(format_vers("forge-(?!{mc_version}-{forge_version})[0-9.]+-[0-9.]+\.jar"))
+OLD_FORGE_INSTALLER_JAR_REGEX = full_regex(format_vers("forge-(?!{mc_version}-{forge_version})[0-9.]+-[0-9.]+-installer\.jar"))

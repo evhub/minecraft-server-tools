@@ -12,10 +12,14 @@ from minecraft_server_tools.constants import (
     FORGE_INSTALLER_URL,
     FORGE_JAR,
     FORGE_INSTALLER_JAR,
+    OLD_FORGE_JAR_REGEX,
+    OLD_FORGE_INSTALLER_JAR_REGEX,
+    SERVER_DIR,
 )
 
 
 def run_cmd(cmd):
+    print("> " + " ".join(str(x) for x in cmd))
     return subprocess.run(cmd, check=True, shell=True)
 
 
@@ -27,16 +31,29 @@ def run_java(cmd):
 
 
 def install_forge_server():
+    print(f"Installing forge from installer {FORGE_INSTALLER_JAR}...")
     run_java(["-jar", FORGE_INSTALLER_JAR, "--installServer"])
+
+
+def clean_forge_jars():
+    for fname in os.listdir(SERVER_DIR):
+        if (
+            OLD_FORGE_JAR_REGEX.match(fname) is not None
+            or OLD_FORGE_INSTALLER_JAR_REGEX.match(fname) is not None
+        ):
+            print(f"Removing old jar {fname}...")
+            os.remove(os.path.join(SERVER_DIR, fname))
 
 
 def ensure_forge_server():
     if not os.path.exists(FORGE_INSTALLER_JAR):
+        print(f"Downloading forge installer {FORGE_INSTALLER_JAR}...")
         urlretrieve(FORGE_INSTALLER_URL, FORGE_INSTALLER_JAR)
         install_forge_server()
 
 
 def start_server():
+    clean_forge_jars()
     ensure_forge_server()
     run_java(["-Xmx" + MAX_RAM, "-Xms" + MAX_RAM] + JAVA_ARGS + ["-jar", FORGE_JAR] + FORGE_ARGS)
 

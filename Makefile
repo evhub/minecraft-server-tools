@@ -5,7 +5,7 @@ install-local:
 	python3 -m pip install -Ue .
 
 .PHONY: install-aws
-install-aws:
+install-aws: update-repo
 	cd ..; curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
 	cd ..; . ~/.nvm/nvm.sh
 	export NVM_DIR="${HOME}/.nvm"; [ -s "${NVM_DIR}/nvm.sh" ] && \. "${NVM_DIR}/nvm.sh"; nvm install node
