@@ -10,8 +10,8 @@ from minecraft_server_tools.constants import (
     FORGE_ARGS,
     FORGE_VERSION,
     FORGE_INSTALLER_URL,
-    FORGE_JAR,
-    FORGE_INSTALLER_JAR,
+    FORGE_JAR_PATH,
+    FORGE_INSTALLER_JAR_PATH,
     OLD_JARS_REGEX,
     SERVER_DIR,
 )
@@ -30,28 +30,28 @@ def run_java(cmd):
 
 
 def install_forge_server():
-    print(f"Installing forge from installer {FORGE_INSTALLER_JAR}...")
-    run_java(["-jar", FORGE_INSTALLER_JAR, "--installServer"])
+    print(f"Installing forge from installer {FORGE_INSTALLER_JAR_PATH}...")
+    run_java(["-jar", FORGE_INSTALLER_JAR_PATH, "--installServer"])
 
 
-def clean_forge_jars():
-    for fname in os.listdir(SERVER_DIR):
+def clean_forge_jars(dir_to_clean=SERVER_DIR):
+    for fname in os.listdir(dir_to_clean):
         if OLD_JARS_REGEX.match(fname) is not None:
             print(f"Removing old jar {fname}...")
-            os.remove(os.path.join(SERVER_DIR, fname))
+            os.remove(os.path.join(dir_to_clean, fname))
 
 
 def ensure_forge_server():
-    if not os.path.exists(FORGE_INSTALLER_JAR):
-        print(f"Downloading forge installer {FORGE_INSTALLER_JAR}...")
-        urlretrieve(FORGE_INSTALLER_URL, FORGE_INSTALLER_JAR)
+    if not os.path.exists(FORGE_INSTALLER_JAR_PATH):
+        print(f"Downloading forge installer {FORGE_INSTALLER_JAR_PATH}...")
+        urlretrieve(FORGE_INSTALLER_URL, FORGE_INSTALLER_JAR_PATH)
         install_forge_server()
 
 
 def start_server():
     clean_forge_jars()
     ensure_forge_server()
-    run_java(["-Xmx" + MAX_RAM, "-Xms" + MAX_RAM] + JAVA_ARGS + ["-jar", FORGE_JAR] + FORGE_ARGS)
+    run_java(["-Xmx" + MAX_RAM, "-Xms" + MAX_RAM] + JAVA_ARGS + ["-jar", FORGE_JAR_PATH] + FORGE_ARGS)
 
 
 if __name__ == "__main__":

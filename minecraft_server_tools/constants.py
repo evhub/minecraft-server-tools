@@ -7,19 +7,34 @@ from jsoncomment import JsonComment
 # Commonly changed constants
 
 MC_VERSION = (1, 16, 5)
-
 FORGE_VERSION = (36, 0, 21)
 
 WINDOWS = os.name == "nt"
 
 if WINDOWS:
-    SERVER_DIR = "C:\\Users\\evanj\\OneDrive\\Minecraft\\ATM6 Mod Server"
+    MINECRAFT_DIR = "~AppData/Roaming/.minecraft"
+    SERVER_DIR = "~OneDrive/Minecraft/ATM6 Mod Server"
     MAX_RAM = "7G"
 else:
-    SERVER_DIR = os.path.expanduser("~/atm6_server")
+    MINECRAFT_DIR = "~/Library/Application Support/minecraft"
+    SERVER_DIR = "~/atm6_server"
     MAX_RAM = "13G"
     # SERVER_DIR = "/mnt/c/Users/evanj/OneDrive/Minecraft/ATM6 Mod Server"
     # MAX_RAM = "6G"
+
+EXTRA_INSTALL_FOLDERS = [
+    "config",
+    "defaultconfigs",
+    "kubejs",
+    "resourcepacks",
+    "scripts",
+]
+
+
+# Fix directories
+
+MINECRAFT_DIR = os.path.expanduser(MINECRAFT_DIR)
+SERVER_DIR = os.path.expanduser(SERVER_DIR)
 
 
 # Utilities
@@ -179,7 +194,23 @@ JAVA_ARGS = [
 FORGE_ARGS = ["nogui"]
 
 FORGE_INSTALLER_URL = format_vers("https://files.minecraftforge.net/maven/net/minecraftforge/forge/{mc_version}-{forge_version}/forge-{mc_version}-{forge_version}-installer.jar")
-FORGE_JAR = os.path.join(SERVER_DIR, format_vers("forge-{mc_version}-{forge_version}.jar"))
-FORGE_INSTALLER_JAR = os.path.join(SERVER_DIR, format_vers("forge-{mc_version}-{forge_version}-installer.jar"))
+
+FORGE_JAR = format_vers("forge-{mc_version}-{forge_version}.jar")
+FORGE_INSTALLER_JAR = format_vers("forge-{mc_version}-{forge_version}-installer.jar")
+
+FORGE_JAR_PATH = os.path.join(SERVER_DIR, FORGE_JAR)
+FORGE_INSTALLER_JAR_PATH = os.path.join(SERVER_DIR, FORGE_INSTALLER_JAR)
 
 OLD_JARS_REGEX = full_regex(format_vers("(forge-(?!{mc_version}-{forge_version})[0-9.]+-[0-9.]+(-installer)?|minecraft_server\.(?!{mc_version})[0-9.]+)\.jar"))
+
+
+# Client install constants
+
+MINECRAFT_MODS_DIR = os.path.join(MINECRAFT_DIR, "mods")
+
+README_FILE = "README.txt"
+
+EXTRA_INSTALL_FILES = [
+    README_FILE,
+    FORGE_INSTALLER_JAR,
+]
