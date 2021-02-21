@@ -71,10 +71,12 @@ except FileNotFoundError:
 MODS_DIR = os.path.join(SERVER_DIR, "mods")
 BASE_MODS_DIR = os.path.join(SERVER_DIR, "mods-base")
 EXTRA_MODS_DIR = os.path.join(SERVER_DIR, "mods-main")
+REMOVED_MODS_DIR = os.path.join(SERVER_DIR, "mods-removed")
 
 CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "mods-client")
 BASE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "mods-client-base")
 EXTRA_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "mods-client-main")
+REMOVED_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "mods-client-removed")
 
 
 # Auto updater Constants

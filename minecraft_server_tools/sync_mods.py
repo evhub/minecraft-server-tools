@@ -7,9 +7,11 @@ from minecraft_server_tools.constants import (
     MODS_DIR,
     BASE_MODS_DIR,
     EXTRA_MODS_DIR,
+    REMOVED_MODS_DIR,
     CLIENT_MODS_DIR,
     BASE_CLIENT_MODS_DIR,
     EXTRA_CLIENT_MODS_DIR,
+    REMOVED_CLIENT_MODS_DIR,
 )
 
 
@@ -97,6 +99,15 @@ def main():
     current_client_only_mods = get_location_table_for(CLIENT_MODS_DIR)
 
     set_mods_from_to(all_client_only_mods, current_client_only_mods, CLIENT_MODS_DIR)
+
+
+    print("\nFixing removed mods...")
+    removed_server_mods = get_location_table_for(REMOVED_MODS_DIR)
+    remove_mods_in_from(all_server_mods, removed_server_mods)
+
+    removed_client_mods = get_location_table_for(REMOVED_CLIENT_MODS_DIR)
+    remove_mods_in_from(all_server_mods, removed_client_mods)
+    remove_mods_in_from(all_client_only_mods, removed_client_mods)
 
 
 if __name__ == "__main__":
