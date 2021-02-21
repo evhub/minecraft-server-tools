@@ -12,8 +12,8 @@ FORGE_VERSION = (36, 0, 21)
 WINDOWS = os.name == "nt"
 
 if WINDOWS:
-    MINECRAFT_DIR = "~AppData/Roaming/.minecraft"
-    SERVER_DIR = "~OneDrive/Minecraft/ATM6 Mod Server"
+    MINECRAFT_DIR = "~/AppData/Roaming/.minecraft"
+    SERVER_DIR = "~/OneDrive/Minecraft/ATM6 Mod Server"
     MAX_RAM = "7G"
 else:
     MINECRAFT_DIR = "~/Library/Application Support/minecraft"
@@ -33,8 +33,8 @@ EXTRA_INSTALL_FOLDERS = [
 
 # Fix directories
 
-MINECRAFT_DIR = os.path.expanduser(MINECRAFT_DIR)
-SERVER_DIR = os.path.expanduser(SERVER_DIR)
+MINECRAFT_DIR = os.path.normpath(os.path.expanduser(MINECRAFT_DIR))
+SERVER_DIR = os.path.normpath(os.path.expanduser(SERVER_DIR))
 
 
 # Utilities
@@ -70,20 +70,11 @@ except FileNotFoundError:
 
 MODS_DIR = os.path.join(SERVER_DIR, "mods")
 BASE_MODS_DIR = os.path.join(SERVER_DIR, "mods-base")
-EXTRA_MODS_DIR = os.path.join(SERVER_DIR, "mods-extra")
+EXTRA_MODS_DIR = os.path.join(SERVER_DIR, "mods-main")
 
 CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "mods-client")
 BASE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "mods-client-base")
-EXTRA_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "mods-client-extra")
-
-ALL_MOD_DIRS = [
-    MODS_DIR,
-    BASE_MODS_DIR,
-    EXTRA_MODS_DIR,
-    CLIENT_MODS_DIR,
-    BASE_CLIENT_MODS_DIR,
-    EXTRA_CLIENT_MODS_DIR,
-]
+EXTRA_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "mods-client-main")
 
 
 # Auto updater Constants

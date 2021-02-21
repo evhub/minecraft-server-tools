@@ -8,6 +8,7 @@ from pprint import pprint
 
 import requests
 
+from minecraft_server_tools import sync_mods
 from minecraft_server_tools.constants import (
     MC_VERSION,
     COMPONENT_SEPS,
@@ -346,6 +347,8 @@ def update_all(mods_dirs, interact=None):
 
 
 def main():
+    sync_mods.main()
+
     update_all([
         EXTRA_CLIENT_MODS_DIR,
         EXTRA_MODS_DIR,

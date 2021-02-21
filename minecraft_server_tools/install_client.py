@@ -10,7 +10,7 @@ from minecraft_server_tools.constants import (
     MINECRAFT_DIR,
     EXTRA_INSTALL_FOLDERS,
     EXTRA_INSTALL_FILES,
-    FORGE_JAR,
+    FORGE_INSTALLER_JAR,
     FORGE_INSTALLER_JAR_PATH,
     README_FILE,
     WINDOWS,
@@ -43,17 +43,18 @@ def install_extras():
 
 
 def ensure_forge_client():
-    if not os.path.exists(os.path.join(MINECRAFT_DIR, FORGE_JAR)):
+    if not os.path.exists(os.path.join(MINECRAFT_DIR, FORGE_INSTALLER_JAR)):
         print("Opening forge installer; select 'Install client' and press 'Ok'.")
         launch_server.run_java(["-jar", FORGE_INSTALLER_JAR_PATH])
 
 
 def open_readme():
     installed_readme = os.path.join(MINECRAFT_DIR, README_FILE)
+    print(f"Opening {installed_readme}...")
     if WINDOWS:
-        launch_server.run_cmd(["open", installed_readme])
+        launch_server.run_cmd(["explorer", installed_readme], check=False)
     else:
-        launch_server.run_cmd(["xdg-open", installed_readme])
+        launch_server.run_cmd(["xdg-open", installed_readme], check=False)
 
 
 def main():
@@ -61,9 +62,9 @@ def main():
 
     launch_server.clean_forge_jars(MINECRAFT_DIR)
 
+    ensure_forge_client()
     sync_client_mods()
     install_extras()
-    ensure_forge_client()
     open_readme()
 
 

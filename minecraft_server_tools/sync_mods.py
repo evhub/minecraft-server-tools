@@ -10,22 +10,27 @@ from minecraft_server_tools.constants import (
     CLIENT_MODS_DIR,
     BASE_CLIENT_MODS_DIR,
     EXTRA_CLIENT_MODS_DIR,
-    ALL_MOD_DIRS,
 )
 
 
 def ensure_dirs():
-    for dirpath in ALL_MOD_DIRS:
+    for dirpath in [
+        MODS_DIR,
+        EXTRA_MODS_DIR,
+        CLIENT_MODS_DIR,
+        EXTRA_CLIENT_MODS_DIR,
+    ]:
         if not os.path.exists(dirpath):
             os.mkdir(dirpath)
 
 
 def get_location_table_for(mods_dir):
     mod_location_table = {}
-    for name in os.listdir(mods_dir):
-        path = os.path.join(mods_dir, name)
-        if os.path.isfile(path):
-            mod_location_table[name] = path
+    if os.path.exists(mods_dir):
+        for name in os.listdir(mods_dir):
+            path = os.path.join(mods_dir, name)
+            if os.path.isfile(path):
+                mod_location_table[name] = path
     return mod_location_table
 
 
