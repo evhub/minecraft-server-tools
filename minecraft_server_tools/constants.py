@@ -133,9 +133,11 @@ NAME_ELEMS_TO_SPACE = [
 
 CURSEFORGE_NAME_ELEMS_TO_STRIP = [
     "-",
+    "Download",
     "Files",
     "Mods",
-    "Download",
+    "Minecraft",
+    "Curseforge",
     "...",
 ]
 

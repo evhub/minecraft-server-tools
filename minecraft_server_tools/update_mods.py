@@ -90,16 +90,22 @@ def get_curseforge_name(mod_name, jar_name):
                 break
             print(f"Got no results for query {query!r}.")
             query = search_json["spelling"]["correctedQuery"]
-        i = 0
-        while True:
-            mod_page = search_json["items"][i]["title"]
+        items = search_json["items"]
+        curseforge_name = None
+        for result in items:
+            mod_page = result["title"]
             if mod_page.lower().endswith(MOD_PAGE_NAME_SUFFIX.lower()):
                 curseforge_name = clean_curseforge_name(mod_page[:-len(MOD_PAGE_NAME_SUFFIX)])
-                print(f"Found Curseforge name {curseforge_name!r} for mod {mod_name!r}.")
-                return curseforge_name
+                break
             else:
                 print(f"Skipping search result {mod_page!r}.")
-            i += 1
+        if curseforge_name is None:
+            print(f"Could not find curseforge name for mod {mod_name!r} in results for query {query!r}:")
+            pprint(items[:MAX_DEBUG_RESULTS])
+            raise IOError(f"Could not find curseforge name for mod {mod_name!r}.")
+        else:
+            print(f"Found Curseforge name {curseforge_name!r} for mod {mod_name!r}.")
+            return curseforge_name
     except (KeyError, IndexError):
         print(f"Invalid search results for query {query!r}:")
         pprint(search_json)
