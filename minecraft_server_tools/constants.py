@@ -16,8 +16,10 @@ if WINDOWS:
     SERVER_DIR = "C:\\Users\\evanj\\OneDrive\\Minecraft\\ATM6 Mod Server"
     MAX_RAM = "7G"
 else:
-    SERVER_DIR = os.path.expanduser("~/atm6_server")
-    MAX_RAM = "13G"
+    # SERVER_DIR = os.path.expanduser("~/atm6_server")
+    SERVER_DIR = "/mnt/c/Users/evanj/OneDrive/Minecraft/ATM6 Mod Server"
+    # MAX_RAM = "13G"
+    MAX_RAM = "6G"
 
 
 # Utilities

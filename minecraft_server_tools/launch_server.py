@@ -17,14 +17,14 @@ from minecraft_server_tools.constants import (
 )
 
 
-def run_cmd(cmd):
+def run_cmd(cmd, **kwargs):
     print("> " + " ".join(str(x) for x in cmd))
-    return subprocess.run(cmd, check=True, shell=True)
+    return subprocess.run(cmd, check=True, **kwargs)
 
 
 def run_java(cmd):
     if WINDOWS:
-        return run_cmd(["START", "/B", "/I", "/WAIT", "/HIGH", JAVA_EXECUTABLE] + cmd)
+        return run_cmd(["START", "/B", "/I", "/WAIT", "/HIGH", JAVA_EXECUTABLE] + cmd, shell=True)
     else:
         return run_cmd([JAVA_EXECUTABLE] + cmd)
 
