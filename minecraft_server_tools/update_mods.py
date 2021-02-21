@@ -10,6 +10,7 @@ import requests
 
 from minecraft_server_tools import sync_mods
 from minecraft_server_tools.constants import (
+    COMMENT_JSON,
     MC_VERSION,
     COMPONENT_SEPS,
     NON_NAME_COMPONENT_REGEX,
@@ -29,6 +30,7 @@ from minecraft_server_tools.constants import (
     MAX_DEBUG_RESULTS,
     EXTRA_CLIENT_MODS_DIR,
     EXTRA_MODS_DIR,
+    CURSEFORGE_NAME_ELEMS_TO_STRIP,
     ver_join,
     ver_split,
 )
@@ -79,43 +81,48 @@ def get_curseforge_name(mod_name, jar_name):
         jar_name=jar_name,
         modloader=MODLOADER,
         mc_version=ver_join(MC_VERSION),
+        mod_page_name_suffix=MOD_PAGE_NAME_SUFFIX,
     )
-    search_json = google(query)
-    i = 0
-    while True:
-        try:
+    try:
+        while True:
+            search_json = google(query)
+            if "items" in search_json:
+                break
+            print(f"Got no results for query {query!r}.")
+            query = search_json["spelling"]["correctedQuery"]
+        i = 0
+        while True:
             mod_page = search_json["items"][i]["title"]
-        except (KeyError, IndexError):
-            print(f"Invalid search results for query {query!r}:")
-            pprint(search_json)
-            raise
-        if mod_page.lower().endswith(MOD_PAGE_NAME_SUFFIX):
-            curseforge_name = clean_curseforge_name(mod_page[:-len(MOD_PAGE_NAME_SUFFIX)])
-            print(f"Found Curseforge name {curseforge_name!r} for mod {mod_name!r}.")
-            return curseforge_name
-        else:
-            print(f"Skipping search result {mod_page!r}.")
-        i += 1
+            if mod_page.lower().endswith(MOD_PAGE_NAME_SUFFIX.lower()):
+                curseforge_name = clean_curseforge_name(mod_page[:-len(MOD_PAGE_NAME_SUFFIX)])
+                print(f"Found Curseforge name {curseforge_name!r} for mod {mod_name!r}.")
+                return curseforge_name
+            else:
+                print(f"Skipping search result {mod_page!r}.")
+            i += 1
+    except (KeyError, IndexError):
+        print(f"Invalid search results for query {query!r}:")
+        pprint(search_json)
+        raise
 
 
 def clean_curseforge_name(curseforge_name):
     old_curseforge_name = None
     while old_curseforge_name != curseforge_name:
         old_curseforge_name = curseforge_name
-        curseforge_name = curseforge_name.strip(" -")
-        if curseforge_name.startswith("Files"):
-            curseforge_name = curseforge_name[len("Files"):]
-        if curseforge_name.endswith("Mods"):
-            curseforge_name = curseforge_name[:-len("Mods")]
-        if curseforge_name.endswith("..."):
-            curseforge_name = curseforge_name[:-len("...")]
+        for strip_str in CURSEFORGE_NAME_ELEMS_TO_STRIP:
+            if curseforge_name.startswith(strip_str):
+                curseforge_name = curseforge_name[len(strip_str):]
+            if curseforge_name.endswith(strip_str):
+                curseforge_name = curseforge_name[:-len(strip_str)]
+        curseforge_name = curseforge_name.strip()
     return curseforge_name
 
 
 def load_curseforge_names():
     if os.path.exists(CURSEFORGE_NAMES_FILE):
         with open(CURSEFORGE_NAMES_FILE, "r") as ids_fobj:
-            return json.load(ids_fobj)
+            return COMMENT_JSON.load(ids_fobj)
     else:
         return {}
 

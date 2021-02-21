@@ -59,9 +59,11 @@ def format_vers(template):
 
 SECRETS_FILE = os.path.join(SERVER_DIR, "secrets.json")
 
+COMMENT_JSON = JsonComment()
+
 try:
     with open(SECRETS_FILE, "r") as fp:
-        SECRETS = JsonComment().load(fp)
+        SECRETS = COMMENT_JSON.load(fp)
 except FileNotFoundError:
     SECRETS = {}
 
@@ -129,16 +131,24 @@ NAME_ELEMS_TO_SPACE = [
     "  ",
 ]
 
+CURSEFORGE_NAME_ELEMS_TO_STRIP = [
+    "-",
+    "Files",
+    "Mods",
+    "Download",
+    "...",
+]
+
 SEARCH_URL_TEMPLATE = "https://www.googleapis.com/customsearch/v1/siterestrict?key={google_api_key}&cx={search_engine_id}&q={query}&nfpr=1&nirf={query}"
 
 MODLOADER = "forge"
 WRONG_MODLOADERS = ["fabric"]
 
-GOOGLE_QUERY_TEMPLATE = "{mod_name} {modloader} {mc_version}"
+MOD_PAGE_NAME_SUFFIX = " - Mods - Minecraft - Curseforge"
+
+GOOGLE_QUERY_TEMPLATE = '{mod_name} {modloader} {mc_version} "{mod_page_name_suffix}"'
 
 NON_CURSEFORGE_MODS = ["OptiFine", "preview OptiFine"]
-
-MOD_PAGE_NAME_SUFFIX = " - minecraft - curseforge"
 
 CURSEFORGE_NAMES_FILE = os.path.join(ROOT_DIR, "curseforge_names.json")
 
