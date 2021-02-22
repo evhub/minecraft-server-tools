@@ -7,7 +7,7 @@ from jsoncomment import JsonComment
 # Commonly changed constants
 
 MC_VERSION = (1, 16, 5)
-FORGE_VERSION = (36, 0, 42)
+FORGE_VERSION = (36, 0, 40)
 
 WINDOWS = os.name == "nt"
 
