@@ -75,10 +75,10 @@ BASE_MODS_DIR = os.path.join(SERVER_DIR, "mods-base")
 EXTRA_MODS_DIR = os.path.join(SERVER_DIR, "mods-main")
 REMOVED_MODS_DIR = os.path.join(SERVER_DIR, "mods-removed")
 
-CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "mods-client")
-BASE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "mods-client-base")
-EXTRA_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "mods-client-main")
-REMOVED_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "mods-client-removed")
+CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "client_mods")
+BASE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "client_mods-base")
+EXTRA_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "client_mods-main")
+REMOVED_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "client_mods-removed")
 
 
 # Auto updater Constants
@@ -148,13 +148,15 @@ WRONG_MODLOADERS = ["fabric"]
 
 MOD_PAGE_NAME_SUFFIX = " - Mods - Minecraft - Curseforge"
 
-GOOGLE_QUERY_TEMPLATE = '{mod_name} {modloader} {mc_version} "{mod_page_name_suffix}"'
+GOOGLE_QUERY_TEMPLATE = '{mod_name} {modloader} {mc_version_2} "{mod_page_name_suffix}"'
 
 NON_CURSEFORGE_MODS = ["OptiFine", "preview OptiFine"]
 
 CURSEFORGE_NAMES_FILE = os.path.join(ROOT_DIR, "curseforge_names.json")
 
 CURSEFORGE_API_FILE = os.path.join(ROOT_DIR, "curseforge_api.js")
+
+CURSEFORGE_QUERY_TEMPLATE = '"{curseforge_name}"'
 
 TIMESTAMP_FORMAT_REGEX = full_regex("(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)\.?(\d+)?Z")
 

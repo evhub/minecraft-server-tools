@@ -364,7 +364,7 @@
     "Lollipop": "Lollipop",
     "mahoutsukai": "Mahou Tsukai",
     "mana and artifice": "Mana and Artifice",
-    "managear": "Mod Menu",
+    "managear": "Mana Gear",
     "Mantle": "Mantle",
     "mcjtylib": "McJtyLib",
     "mcw bridges": "Macaw's Bridges",
@@ -393,7 +393,7 @@
     "omgourd": "Oh My Gourd",
     "pamhc2crops": "Pam's HarvestCraft 2 - Crops",
     "pamhc2foodcore": "Pam's HarvestCraft 2 - Food",
-    "pamhc2foodextended": "Pam's HarvestCraft 2 - Food",
+    "pamhc2foodextended": "Pam's HarvestCraft 2 - Food Extended",
     "pamhc2trees": "Pam's HarvestCraft 2 - Trees",
     "Patchouli": "Patchouli",
     "phosphophyllite": "Phosphophyllite",
@@ -414,7 +414,7 @@
     "reliquary": "Reliquary v1.3",
     "repurposed structures": "Repurposed Structures (Forge)",
     "resourcefulbees": "Resourceful Bees",
-    "restrictions": "Tweakeroo",
+    "restrictions": "Restrictions",
     "rftoolsbase": "RFTools Base",
     "rftoolsbuilder": "RFTools Builder",
     "rftoolscontrol": "RFTools Control",
@@ -455,5 +455,6 @@
     "woot": "Woot",
     "xnet": "XNet",
     "XNetGases": "XNet Gases",
-    "YungsApi": "YUNG's API (Forge)"
+    "YungsApi": "YUNG's API (Forge)",
+    "flickerfix": "FlickerFix"
 }

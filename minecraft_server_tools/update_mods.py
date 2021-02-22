@@ -31,6 +31,7 @@ from minecraft_server_tools.constants import (
     EXTRA_CLIENT_MODS_DIR,
     EXTRA_MODS_DIR,
     CURSEFORGE_NAME_ELEMS_TO_STRIP,
+    CURSEFORGE_QUERY_TEMPLATE,
     ver_join,
     ver_split,
 )
@@ -81,6 +82,7 @@ def get_curseforge_name(mod_name, jar_name):
         jar_name=jar_name,
         modloader=MODLOADER,
         mc_version=ver_join(MC_VERSION),
+        mc_version_2=ver_join(MC_VERSION[:2]),
         mod_page_name_suffix=MOD_PAGE_NAME_SUFFIX,
     )
     try:
@@ -147,13 +149,15 @@ def get_curseforge_names_for(mod_names_to_jar_names):
     finally:
         save_curseforge_names(all_mod_names_to_curseforge_names)
     requested_mod_names_to_curseforge_names = {}
+    nulled_mods = []
     for mod_name in mod_names_to_jar_names:
         curseforge_name = all_mod_names_to_curseforge_names[mod_name]
         if curseforge_name is None:
+            nulled_mods.append(mod_name)
             print(f"Skipping mod {mod_name!r} due to explicitly nulled CurseForge name.")
         else:
             requested_mod_names_to_curseforge_names[mod_name] = curseforge_name
-    return requested_mod_names_to_curseforge_names
+    return requested_mod_names_to_curseforge_names, nulled_mods
 
 
 def get_jar_names(mods_dir):
@@ -189,27 +193,46 @@ def get_matching_mod(results, curseforge_name, allow_inexact_name=True):
 
 
 def get_curseforge_mod(curseforge_name):
-    version_results = run_curseforge_api_cmd(["search", curseforge_name, ver_join(MC_VERSION)])
+    query = CURSEFORGE_QUERY_TEMPLATE.format(
+        curseforge_name=curseforge_name,
+    )
+
+    version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION)])
     mod = get_matching_mod(version_results, curseforge_name, allow_inexact_name=False)
     if mod is not None:
         return mod
     print(f"Could not find mod {curseforge_name!r} in version-specific results.")
 
-    versionless_results = run_curseforge_api_cmd(["search", curseforge_name])
+    versionless_results = run_curseforge_api_cmd(["search", query])
     mod = get_matching_mod(versionless_results, curseforge_name)
     if mod is not None:
         return mod
-    print(f"Could not find mod {curseforge_name!r} in version-less results:")
-    pprint(versionless_results[:MAX_DEBUG_RESULTS])
-    raise IOError(f"Could not find mod {curseforge_name!r}.")
+    print(f"Could not find mod {curseforge_name!r} in version-less results.")
+
+    big_results = run_curseforge_api_cmd(["bigsearch", query])
+    mod = get_matching_mod(big_results, curseforge_name)
+    if mod is not None:
+        return mod
+    print(f"Could not find mod {curseforge_name!r} in big results:")
+    pprint(big_results[:MAX_DEBUG_RESULTS])
 
 
 def get_curseforge_id(curseforge_name):
-    return get_curseforge_mod(curseforge_name)["id"]
+    mod = get_curseforge_mod(curseforge_name)
+    if mod is not None:
+        return mod["id"]
 
 
 def get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names):
-    return {mod_name: get_curseforge_id(curseforge_name) for mod_name, curseforge_name in mod_names_to_curseforge_names.items()}
+    mod_names_to_curseforge_ids = {}
+    missing_mods = []
+    for mod_name, curseforge_name in mod_names_to_curseforge_names.items():
+        curseforge_id = get_curseforge_id(curseforge_name)
+        if curseforge_id is None:
+            missing_mods.append(mod_name)
+        else:
+            mod_names_to_curseforge_ids[mod_name] = curseforge_id
+    return mod_names_to_curseforge_ids, missing_mods
 
 
 def get_curseforge_files(curseforge_id):
@@ -280,11 +303,14 @@ def get_latest_version(mod_name, curseforge_id):
 
 def get_mod_names_to_latest_versions(mod_names_to_curseforge_ids):
     mod_names_to_latest_versions = {}
+    missing_mods = []
     for mod_name, curseforge_id in mod_names_to_curseforge_ids.items():
         latest_version = get_latest_version(mod_name, curseforge_id)
-        if latest_version:
+        if latest_version is None:
+            missing_mods.append(mod_name)
+        else:
             mod_names_to_latest_versions[mod_name] = latest_version
-    return mod_names_to_latest_versions
+    return mod_names_to_latest_versions, missing_mods
 
 
 def get_jar_name_for_curseforge_file(curseforge_file):
@@ -328,9 +354,9 @@ def move_old_files(updated_mod_names_to_files, mod_names_to_jar_names, mods_dir,
 def update_mods(mods_dir, updated_mods_dir, old_mods_dir, interact=None):
     try:
         mod_names_to_jar_names = get_mod_names_to_jar_names(mods_dir)
-        mod_names_to_curseforge_names = get_curseforge_names_for(mod_names_to_jar_names)
-        mod_names_to_curseforge_ids = get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names)
-        mod_names_to_latest_versions = get_mod_names_to_latest_versions(mod_names_to_curseforge_ids)
+        mod_names_to_curseforge_names, nulled_mods = get_curseforge_names_for(mod_names_to_jar_names)
+        mod_names_to_curseforge_ids, missing_ids_mods = get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names)
+        mod_names_to_latest_versions, missing_files_mods = get_mod_names_to_latest_versions(mod_names_to_curseforge_ids)
         updated_mod_names_to_files = get_updated_mod_names_to_files(mod_names_to_jar_names, mod_names_to_latest_versions)
         if updated_mod_names_to_files:
             if not os.path.exists(updated_mods_dir):
@@ -339,6 +365,7 @@ def update_mods(mods_dir, updated_mods_dir, old_mods_dir, interact=None):
                 os.mkdir(old_mods_dir)
             update_files(updated_mod_names_to_files, updated_mods_dir)
             move_old_files(updated_mod_names_to_files, mod_names_to_jar_names, mods_dir, old_mods_dir)
+        return nulled_mods + missing_ids_mods + missing_files_mods
     except Exception:
         if interact is not False:
             traceback.print_exc()
@@ -353,10 +380,13 @@ def update_mods(mods_dir, updated_mods_dir, old_mods_dir, interact=None):
 
 
 def update_all(mods_dirs, interact=None):
+    couldnt_update = []
     for mods_dir in mods_dirs:
         updated_mods_dir = mods_dir + UPDATED_MODS_DIR_SUFFIX
         old_mods_dir = mods_dir + OLD_MODS_DIR_SUFFIX
-        update_mods(mods_dir, updated_mods_dir, old_mods_dir, interact=interact)
+        couldnt_update += update_mods(mods_dir, updated_mods_dir, old_mods_dir, interact=interact)
+    for mod_name in couldnt_update:
+        print(f"Unable to automatically update mod: {mod_name}")
 
 
 def main():
