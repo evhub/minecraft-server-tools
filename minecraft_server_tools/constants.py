@@ -30,11 +30,17 @@ EXTRA_INSTALL_FOLDERS = [
     "scripts",
 ]
 
+MOD_ZIP_PATH = "~/Google Drive/Minecraft Mods/Minecraft Mods.zip"
+
 
 # Fix directories
 
-MINECRAFT_DIR = os.path.normpath(os.path.expanduser(MINECRAFT_DIR))
-SERVER_DIR = os.path.normpath(os.path.expanduser(SERVER_DIR))
+def fixpath(path):
+    return os.path.normpath(os.path.expanduser(path))
+
+MINECRAFT_DIR = fixpath(MINECRAFT_DIR)
+SERVER_DIR = fixpath(SERVER_DIR)
+MOD_ZIP_PATH = fixpath(MOD_ZIP_PATH)
 
 
 # Utilities
@@ -220,4 +226,9 @@ README_FILE = "README.txt"
 EXTRA_INSTALL_FILES = [
     README_FILE,
     FORGE_INSTALLER_JAR,
+]
+
+OPTIONAL_INSTALL_FILES = [
+    "options.txt",
+    "optionsof.txt",
 ]
