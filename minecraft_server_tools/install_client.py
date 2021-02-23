@@ -2,6 +2,7 @@ import os
 import shutil
 import zipfile
 import tempfile
+from contextlib import contextmanager
 
 from tqdm import tqdm
 
@@ -82,11 +83,12 @@ def open_readme():
         launch_server.run_cmd(["xdg-open", installed_readme], check=False)
 
 
-def unzip_mods():
-    temp_dir = tempfile.TemporaryDirectory()
-    print(f"Unzipping mods to temporary directory {temp_dir.name!r}...")
-    shutil.unpack_archive(MOD_ZIP_PATH, temp_dir.name)
-    return temp_dir
+@contextmanager
+def unzipped_mods():
+    with tempfile.TemporaryDirectory() as temp_dir:
+        print(f"Unzipping mods to temporary directory {temp_dir!r}...")
+        shutil.unpack_archive(MOD_ZIP_PATH, temp_dir)
+        yield temp_dir
 
 
 def install_from_server():
@@ -115,11 +117,8 @@ def install_from_zip():
         print("Will install optional files.")
     else:
         print("Will NOT install optional files.")
-    temp_dir = unzip_mods()
-    try:
-        install_from_dir(temp_dir.name, do_optional)
-    finally:
-        temp_dir.cleanup()
+    with unzipped_mods() as temp_dir:
+        install_from_dir(temp_dir, do_optional)
 
 
 def main():
