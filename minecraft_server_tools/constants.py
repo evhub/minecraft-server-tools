@@ -52,6 +52,8 @@ EXTRA_INSTALL_FOLDERS = [
     "kubejs",
     "resourcepacks",
     "scripts",
+    "global_data_packs",
+    "global_resource_packs",
 ]
 
 SERVER_DIR = first_that_exists([
