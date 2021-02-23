@@ -10,11 +10,14 @@ from minecraft_server_tools.constants import (
     FORGE_ARGS,
     FORGE_VERSION,
     FORGE_INSTALLER_URL,
-    FORGE_JAR_PATH,
-    FORGE_INSTALLER_JAR_PATH,
     OLD_JARS_REGEX,
     SERVER_DIR,
+    FORGE_JAR,
+    FORGE_INSTALLER_JAR,
 )
+
+FORGE_JAR_PATH = os.path.join(SERVER_DIR, FORGE_JAR)
+FORGE_INSTALLER_JAR_PATH = os.path.join(SERVER_DIR, FORGE_INSTALLER_JAR)
 
 
 def run_cmd(cmd, check=True, shell=None):

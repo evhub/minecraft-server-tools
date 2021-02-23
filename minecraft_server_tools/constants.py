@@ -6,10 +6,10 @@ from jsoncomment import JsonComment
 
 # Commonly changed constants
 
+WINDOWS = os.name == "nt"
+
 MC_VERSION = (1, 16, 5)
 FORGE_VERSION = (36, 0, 40)
-
-WINDOWS = os.name == "nt"
 
 if WINDOWS:
     MINECRAFT_DIR = "~/AppData/Roaming/.minecraft"
@@ -30,7 +30,7 @@ EXTRA_INSTALL_FOLDERS = [
     "scripts",
 ]
 
-MOD_ZIP_PATH = "~/Google Drive/Minecraft Mods/Minecraft Mods.zip"
+MOD_ZIP_PATH = "~/OneDrive/Minecraft/Minecraft Mods/Minecraft Mods.zip"
 
 
 # Fix directories
@@ -76,15 +76,15 @@ except FileNotFoundError:
 
 # Mod sync constants
 
-MODS_DIR = os.path.join(SERVER_DIR, "mods")
-BASE_MODS_DIR = os.path.join(SERVER_DIR, "mods-base")
-EXTRA_MODS_DIR = os.path.join(SERVER_DIR, "mods-main")
-REMOVED_MODS_DIR = os.path.join(SERVER_DIR, "mods-removed")
+MODS_NAME = "mods"
+BASE_MODS_NAME = "mods-base"
+EXTRA_MODS_NAME = "mods-main"
+REMOVED_MODS_NAME = "mods-removed"
 
-CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "client_mods")
-BASE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "client_mods-base")
-EXTRA_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "client_mods-main")
-REMOVED_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, "client_mods-removed")
+CLIENT_MODS_NAME = "client_mods"
+BASE_CLIENT_MODS_NAME = "client_mods-base"
+EXTRA_CLIENT_MODS_NAME = "client_mods-main"
+REMOVED_CLIENT_MODS_NAME = "client_mods-removed"
 
 
 # Auto updater Constants
@@ -211,15 +211,10 @@ FORGE_INSTALLER_URL = format_vers("https://files.minecraftforge.net/maven/net/mi
 FORGE_JAR = format_vers("forge-{mc_version}-{forge_version}.jar")
 FORGE_INSTALLER_JAR = format_vers("forge-{mc_version}-{forge_version}-installer.jar")
 
-FORGE_JAR_PATH = os.path.join(SERVER_DIR, FORGE_JAR)
-FORGE_INSTALLER_JAR_PATH = os.path.join(SERVER_DIR, FORGE_INSTALLER_JAR)
-
 OLD_JARS_REGEX = full_regex(format_vers("(forge-(?!{mc_version}-{forge_version})[0-9.]+-[0-9.]+(-installer)?|minecraft_server\.(?!{mc_version})[0-9.]+)\.jar"))
 
 
 # Client install constants
-
-MINECRAFT_MODS_DIR = os.path.join(MINECRAFT_DIR, "mods")
 
 README_FILE = "README.txt"
 
@@ -231,4 +226,9 @@ EXTRA_INSTALL_FILES = [
 OPTIONAL_INSTALL_FILES = [
     "options.txt",
     "optionsof.txt",
+]
+
+YES_STRS = [
+    "y",
+    "yes",
 ]

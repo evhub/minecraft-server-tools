@@ -12,5 +12,6 @@ setuptools.setup(
     install_requires=[
         "requests",
         "jsoncomment",
+        "tqdm",
     ],
 )

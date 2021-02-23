@@ -1,63 +1,76 @@
 import os
 import shutil
+import zipfile
+import tempfile
+
+from tqdm import tqdm
 
 from minecraft_server_tools import sync_mods, launch_server
 from minecraft_server_tools.constants import (
     WINDOWS,
-    MODS_DIR,
-    CLIENT_MODS_DIR,
-    MINECRAFT_MODS_DIR,
     SERVER_DIR,
     MINECRAFT_DIR,
     EXTRA_INSTALL_FOLDERS,
     EXTRA_INSTALL_FILES,
     FORGE_INSTALLER_JAR,
-    FORGE_INSTALLER_JAR_PATH,
     README_FILE,
     MOD_ZIP_PATH,
     OPTIONAL_INSTALL_FILES,
+    MODS_NAME,
+    CLIENT_MODS_NAME,
+    YES_STRS,
 )
 
+MINECRAFT_MODS_DIR = os.path.join(MINECRAFT_DIR, MODS_NAME)
 
-def sync_client_mods():
+
+def sync_client_mods(source_dir=SERVER_DIR):
     print("\nInstalling mods...")
-    all_client_mods = sync_mods.get_location_table_for(MODS_DIR)
-    all_client_mods.update(sync_mods.get_location_table_for(CLIENT_MODS_DIR))
+    all_client_mods = sync_mods.get_location_table_for(os.path.join(source_dir, MODS_NAME))
+    all_client_mods.update(sync_mods.get_location_table_for(os.path.join(source_dir, CLIENT_MODS_NAME)))
 
     current_client_mods = sync_mods.get_location_table_for(MINECRAFT_MODS_DIR)
 
     sync_mods.set_mods_from_to(all_client_mods, current_client_mods, MINECRAFT_MODS_DIR)
 
 
-def install_extras(do_optional=True):
+def install_extras(source_dir=SERVER_DIR, do_optional=True):
     print("\nInstalling other files/folders...")
     for install_dir in EXTRA_INSTALL_FOLDERS:
-        from_dir = os.path.join(SERVER_DIR, install_dir)
+        from_dir = os.path.join(source_dir, install_dir)
         to_dir = os.path.join(MINECRAFT_DIR, install_dir)
         print(f"\t{install_dir}...")
         shutil.copytree(from_dir, to_dir, dirs_exist_ok=True)
 
     for install_file in EXTRA_INSTALL_FILES + (OPTIONAL_INSTALL_FILES if do_optional else []):
-        from_path = os.path.join(SERVER_DIR, install_file)
+        from_path = os.path.join(source_dir, install_file)
         to_path = os.path.join(MINECRAFT_DIR, install_file)
         print(f"\t{install_file}...")
         shutil.copy(from_path, to_path)
 
 
-def ensure_forge_client():
+def ensure_forge_client(source_dir=SERVER_DIR):
     if not os.path.exists(os.path.join(MINECRAFT_DIR, FORGE_INSTALLER_JAR)):
         print("\nOpening forge installer; select 'Install client' and press 'Ok'.")
-        launch_server.run_java(["-jar", FORGE_INSTALLER_JAR_PATH])
+        launch_server.run_java(["-jar", os.path.join(source_dir, FORGE_INSTALLER_JAR)])
+
+
+def get_paths_to_zip():
+    for install_fname in EXTRA_INSTALL_FILES + OPTIONAL_INSTALL_FILES:
+        yield os.path.join(MINECRAFT_DIR, install_fname)
+    for install_dirname in EXTRA_INSTALL_FOLDERS + ["mods"]:
+        install_dirpath = os.path.join(MINECRAFT_DIR, install_dirname)
+        for dirpath, dirnames, filenames in os.walk(install_dirpath):
+            yield dirpath
+            for fname in filenames:
+                yield os.path.join(dirpath, fname)
 
 
 def zip_mods():
-    zip_args = ["zip", "-r", MOD_ZIP_PATH, "mods"]
-    for item in EXTRA_INSTALL_FOLDERS + EXTRA_INSTALL_FILES + OPTIONAL_INSTALL_FILES:
-        zip_args.append(os.path.join(MINECRAFT_DIR, item))
     print(f"\nZipping mod files to {MOD_ZIP_PATH}...")
-    if os.path.exists(MOD_ZIP_PATH):
-        os.remove(MOD_ZIP_PATH)
-    launch_server.run_cmd(zip_args)
+    with zipfile.ZipFile(MOD_ZIP_PATH, "w", zipfile.ZIP_DEFLATED) as zf:
+        for install_path in tqdm(list(get_paths_to_zip())):
+            zf.write(install_path, os.path.relpath(install_path, MINECRAFT_DIR))
 
 
 def open_readme():
@@ -67,6 +80,13 @@ def open_readme():
         launch_server.run_cmd(["explorer", installed_readme], check=False)
     else:
         launch_server.run_cmd(["xdg-open", installed_readme], check=False)
+
+
+def unzip_mods():
+    temp_dir = tempfile.TemporaryDirectory()
+    print(f"Unzipping mods to temporary directory {temp_dir.name!r}...")
+    shutil.unpack_archive(MOD_ZIP_PATH, temp_dir.name)
+    return temp_dir
 
 
 def install_from_server():
@@ -80,5 +100,38 @@ def install_from_server():
     zip_mods()
 
 
+def install_from_dir(source_dir, do_optional=False):
+    launch_server.clean_forge_jars(MINECRAFT_DIR)
+
+    ensure_forge_client(source_dir)
+    sync_client_mods(source_dir)
+    install_extras(source_dir, do_optional)
+    open_readme()
+
+
+def install_from_zip():
+    do_optional = input(f"Install optional files {OPTIONAL_INSTALL_FILES}? [y/N]").lower() in YES_STRS
+    if do_optional:
+        print("Will install optional files.")
+    else:
+        print("Will NOT install optional files.")
+    temp_dir = unzip_mods()
+    try:
+        install_from_dir(temp_dir.name, do_optional)
+    finally:
+        temp_dir.cleanup()
+
+
+def main():
+    if os.path.exists(SERVER_DIR):
+        print("Installing from server...")
+        install_from_server()
+    elif os.path.exists(MOD_ZIP_PATH):
+        print("Installing from zipfile...")
+        install_from_zip()
+    else:
+        raise IOError("Could not find files for install.")
+
+
 if __name__ == "__main__":
-    install_from_server()
+    main()

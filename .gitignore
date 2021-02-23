@@ -235,3 +235,6 @@ __pypackages__/
 # Secrets
 secrets.json
 *.pem
+
+# Logs
+installer.log

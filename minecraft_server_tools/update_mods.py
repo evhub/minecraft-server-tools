@@ -28,13 +28,17 @@ from minecraft_server_tools.constants import (
     UPDATED_MODS_DIR_SUFFIX,
     OLD_MODS_DIR_SUFFIX,
     MAX_DEBUG_RESULTS,
-    EXTRA_CLIENT_MODS_DIR,
-    EXTRA_MODS_DIR,
     CURSEFORGE_NAME_ELEMS_TO_STRIP,
     CURSEFORGE_QUERY_TEMPLATE,
+    SERVER_DIR,
+    EXTRA_CLIENT_MODS_NAME,
+    EXTRA_MODS_NAME,
     ver_join,
     ver_split,
 )
+
+EXTRA_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, EXTRA_CLIENT_MODS_NAME)
+EXTRA_MODS_DIR = os.path.join(SERVER_DIR, EXTRA_MODS_NAME)
 
 
 def google(query):
