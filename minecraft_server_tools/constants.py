@@ -1,46 +1,8 @@
 import os
 import re
+import sys
 
 from jsoncomment import JsonComment
-
-
-# Commonly changed constants
-
-WINDOWS = os.name == "nt"
-
-MC_VERSION = (1, 16, 5)
-FORGE_VERSION = (36, 0, 40)
-
-if WINDOWS:
-    MINECRAFT_DIR = "~/AppData/Roaming/.minecraft"
-    SERVER_DIR = "~/OneDrive/Minecraft/ATM6 Mod Server"
-    MAX_RAM = "7G"
-else:
-    MINECRAFT_DIR = "~/Library/Application Support/minecraft"
-    SERVER_DIR = "~/atm6_server"
-    MAX_RAM = "13G"
-    # SERVER_DIR = "/mnt/c/Users/evanj/OneDrive/Minecraft/ATM6 Mod Server"
-    # MAX_RAM = "6G"
-
-EXTRA_INSTALL_FOLDERS = [
-    "config",
-    "defaultconfigs",
-    "kubejs",
-    "resourcepacks",
-    "scripts",
-]
-
-MOD_ZIP_PATH = "~/OneDrive/Minecraft/Minecraft Mods/Minecraft Mods.zip"
-
-
-# Fix directories
-
-def fixpath(path):
-    return os.path.normpath(os.path.expanduser(path))
-
-MINECRAFT_DIR = fixpath(MINECRAFT_DIR)
-SERVER_DIR = fixpath(SERVER_DIR)
-MOD_ZIP_PATH = fixpath(MOD_ZIP_PATH)
 
 
 # Utilities
@@ -59,6 +21,49 @@ def format_vers(template):
         mc_version=ver_join(MC_VERSION),
         forge_version=ver_join(FORGE_VERSION),
     )
+
+def fixpath(path):
+    return os.path.normpath(os.path.expanduser(path))
+
+def first_that_exists(path_list):
+    for path in path_list:
+        path = fixpath(path)
+        if os.path.exists(path):
+            return path
+    return path_list[0]
+
+
+# Commonly changed constants
+
+WINDOWS = os.name == "nt"
+
+MC_VERSION = (1, 16, 5)
+FORGE_VERSION = (36, 0, 40)
+
+if WINDOWS:
+    MAX_RAM = "7G"
+else:
+    MAX_RAM = "13G"
+    # MAX_RAM = "6G"
+
+EXTRA_INSTALL_FOLDERS = [
+    "config",
+    "defaultconfigs",
+    "kubejs",
+    "resourcepacks",
+    "scripts",
+]
+
+SERVER_DIR = first_that_exists([
+    "~/atm6_server",
+    "~/OneDrive/Minecraft/ATM6 Mod Server",
+    "/mnt/c/Users/evanj/OneDrive/Minecraft/ATM6 Mod Server",
+])
+
+MOD_ZIP_PATH = first_that_exists([
+    "~/OneDrive/Minecraft/Minecraft Mods/Minecraft Mods.zip",
+    "~/OneDrive/Minecraft Mods/Minecraft Mods.zip",
+])
 
 
 # Load secrets
@@ -215,6 +220,13 @@ OLD_JARS_REGEX = full_regex(format_vers("(forge-(?!{mc_version}-{forge_version})
 
 
 # Client install constants
+
+if sys.platform.startswith("win"):
+    MINECRAFT_DIR = fixpath("~/AppData/Roaming/.minecraft")
+elif sys.platform.startswith("darwin"):
+    MINECRAFT_DIR = fixpath("~/Library/Application Support/minecraft")
+else:
+    MINECRAFT_DIR = fixpath("~/.minecraft")
 
 README_FILE = "README.txt"
 
