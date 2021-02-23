@@ -110,7 +110,7 @@ def install_from_dir(source_dir, do_optional=False):
 
 
 def install_from_zip():
-    do_optional = input(f"Install optional files {OPTIONAL_INSTALL_FILES}? [y/N]").lower() in YES_STRS
+    do_optional = input(f"\nInstall optional files {OPTIONAL_INSTALL_FILES}? [y/N] ").lower() in YES_STRS
     if do_optional:
         print("Will install optional files.")
     else:
@@ -124,10 +124,10 @@ def install_from_zip():
 
 def main():
     if os.path.exists(SERVER_DIR):
-        print("Installing from server...")
+        print("\nInstalling from server...")
         install_from_server()
     elif os.path.exists(MOD_ZIP_PATH):
-        print("Installing from zipfile...")
+        print("\nInstalling from zipfile...")
         install_from_zip()
     else:
         raise IOError("Could not find files for install.")
