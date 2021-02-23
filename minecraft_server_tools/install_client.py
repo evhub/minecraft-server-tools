@@ -58,7 +58,7 @@ def ensure_forge_client(source_dir=SERVER_DIR):
 def get_paths_to_zip():
     for install_fname in EXTRA_INSTALL_FILES + OPTIONAL_INSTALL_FILES:
         yield os.path.join(MINECRAFT_DIR, install_fname)
-    for install_dirname in EXTRA_INSTALL_FOLDERS + ["mods"]:
+    for install_dirname in EXTRA_INSTALL_FOLDERS + [MODS_NAME]:
         install_dirpath = os.path.join(MINECRAFT_DIR, install_dirname)
         for dirpath, dirnames, filenames in os.walk(install_dirpath):
             yield dirpath
