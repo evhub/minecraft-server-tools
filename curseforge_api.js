@@ -27,5 +27,5 @@ if (args[0] === "search" || args[0] == "bigsearch") {
         console.log(JSON.stringify(files));
     });
 } else {
-    throw "Unknown arg: " + args[0]);
+    throw "Unknown arg: " + args[0];
 }

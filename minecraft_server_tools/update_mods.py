@@ -177,7 +177,7 @@ def get_mod_names_to_jar_names(mods_dir):
 def run_curseforge_api_cmd(cmd):
     cmd = [str(x) for x in cmd]
     print("Executing curseforge api cmd: " + " ".join(cmd))
-    api_result = subprocess.run(["node", CURSEFORGE_API_FILE] + cmd, capture_output=True).stdout
+    api_result = subprocess.run(["node", CURSEFORGE_API_FILE] + cmd, capture_output=True).stdout.decode("utf-8")
     try:
         return json.loads(api_result)
     except json.decoder.JSONDecodeError:
