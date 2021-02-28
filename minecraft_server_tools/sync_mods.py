@@ -116,9 +116,9 @@ def main():
     remove_mods_in_from(all_server_mods, removed_server_mods)
 
     removed_client_mods = get_location_table_for(REMOVED_CLIENT_MODS_DIR)
+    remove_mods_in_from(removed_server_mods, removed_client_mods)
     remove_mods_in_from(all_server_mods, removed_client_mods)
     remove_mods_in_from(all_client_only_mods, removed_client_mods)
-    remove_mods_in_from(removed_server_mods, removed_client_mods)
 
 
 if __name__ == "__main__":
