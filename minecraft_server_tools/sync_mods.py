@@ -54,14 +54,14 @@ def display_mod_path(mod_path):
 
 def remove_mods_in_from(remove_mod_location_table, current_mod_location_table):
     for mod, cur_path in current_mod_location_table.items():
-        if mod in remove_mod_location_table:
+        if mod in remove_mod_location_table and os.path.exists(cur_path):
             print("Removing {mod}...".format(mod=display_mod_path(cur_path)))
             os.remove(cur_path)
 
 
 def set_mods_from_to(target_mod_location_table, current_mod_location_table, set_mods_dir):
     for mod, cur_path in current_mod_location_table.items():
-        if mod not in target_mod_location_table:
+        if mod not in target_mod_location_table and os.path.exists(cur_path):
             print("Removing {mod}...".format(mod=display_mod_path(cur_path)))
             os.remove(cur_path)
     for mod, tar_path in target_mod_location_table.items():
@@ -93,7 +93,7 @@ def main():
     remove_mods_in_from(all_base_mods, extra_client_mods)
 
 
-    print("\nUpdating server mods...")
+    print("\nFixing server mods...")
     all_server_mods = get_location_table_for(BASE_MODS_DIR)
     all_server_mods.update(get_location_table_for(EXTRA_MODS_DIR))
 
@@ -102,7 +102,7 @@ def main():
     set_mods_from_to(all_server_mods, current_server_mods, MODS_DIR)
 
 
-    print("\nUpdating client only mods...")
+    print("\nFixing client only mods...")
     all_client_only_mods = get_location_table_for(BASE_CLIENT_MODS_DIR)
     all_client_only_mods.update(get_location_table_for(EXTRA_CLIENT_MODS_DIR))
 
@@ -118,6 +118,7 @@ def main():
     removed_client_mods = get_location_table_for(REMOVED_CLIENT_MODS_DIR)
     remove_mods_in_from(all_server_mods, removed_client_mods)
     remove_mods_in_from(all_client_only_mods, removed_client_mods)
+    remove_mods_in_from(removed_server_mods, removed_client_mods)
 
 
 if __name__ == "__main__":
