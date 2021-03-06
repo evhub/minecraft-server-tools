@@ -38,7 +38,7 @@ def first_that_exists(path_list):
 WINDOWS = os.name == "nt"
 
 MC_VERSION = (1, 16, 5)
-FORGE_VERSION = (36, 0, 40)
+FORGE_VERSION = (36, 0, 43)
 
 if WINDOWS:
     MAX_RAM = "7G"
