@@ -146,12 +146,22 @@ def save_curseforge_names(mod_names_to_curseforge_names):
 
 def get_curseforge_names_for(mod_names_to_jar_names):
     all_mod_names_to_curseforge_names = load_curseforge_names()
+    found_curseforge_names_to_mod_names = {}
     try:
         for mod_name in mod_names_to_jar_names:
             if mod_name not in all_mod_names_to_curseforge_names:
-                all_mod_names_to_curseforge_names[mod_name] = get_curseforge_name(mod_name, mod_names_to_jar_names[mod_name])
+                curseforge_name = get_curseforge_name(mod_name, mod_names_to_jar_names[mod_name])
+
+                # do validation
+                if curseforge_name in found_curseforge_names_to_mod_names:
+                    raise ValueError(f"resolved multiple mod names to curseforge name {curseforge_name!r}: {found_curseforge_names_to_mod_names[curseforge_name]} and {mod_name}")
+                found_curseforge_names_to_mod_names[curseforge_name] = mod_name
+
+                all_mod_names_to_curseforge_names[mod_name] = curseforge_name
     finally:
         save_curseforge_names(all_mod_names_to_curseforge_names)
+
+    # get nulled mods
     requested_mod_names_to_curseforge_names = {}
     nulled_mods = []
     for mod_name in mod_names_to_jar_names:
@@ -171,7 +181,13 @@ def get_jar_names(mods_dir):
 
 
 def get_mod_names_to_jar_names(mods_dir):
-    return {get_mod_name(jar_name): jar_name for jar_name in get_jar_names(mods_dir)}
+    mod_names_to_jar_names = {}
+    for jar_name in get_jar_names(mods_dir):
+        mod_name = get_mod_name(jar_name)
+        if mod_name in mod_names_to_jar_names:
+            raise ValueError(f"resolved multiple jars to name {mod_name!r}: {mod_names_to_jar_names[mod_name]} and {jar_name}")
+        mod_names_to_jar_names[mod_name] = jar_name
+    return mod_names_to_jar_names
 
 
 def run_curseforge_api_cmd(cmd):

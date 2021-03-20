@@ -355,10 +355,10 @@
     "jumbofurnace": "Jumbo Furnace",
     "JustEnoughResources": "Just Enough Resources (JER)",
     "kubejs": "KubeJS",
-    "kubejs blood magic": "KubeJS",
-    "kubejs create": "KubeJS",
+    "kubejs blood magic": "KubeJS Blood Magic",
+    "kubejs create": "KubeJS Create",
     "kubejs immersive engineering": "KubeJS Immersive Engineering",
-    "kubejs mekanism": "KubeJS",
+    "kubejs mekanism": "KubeJS Mekanism",
     "kubejs thermal": "KubeJS Thermal",
     "LibX": "LibX",
     "Lollipop": "Lollipop",
@@ -466,5 +466,11 @@
     "adaptive performance tweaks": "Adaptive Performance Tweaks",
     "RSInfinityBooster": "RSInfinityBooster",
     "skeletonhorsespawn": "Skeleton Horse Spawn",
-    "zombiehorsespawn": "Zombie Horse Spawn"
+    "zombiehorsespawn": "Zombie Horse Spawn",
+    "TA2 Beginning": "[Add-On] The Abyss: Beginning",
+    "jei professions": "JEI Professions",
+    "mcw fences": "Macaw's Fences and Walls",
+    "ResourcefulBees": "Resourceful Bees",
+    "silent gear": "Silent Gear",
+    "silent lib": "Silent Lib"
 }
