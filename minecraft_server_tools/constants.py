@@ -32,6 +32,9 @@ def first_that_exists(path_list):
             return path
     return path_list[0]
 
+def exists(path):
+    return os.path.exists(fixpath(path))
+
 
 # Commonly changed constants
 
@@ -39,12 +42,6 @@ WINDOWS = os.name == "nt"
 
 MC_VERSION = (1, 16, 5)
 FORGE_VERSION = (36, 1, 0)
-
-if WINDOWS:
-    MAX_RAM = "7G"
-else:
-    MAX_RAM = "13G"
-    # MAX_RAM = "6G"
 
 EXTRA_INSTALL_FOLDERS = [
     "config",
@@ -56,8 +53,10 @@ EXTRA_INSTALL_FOLDERS = [
     "global_resource_packs",
 ]
 
+HOSTED_SERVER_DIR = "~/atm6_server"
+
 SERVER_DIR = first_that_exists([
-    "~/atm6_server",
+    HOSTED_SERVER_DIR,
     "~/OneDrive/Minecraft/ATM6 Mod Server",
     "/mnt/c/Users/evanj/OneDrive/Minecraft/ATM6 Mod Server",
 ])
@@ -66,6 +65,13 @@ MOD_ZIP_PATH = first_that_exists([
     "~/OneDrive/Minecraft/Minecraft Mods/Minecraft Mods.zip",
     "~/OneDrive/Minecraft Mods/Minecraft Mods.zip",
 ])
+
+if exists(HOSTED_SERVER_DIR):
+    MAX_RAM = "13G"
+elif WINDOWS:
+    MAX_RAM = "7G"
+else:
+    MAX_RAM = "6G"
 
 
 # Load secrets
