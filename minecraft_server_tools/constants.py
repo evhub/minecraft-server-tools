@@ -40,8 +40,8 @@ def exists(path):
 
 WINDOWS = os.name == "nt"
 
-MC_VERSION = (1, 16, 5)
-FORGE_VERSION = (36, 1, 0)
+MC_VERSION = (1, 18, 1)
+FORGE_VERSION = (39, 0, 75)
 
 EXTRA_INSTALL_FOLDERS = [
     "config",
@@ -53,12 +53,12 @@ EXTRA_INSTALL_FOLDERS = [
     "global_resource_packs",
 ]
 
-HOSTED_SERVER_DIR = "~/atm6_server"
+HOSTED_SERVER_DIR = "~/1_18_mod_server"
 
 SERVER_DIR = first_that_exists([
     HOSTED_SERVER_DIR,
-    "~/OneDrive/Minecraft/ATM6 Mod Server",
-    "/mnt/c/Users/evanj/OneDrive/Minecraft/ATM6 Mod Server",
+    "~/OneDrive/Minecraft/1.18 Mod Server",
+    "/mnt/c/Users/evanj/OneDrive/Minecraft/1.18 Mod Server",
 ])
 
 MOD_ZIP_PATH = first_that_exists([
@@ -103,6 +103,14 @@ REMOVED_CLIENT_MODS_NAME = "client_mods-removed"
 # Auto updater Constants
 
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
+
+MODLOADER = "forge"
+WRONG_MODLOADERS = ["fabric"]
+
+NON_CURSEFORGE_MODS = [
+    "OptiFine",
+    "preview OptiFine",
+]
 
 COMPONENT_SEPS = [
     ("-", 2),
@@ -162,14 +170,9 @@ CURSEFORGE_NAME_ELEMS_TO_STRIP = [
 
 SEARCH_URL_TEMPLATE = "https://www.googleapis.com/customsearch/v1/siterestrict?key={google_api_key}&cx={search_engine_id}&q={query}&nfpr=1&nirf={query}"
 
-MODLOADER = "forge"
-WRONG_MODLOADERS = ["fabric"]
-
 MOD_PAGE_NAME_SUFFIX = " - Mods - Minecraft - Curseforge"
 
 GOOGLE_QUERY_TEMPLATE = '{mod_name} {modloader} {mc_version_2} "{mod_page_name_suffix}"'
-
-NON_CURSEFORGE_MODS = ["OptiFine", "preview OptiFine"]
 
 CURSEFORGE_NAMES_FILE = os.path.join(ROOT_DIR, "curseforge_names.json")
 
@@ -202,17 +205,21 @@ JAVA_ARGS = [
     "-XX:+ScavengeBeforeFullGC",
     "-XX:+PerfDisableSharedMem",
     "-XX:+UseLargePagesInMetaspace",
-    "-XX:MaxMetaspaceExpansion=64M",
-    "-XX:TargetSurvivorRatio=90",
-    "-XX:MaxGCPauseMillis=40",
     "-XX:+UseG1GC",
     "-XX:+UseStringDeduplication",
-    "-XX:InitiatingHeapOccupancyPercent=20",
-    "-XX:G1HeapRegionSize=32M",
-    "-XX:G1MixedGCLiveThresholdPercent=35",
+    "-XX:MaxMetaspaceExpansion=64M",
     "-XX:G1ReservePercent=20",
     "-XX:G1NewSizePercent=20",
-    "-XX:G1MaxNewSizePercent=60",
+    "-XX:G1HeapRegionSize=32M",
+    "-XX:MaxGCPauseMillis=40",
+    "-XX:InitiatingHeapOccupancyPercent=20",  # atm: 15; default: 45
+    "-XX:G1MixedGCCountTarget=4",  # NEW; default: 8
+    "-XX:MaxTenuringThreshold=1",  # NEW; default: 15
+    # "-XX:TargetSurvivorRatio=90",  # atm: 32; default: 50
+    # "-XX:G1MixedGCLiveThresholdPercent=35",  # atm: 90; default: 85
+    # "-XX:G1MaxNewSizePercent=60",  # atm: 40; default: 60
+    # "-XX:G1HeapWastePercent=5",  # NEW; default: 5
+    # "-XX:G1RSetUpdatingPauseTimePercent=5",  # NEW; default: 10
     "-Dfml.queryResult=confirm",
     "-Dfml.readTimeout=300",
 ]
