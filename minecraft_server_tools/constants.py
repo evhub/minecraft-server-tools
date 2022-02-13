@@ -66,11 +66,17 @@ MOD_ZIP_PATH = first_that_exists([
 ])
 
 if os.path.exists(HOSTED_SERVER_DIR):
-    MAX_RAM = "13G"
-elif WINDOWS:
-    MAX_RAM = "7G"
+    # server RAM
+    if WINDOWS:
+        MAX_RAM = "7G"
+    else:
+        MAX_RAM = "13G"
 else:
-    MAX_RAM = "6G"
+    # client RAM
+    if WINDOWS:
+        MAX_RAM = "12G"
+    else:
+        MAX_RAM = "7G"
 
 
 # Load secrets
@@ -191,7 +197,7 @@ MAX_DEBUG_RESULTS = 20
 
 JAVA_EXECUTABLE = "java"
 
-JAVA_ARGS = [
+JVM_ARGS = [
     # "-d64",  # OLD
     "-server",
     # "-XX:+AggressiveOpts",  # OLD
@@ -220,6 +226,9 @@ JAVA_ARGS = [
     # "-XX:G1MaxNewSizePercent=60",  # atm: 40; default: 60
     # "-XX:G1HeapWastePercent=5",  # NEW; default: 5
     # "-XX:G1RSetUpdatingPauseTimePercent=5",  # NEW; default: 10
+]
+
+JAVA_ARGS = JVM_ARGS + [
     "-Dfml.queryResult=confirm",
     "-Dfml.readTimeout=300",
 ]
@@ -249,6 +258,8 @@ elif sys.platform.startswith("darwin"):
     MINECRAFT_DIR = fixpath("~/Library/Application Support/minecraft")
 else:
     MINECRAFT_DIR = fixpath("~/.minecraft")
+
+PROFILES_FILE = os.path.join(MINECRAFT_DIR, "launcher_profiles.json")
 
 README_FILE = "README.txt"
 

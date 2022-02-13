@@ -2,6 +2,7 @@ import os
 import shutil
 import zipfile
 import tempfile
+import json
 from contextlib import contextmanager
 
 from tqdm import tqdm
@@ -20,12 +21,14 @@ from minecraft_server_tools.constants import (
     MODS_NAME,
     CLIENT_MODS_NAME,
     YES_STRS,
+    JVM_ARGS,
+    PROFILES_FILE,
 )
 
 MINECRAFT_MODS_DIR = os.path.join(MINECRAFT_DIR, MODS_NAME)
 
 
-def sync_client_mods(source_dir=SERVER_DIR):
+def sync_client_mods(source_dir):
     print("\nInstalling mods...")
     all_client_mods = sync_mods.get_location_table_for(os.path.join(source_dir, MODS_NAME))
     all_client_mods.update(sync_mods.get_location_table_for(os.path.join(source_dir, CLIENT_MODS_NAME)))
@@ -35,7 +38,7 @@ def sync_client_mods(source_dir=SERVER_DIR):
     sync_mods.set_mods_from_to(all_client_mods, current_client_mods, MINECRAFT_MODS_DIR)
 
 
-def install_extras(source_dir=SERVER_DIR, do_optional=True):
+def install_extras(source_dir, do_optional=True):
     print("\nInstalling other files/folders...")
     for install_dir in EXTRA_INSTALL_FOLDERS:
         from_dir = os.path.join(source_dir, install_dir)
@@ -56,7 +59,7 @@ def install_extras(source_dir=SERVER_DIR, do_optional=True):
             print(f"\tskipped: {install_file}")
 
 
-def ensure_forge_client(source_dir=SERVER_DIR):
+def ensure_forge_client(source_dir):
     if not os.path.exists(os.path.join(MINECRAFT_DIR, FORGE_INSTALLER_JAR)):
         print("\nOpening forge installer; select 'Install client' and press 'Ok'.")
         launch_server.run_java(["-jar", os.path.join(source_dir, FORGE_INSTALLER_JAR)])
@@ -80,6 +83,16 @@ def zip_mods():
             zf.write(install_path, os.path.relpath(install_path, MINECRAFT_DIR))
 
 
+def set_jvm_args():
+    with open(PROFILES_FILE, "r+") as profiles_file:
+        top_level_json = json.load(profiles_file)
+        top_level_json["profiles"]["forge"]["javaArgs"] = " ".join(JVM_ARGS)
+
+        profiles_file.seek(0)
+        profiles_file.truncate()
+        json.dump(top_level_json, profiles_file, indent=2)
+
+
 def open_readme():
     installed_readme = os.path.join(MINECRAFT_DIR, README_FILE)
     print(f"\nOpening {installed_readme}...")
@@ -97,24 +110,22 @@ def unzipped_mods():
         yield temp_dir
 
 
-def install_from_server():
-    sync_mods.main()
-
-    launch_server.clean_forge_jars(MINECRAFT_DIR)
-
-    ensure_forge_client()
-    sync_client_mods()
-    install_extras(do_optional=True)
-    zip_mods()
-
-
 def install_from_dir(source_dir, do_optional=False):
     launch_server.clean_forge_jars(MINECRAFT_DIR)
 
     ensure_forge_client(source_dir)
     sync_client_mods(source_dir)
     install_extras(source_dir, do_optional)
-    open_readme()
+
+    set_jvm_args()
+
+
+def install_from_server():
+    sync_mods.main()
+
+    install_from_dir(SERVER_DIR, do_optional=True)
+
+    zip_mods()
 
 
 def install_from_zip():

@@ -68,6 +68,7 @@ def set_mods_from_to(target_mod_location_table, current_mod_location_table, set_
         if mod not in current_mod_location_table:
             new_path = os.path.join(set_mods_dir, mod)
             print("Adding {mod} from {src}...".format(mod=display_mod_path(new_path), src=display_mod_path(tar_path)))
+            os.makedirs(os.path.dirname(new_path), exist_ok=True)
             shutil.copy(tar_path, new_path)
 
 
