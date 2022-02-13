@@ -14,24 +14,28 @@ from minecraft_server_tools.constants import (
     SERVER_DIR,
     FORGE_JAR,
     FORGE_INSTALLER_JAR,
+    JVM_ARGS_FILE,
+    FORGE_LAUNCH_CMD,
 )
 
 FORGE_JAR_PATH = os.path.join(SERVER_DIR, FORGE_JAR)
 FORGE_INSTALLER_JAR_PATH = os.path.join(SERVER_DIR, FORGE_INSTALLER_JAR)
 
 
-def run_cmd(cmd, check=True, shell=None):
-    if shell is None:
-        shell = WINDOWS
+def run_cmd(cmd, check=True, shell=False):
     print("> " + " ".join(str(x) for x in cmd))
     return subprocess.run(cmd, check=check, shell=shell)
 
 
-def run_java(cmd):
+def run_high_priority(cmd, name="Minecraft Server"):
     if WINDOWS:
-        return run_cmd(["START", "/B", "/I", "/WAIT", "/HIGH", JAVA_EXECUTABLE] + cmd)
+        return run_cmd(["START", name, "/B", "/I", "/WAIT", "/HIGH"] + cmd, shell=True)
     else:
-        return run_cmd([JAVA_EXECUTABLE] + cmd)
+        return run_cmd(cmd)
+
+
+def run_java(cmd):
+    return run_high_priority([JAVA_EXECUTABLE] + cmd)
 
 
 def install_forge_server():
@@ -53,10 +57,23 @@ def ensure_forge_server():
         install_forge_server()
 
 
+def get_jvm_args():
+    return ["-Xmx" + MAX_RAM, "-Xms" + MAX_RAM] + JAVA_ARGS
+
+
+def write_jvm_args():
+    with open(JVM_ARGS_FILE, "w") as jvm_args_file:
+        jvm_args_file.write("\n".join(get_jvm_args()) + "\n")
+
+
 def start_server():
     clean_forge_jars()
     ensure_forge_server()
-    run_java(["-Xmx" + MAX_RAM, "-Xms" + MAX_RAM] + JAVA_ARGS + ["-jar", FORGE_JAR_PATH] + FORGE_ARGS)
+    write_jvm_args()
+    if os.path.exists(FORGE_JAR_PATH):
+        run_java(get_jvm_args() + [FORGE_JAR_PATH] + FORGE_ARGS)
+    else:
+        run_high_priority(FORGE_LAUNCH_CMD + FORGE_ARGS)
 
 
 if __name__ == "__main__":

@@ -92,6 +92,8 @@ def main():
     extra_client_mods = get_location_table_for(EXTRA_CLIENT_MODS_DIR)
     remove_mods_in_from(all_base_mods, extra_client_mods)
 
+    remove_mods_in_from(extra_server_mods, extra_client_mods)
+
 
     print("\nFixing server mods...")
     all_server_mods = get_location_table_for(BASE_MODS_DIR)

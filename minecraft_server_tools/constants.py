@@ -32,9 +32,6 @@ def first_that_exists(path_list):
             return path
     return path_list[0]
 
-def exists(path):
-    return os.path.exists(fixpath(path))
-
 
 # Commonly changed constants
 
@@ -51,9 +48,11 @@ EXTRA_INSTALL_FOLDERS = [
     "scripts",
     "global_data_packs",
     "global_resource_packs",
+    "paintings",
+    "shrines-data",
 ]
 
-HOSTED_SERVER_DIR = "~/1_18_mod_server"
+HOSTED_SERVER_DIR = fixpath("~/1_18_mod_server")
 
 SERVER_DIR = first_that_exists([
     HOSTED_SERVER_DIR,
@@ -66,7 +65,7 @@ MOD_ZIP_PATH = first_that_exists([
     "~/OneDrive/Minecraft Mods/Minecraft Mods.zip",
 ])
 
-if exists(HOSTED_SERVER_DIR):
+if os.path.exists(HOSTED_SERVER_DIR):
     MAX_RAM = "13G"
 elif WINDOWS:
     MAX_RAM = "7G"
@@ -193,20 +192,21 @@ MAX_DEBUG_RESULTS = 20
 JAVA_EXECUTABLE = "java"
 
 JAVA_ARGS = [
-    "-d64",
+    # "-d64",  # OLD
     "-server",
-    "-XX:+AggressiveOpts",
+    # "-XX:+AggressiveOpts",  # OLD
     "-XX:+UnlockExperimentalVMOptions",
     "-XX:+OptimizeStringConcat",
     "-XX:+AlwaysPreTouch",
-    "-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses",
+    # "-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses",  # OLD
+    "-XX:+DisableExplicitGC",  # NEW
     "-XX:+ParallelRefProcEnabled",
     "-XX:+UseCompressedOops",
     "-XX:+ScavengeBeforeFullGC",
     "-XX:+PerfDisableSharedMem",
-    "-XX:+UseLargePagesInMetaspace",
-    "-XX:+UseG1GC",
     "-XX:+UseStringDeduplication",
+    # "-XX:+UseLargePagesInMetaspace",  # OLD
+    "-XX:+UseG1GC",
     "-XX:MaxMetaspaceExpansion=64M",
     "-XX:G1ReservePercent=20",
     "-XX:G1NewSizePercent=20",
@@ -226,10 +226,17 @@ JAVA_ARGS = [
 
 FORGE_ARGS = ["nogui"]
 
+JVM_ARGS_FILE = os.path.join(SERVER_DIR, "user_jvm_args.txt")
+
+if WINDOWS:
+    FORGE_LAUNCH_CMD = [os.path.join(SERVER_DIR, "run.bat")]
+else:
+    FORGE_LAUNCH_CMD = ["sh", os.path.join(SERVER_DIR, "run.sh")]
+
 FORGE_INSTALLER_URL = format_vers("https://files.minecraftforge.net/maven/net/minecraftforge/forge/{mc_version}-{forge_version}/forge-{mc_version}-{forge_version}-installer.jar")
 
-FORGE_JAR = format_vers("forge-{mc_version}-{forge_version}.jar")
 FORGE_INSTALLER_JAR = format_vers("forge-{mc_version}-{forge_version}-installer.jar")
+FORGE_JAR = format_vers("forge-{mc_version}-{forge_version}.jar")
 
 OLD_JARS_REGEX = full_regex(format_vers("(forge-(?!{mc_version}-{forge_version})[0-9.]+-[0-9.]+(-installer)?|minecraft_server\.(?!{mc_version})[0-9.]+)\.jar"))
 
