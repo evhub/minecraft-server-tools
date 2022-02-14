@@ -2,6 +2,7 @@ import os
 import re
 import sys
 
+import psutil
 from jsoncomment import JsonComment
 
 
@@ -53,10 +54,8 @@ EXTRA_INSTALL_FOLDERS = [
     "packmenu",
 ]
 
-HOSTED_SERVER_DIR = fixpath("~/1_18_mod_server")
-
 SERVER_DIR = first_that_exists([
-    HOSTED_SERVER_DIR,
+    "~/1_18_mod_server",
     "~/OneDrive/Minecraft/1.18 Mod Server",
     "/mnt/c/Users/evanj/OneDrive/Minecraft/1.18 Mod Server",
 ])
@@ -67,14 +66,28 @@ MOD_ZIP_PATH = first_that_exists([
 ])
 
 if WINDOWS:
+    CLIENT_RAM = "12G"
+else:
+    CLIENT_RAM = "11G"
+
+if WINDOWS:
     SERVER_RAM = "7G"
 else:
     SERVER_RAM = "13G"
 
-if WINDOWS:
-    CLIENT_RAM = "12G"
-else:
-    CLIENT_RAM = "7G"
+
+# Fix RAMs
+
+GB = 1024**3
+max_ram = psutil.virtual_memory().total // GB
+
+if int(CLIENT_RAM[:-1]) > max_ram:
+    print(f"\nReducing client RAM from {CLIENT_RAM}G to {max_ram}G.")
+    CLIENT_RAM = str(max_ram) + "G"
+
+if int(SERVER_RAM[:-1]) > max_ram:
+    print(f"\nReducing server RAM from {SERVER_RAM}G to {max_ram}G.")
+    SERVER_RAM = str(max_ram) + "G"
 
 
 # Load secrets
@@ -210,16 +223,16 @@ JVM_ARGS = [
     "-XX:+PerfDisableSharedMem",
     "-XX:+UseStringDeduplication",
     # "-XX:+UseLargePagesInMetaspace",  # OLD
-    "-XX:+UseG1GC",
     "-XX:MaxMetaspaceExpansion=64M",
+    "-XX:MaxGCPauseMillis=40",  # atm: 200; default: 200
+    "-XX:InitiatingHeapOccupancyPercent=20",  # atm: 15; default: 45
+    "-XX:MaxTenuringThreshold=1",  # NEW; default: 15
+    # "-XX:TargetSurvivorRatio=90",  # atm: 32; default: 50
+    "-XX:+UseG1GC",
     "-XX:G1ReservePercent=20",
     "-XX:G1NewSizePercent=20",
     "-XX:G1HeapRegionSize=32M",
-    "-XX:MaxGCPauseMillis=40",
-    "-XX:InitiatingHeapOccupancyPercent=20",  # atm: 15; default: 45
     "-XX:G1MixedGCCountTarget=4",  # NEW; default: 8
-    "-XX:MaxTenuringThreshold=1",  # NEW; default: 15
-    # "-XX:TargetSurvivorRatio=90",  # atm: 32; default: 50
     # "-XX:G1MixedGCLiveThresholdPercent=35",  # atm: 90; default: 85
     # "-XX:G1MaxNewSizePercent=60",  # atm: 40; default: 60
     # "-XX:G1HeapWastePercent=5",  # NEW; default: 5

@@ -3,7 +3,7 @@ import setuptools
 
 setuptools.setup(
     name="minecraft-server-tools",
-    version="0.0.1",
+    version="0.0.2",
     description="Utilities for easily working with and managing minecraft forge servers.",
     url="https://github.com/evhub/minecraft-server-tools",
     author="Evan Hubinger",
@@ -13,5 +13,6 @@ setuptools.setup(
         "requests",
         "jsoncomment",
         "tqdm",
+        "psutil",
     ],
 )
