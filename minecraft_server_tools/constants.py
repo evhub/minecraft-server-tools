@@ -52,6 +52,7 @@ EXTRA_INSTALL_FOLDERS = [
     "paintings",
     "shrines-data",
     "packmenu",
+    "global_packs",
 ]
 
 SERVER_DIR = first_that_exists([
@@ -106,14 +107,14 @@ except FileNotFoundError:
 # Mod sync constants
 
 MODS_NAME = "mods"
-BASE_MODS_NAME = "mods-base"
-EXTRA_MODS_NAME = "mods-main"
-REMOVED_MODS_NAME = "mods-removed"
+BASE_MODS_NAME = MODS_NAME + "-base"
+EXTRA_MODS_NAME = MODS_NAME + "-main"
+REMOVED_MODS_NAME = MODS_NAME + "-removed"
 
 CLIENT_MODS_NAME = "client_mods"
-BASE_CLIENT_MODS_NAME = "client_mods-base"
-EXTRA_CLIENT_MODS_NAME = "client_mods-main"
-REMOVED_CLIENT_MODS_NAME = "client_mods-removed"
+BASE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-base"
+EXTRA_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-main"
+REMOVED_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-removed"
 
 
 # Auto updater Constants
@@ -288,3 +289,9 @@ YES_STRS = [
     "y",
     "yes",
 ]
+
+
+# Searchable mods constants
+
+SEARCHABLE_MODS_NAME = MODS_NAME + "-searchable"
+SEARCHABLE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-searchable"
