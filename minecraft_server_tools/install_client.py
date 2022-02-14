@@ -85,13 +85,15 @@ def zip_mods():
 
 def set_jvm_args():
     print(f"\nSetting JVM arguments...")
+    java_args = " ".join(launch_server.get_java_args(CLIENT_RAM, add_fml_args=False))
     with open(PROFILES_FILE, "r+") as profiles_file:
         top_level_json = json.load(profiles_file)
-        top_level_json["profiles"]["forge"]["javaArgs"] = " ".join(launch_server.get_java_args(CLIENT_RAM))
+        top_level_json["profiles"]["forge"]["javaArgs"] = java_args
 
         profiles_file.seek(0)
         profiles_file.truncate()
         json.dump(top_level_json, profiles_file, indent=2)
+    print(f"\tto: {java_args}")
 
 
 def open_readme():

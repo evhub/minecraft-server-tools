@@ -57,8 +57,8 @@ def ensure_forge_server():
         install_forge_server()
 
 
-def get_java_args(ram=SERVER_RAM):
-    return ["-Xmx" + ram, "-Xms" + ram] + JVM_ARGS + FML_ARGS
+def get_java_args(ram=SERVER_RAM, add_fml_args=True):
+    return ["-Xmx" + ram, "-Xms" + ram] + JVM_ARGS + (FML_ARGS if add_fml_args else [])
 
 
 def write_jvm_args():
