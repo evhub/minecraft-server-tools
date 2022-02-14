@@ -21,8 +21,8 @@ from minecraft_server_tools.constants import (
     MODS_NAME,
     CLIENT_MODS_NAME,
     YES_STRS,
-    JVM_ARGS,
     PROFILES_FILE,
+    CLIENT_RAM,
 )
 
 MINECRAFT_MODS_DIR = os.path.join(MINECRAFT_DIR, MODS_NAME)
@@ -84,9 +84,10 @@ def zip_mods():
 
 
 def set_jvm_args():
+    print(f"\nSetting JVM arguments...")
     with open(PROFILES_FILE, "r+") as profiles_file:
         top_level_json = json.load(profiles_file)
-        top_level_json["profiles"]["forge"]["javaArgs"] = " ".join(JVM_ARGS)
+        top_level_json["profiles"]["forge"]["javaArgs"] = " ".join(launch_server.get_java_args(CLIENT_RAM))
 
         profiles_file.seek(0)
         profiles_file.truncate()

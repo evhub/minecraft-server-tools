@@ -75,9 +75,13 @@ def set_mods_from_to(target_mod_location_table, current_mod_location_table, set_
 def main():
     ensure_dirs()
 
-    print("\nFixing base client only mods...")
-    base_server_mods = get_location_table_for(BASE_MODS_DIR)
+    print("\nFixing client only mods...")
+    extra_server_mods = get_location_table_for(EXTRA_MODS_DIR)
+    extra_client_mods = get_location_table_for(EXTRA_CLIENT_MODS_DIR)
 
+    remove_mods_in_from(extra_client_mods, extra_server_mods)
+
+    base_server_mods = get_location_table_for(BASE_MODS_DIR)
     base_client_only_mods = get_location_table_for(BASE_CLIENT_MODS_DIR)
 
     remove_mods_in_from(base_server_mods, base_client_only_mods)
@@ -87,16 +91,13 @@ def main():
     all_base_mods = get_location_table_for(BASE_MODS_DIR)
     all_base_mods.update(get_location_table_for(BASE_CLIENT_MODS_DIR))
 
-    extra_server_mods = get_location_table_for(EXTRA_MODS_DIR)
     remove_mods_in_from(all_base_mods, extra_server_mods)
-
-    extra_client_mods = get_location_table_for(EXTRA_CLIENT_MODS_DIR)
     remove_mods_in_from(all_base_mods, extra_client_mods)
 
     remove_mods_in_from(extra_server_mods, extra_client_mods)
 
 
-    print("\nFixing server mods...")
+    print("\nMerging server mods...")
     all_server_mods = get_location_table_for(BASE_MODS_DIR)
     all_server_mods.update(get_location_table_for(EXTRA_MODS_DIR))
 
@@ -105,7 +106,7 @@ def main():
     set_mods_from_to(all_server_mods, current_server_mods, MODS_DIR)
 
 
-    print("\nFixing client only mods...")
+    print("\nMerging client only mods...")
     all_client_only_mods = get_location_table_for(BASE_CLIENT_MODS_DIR)
     all_client_only_mods.update(get_location_table_for(EXTRA_CLIENT_MODS_DIR))
 

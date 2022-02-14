@@ -5,10 +5,9 @@ from urllib.request import urlretrieve
 from minecraft_server_tools.constants import (
     WINDOWS,
     JAVA_EXECUTABLE,
-    MAX_RAM,
-    JAVA_ARGS,
+    SERVER_RAM,
+    JVM_ARGS,
     FORGE_ARGS,
-    FORGE_VERSION,
     FORGE_INSTALLER_URL,
     OLD_JARS_REGEX,
     SERVER_DIR,
@@ -16,6 +15,7 @@ from minecraft_server_tools.constants import (
     FORGE_INSTALLER_JAR,
     JVM_ARGS_FILE,
     FORGE_LAUNCH_CMD,
+    FML_ARGS,
 )
 
 FORGE_JAR_PATH = os.path.join(SERVER_DIR, FORGE_JAR)
@@ -57,13 +57,13 @@ def ensure_forge_server():
         install_forge_server()
 
 
-def get_jvm_args():
-    return ["-Xmx" + MAX_RAM, "-Xms" + MAX_RAM] + JAVA_ARGS
+def get_java_args(ram=SERVER_RAM):
+    return ["-Xmx" + ram, "-Xms" + ram] + JVM_ARGS + FML_ARGS
 
 
 def write_jvm_args():
     with open(JVM_ARGS_FILE, "w") as jvm_args_file:
-        jvm_args_file.write("\n".join(get_jvm_args()) + "\n")
+        jvm_args_file.write("\n".join(get_java_args()) + "\n")
 
 
 def start_server():
@@ -71,7 +71,7 @@ def start_server():
     ensure_forge_server()
     write_jvm_args()
     if os.path.exists(FORGE_JAR_PATH):
-        run_java(get_jvm_args() + [FORGE_JAR_PATH] + FORGE_ARGS)
+        run_java(get_java_args() + [FORGE_JAR_PATH] + FORGE_ARGS)
     else:
         run_high_priority(FORGE_LAUNCH_CMD + FORGE_ARGS)
 

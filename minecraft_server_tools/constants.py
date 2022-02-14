@@ -50,6 +50,7 @@ EXTRA_INSTALL_FOLDERS = [
     "global_resource_packs",
     "paintings",
     "shrines-data",
+    "packmenu",
 ]
 
 HOSTED_SERVER_DIR = fixpath("~/1_18_mod_server")
@@ -65,18 +66,15 @@ MOD_ZIP_PATH = first_that_exists([
     "~/OneDrive/Minecraft Mods/Minecraft Mods.zip",
 ])
 
-if os.path.exists(HOSTED_SERVER_DIR):
-    # server RAM
-    if WINDOWS:
-        MAX_RAM = "7G"
-    else:
-        MAX_RAM = "13G"
+if WINDOWS:
+    SERVER_RAM = "7G"
 else:
-    # client RAM
-    if WINDOWS:
-        MAX_RAM = "12G"
-    else:
-        MAX_RAM = "7G"
+    SERVER_RAM = "13G"
+
+if WINDOWS:
+    CLIENT_RAM = "12G"
+else:
+    CLIENT_RAM = "7G"
 
 
 # Load secrets
@@ -228,7 +226,7 @@ JVM_ARGS = [
     # "-XX:G1RSetUpdatingPauseTimePercent=5",  # NEW; default: 10
 ]
 
-JAVA_ARGS = JVM_ARGS + [
+FML_ARGS = [
     "-Dfml.queryResult=confirm",
     "-Dfml.readTimeout=300",
 ]

@@ -7,6 +7,6 @@ A bunch of utilities for easily working with and managing minecraft servers, spe
 If I directed you here to install Minecraft mods, you'll need to follow the following steps:
 
 1. Install [OneDrive](https://www.microsoft.com/en-us/microsoft-365/onedrive/download) and accept my invitation to access 'Minecraft Mods'.
-2. Install [Python 3.9](https://www.python.org/downloads/) and [Git](https://git-scm.com/downloads).
+2. Install [Python 3.9](https://www.python.org/downloads), [Git](https://git-scm.com/downloads), and [Java 17](https://www.oracle.com/java/technologies/downloads/#jdk17-windows).
 3. Open a command prompt and run `git clone https://github.com/evhub/minecraft-server-tools.git`.
 4. Run `install-client.bat` on Windows or `install-client.sh` otherwise (you may need to run `chmod +x ./install-client.sh` first).
