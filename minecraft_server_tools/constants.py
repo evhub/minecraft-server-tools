@@ -72,7 +72,7 @@ else:
     CLIENT_RAM = "11G"
 
 if WINDOWS:
-    SERVER_RAM = "7G"
+    SERVER_RAM = "14G"
 else:
     SERVER_RAM = "13G"
 
@@ -209,7 +209,10 @@ MAX_DEBUG_RESULTS = 20
 
 JAVA_EXECUTABLE = "java"
 
-JVM_ARGS = [
+CLIENT_GC = "G1"
+SERVER_GC = "Shenandoah"
+
+BASE_JVM_ARGS = [
     # "-d64",  # OLD
     "-server",
     # "-XX:+AggressiveOpts",  # OLD
@@ -223,26 +226,44 @@ JVM_ARGS = [
     "-XX:+ScavengeBeforeFullGC",
     "-XX:+PerfDisableSharedMem",
     "-XX:+UseStringDeduplication",
+    "-XX:+OmitStackTraceInFastThrow",  # NEW
     # "-XX:+UseLargePagesInMetaspace",  # OLD
-    "-XX:MaxMetaspaceExpansion=64M",
+    # "-XX:+UseLargePages",  # NEW
+    "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
     "-XX:MaxGCPauseMillis=40",  # atm: 200; default: 200
     "-XX:InitiatingHeapOccupancyPercent=20",  # atm: 15; default: 45
-    "-XX:MaxTenuringThreshold=1",  # NEW; default: 15
+    "-XX:MaxTenuringThreshold=1",  # atm: 1; default: 15
     # "-XX:TargetSurvivorRatio=90",  # atm: 32; default: 50
-    "-XX:+UseG1GC",
-    "-XX:G1ReservePercent=20",
-    "-XX:G1NewSizePercent=20",
-    "-XX:G1HeapRegionSize=32M",
-    "-XX:G1MixedGCCountTarget=4",  # NEW; default: 8
-    # "-XX:G1MixedGCLiveThresholdPercent=35",  # atm: 90; default: 85
-    # "-XX:G1MaxNewSizePercent=60",  # atm: 40; default: 60
-    # "-XX:G1HeapWastePercent=5",  # NEW; default: 5
-    # "-XX:G1RSetUpdatingPauseTimePercent=5",  # NEW; default: 10
 ]
+
+def get_jvm_args_for_gc(gc):
+    if gc == "G1":
+        return [
+            "-XX:+UseG1GC",
+            "-XX:G1ReservePercent=20",
+            "-XX:G1NewSizePercent=20",
+            "-XX:G1HeapRegionSize=32M",
+            "-XX:G1MixedGCCountTarget=4",  # NEW; default: 8
+            # "-XX:G1MixedGCLiveThresholdPercent=35",  # atm: 90; default: 85
+            # "-XX:G1MaxNewSizePercent=60",  # atm: 40; default: 60
+            # "-XX:G1HeapWastePercent=5",  # NEW; default: 5
+            # "-XX:G1RSetUpdatingPauseTimePercent=5",  # NEW; default: 10
+        ]
+    elif gc == "Shenandoah":
+        return [
+            "-XX:+UseShenandoahGC",
+        ]
+    elif gc == "Z":
+        return [
+            "-XX:+UseZGC",
+        ]
+    else:
+        raise ValueError(f"unknown GC {gc!r}")
 
 FML_ARGS = [
     "-Dfml.queryResult=confirm",
     "-Dfml.readTimeout=300",
+    "-Dfml.ignoreInvalidMinecraftCertificates=true",
 ]
 
 FORGE_ARGS = ["nogui"]

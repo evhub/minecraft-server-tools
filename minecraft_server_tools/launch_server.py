@@ -6,7 +6,7 @@ from minecraft_server_tools.constants import (
     WINDOWS,
     JAVA_EXECUTABLE,
     SERVER_RAM,
-    JVM_ARGS,
+    BASE_JVM_ARGS,
     FORGE_ARGS,
     FORGE_INSTALLER_URL,
     OLD_JARS_REGEX,
@@ -16,6 +16,10 @@ from minecraft_server_tools.constants import (
     JVM_ARGS_FILE,
     FORGE_LAUNCH_CMD,
     FML_ARGS,
+    CLIENT_RAM,
+    SERVER_GC,
+    CLIENT_GC,
+    get_jvm_args_for_gc,
 )
 
 FORGE_JAR_PATH = os.path.join(SERVER_DIR, FORGE_JAR)
@@ -57,8 +61,21 @@ def ensure_forge_server():
         install_forge_server()
 
 
-def get_java_args(ram=SERVER_RAM, add_fml_args=True):
-    return ["-Xmx" + ram, "-Xms" + ram] + JVM_ARGS + (FML_ARGS if add_fml_args else [])
+def get_java_args(client=False):
+    if client:
+        ram = CLIENT_RAM
+        gc = CLIENT_GC
+    else:
+        ram = SERVER_RAM
+        gc = SERVER_GC
+    args = (
+        ["-Xmx" + ram, "-Xms" + ram]
+        + BASE_JVM_ARGS
+        + get_jvm_args_for_gc(gc)
+    )
+    if not client:
+        args += FML_ARGS
+    return args
 
 
 def write_jvm_args():
