@@ -3,7 +3,12 @@ import re
 import sys
 
 import psutil
-from jsoncomment import JsonComment
+try:
+    from jsoncomment import JsonComment
+except ImportError:
+    print("\nWARNING: Could not import jsoncomment.\n")
+else:
+    JsonComment = None
 
 
 # Utilities
@@ -95,12 +100,15 @@ if int(SERVER_RAM[:-1]) > max_ram:
 
 SECRETS_FILE = os.path.join(SERVER_DIR, "secrets.json")
 
-COMMENT_JSON = JsonComment()
+if JsonComment is not None:
+    COMMENT_JSON = JsonComment()
 
-try:
-    with open(SECRETS_FILE, "r") as fp:
-        SECRETS = COMMENT_JSON.load(fp)
-except FileNotFoundError:
+    try:
+        with open(SECRETS_FILE, "r") as fp:
+            SECRETS = COMMENT_JSON.load(fp)
+    except FileNotFoundError:
+        SECRETS = {}
+else:
     SECRETS = {}
 
 
