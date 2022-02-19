@@ -7,7 +7,6 @@ try:
     from jsoncomment import JsonComment
 except ImportError:
     print("\nWARNING: Could not import jsoncomment.\n")
-else:
     JsonComment = None
 
 
