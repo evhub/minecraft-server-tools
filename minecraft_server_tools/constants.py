@@ -6,7 +6,7 @@ import psutil
 try:
     from jsoncomment import JsonComment
 except ImportError:
-    print("\nWARNING: Could not import jsoncomment.\n")
+    print("\nWARNING: Could not import jsoncomment.")
     JsonComment = None
 
 
@@ -71,9 +71,9 @@ MOD_ZIP_PATH = first_that_exists([
 ])
 
 if WINDOWS:
-    CLIENT_RAM = "12G"
+    CLIENT_RAM = "16G"
 else:
-    CLIENT_RAM = "11G"
+    CLIENT_RAM = "14G"
 
 if WINDOWS:
     SERVER_RAM = "14G"
@@ -84,15 +84,16 @@ else:
 # Fix RAMs
 
 GB = 1024**3
-max_ram = psutil.virtual_memory().total // GB
+max_client_ram = psutil.virtual_memory().total // GB - 1
+max_server_ram = psutil.virtual_memory().available // GB
 
-if int(CLIENT_RAM[:-1]) > max_ram:
-    print(f"\nReducing client RAM from {CLIENT_RAM}G to {max_ram}G.")
-    CLIENT_RAM = str(max_ram) + "G"
+if int(CLIENT_RAM[:-1]) > max_client_ram:
+    print(f"\nReducing client RAM from {CLIENT_RAM}G to {max_client_ram}G.")
+    CLIENT_RAM = str(max_client_ram) + "G"
 
-if int(SERVER_RAM[:-1]) > max_ram:
-    print(f"\nReducing server RAM from {SERVER_RAM}G to {max_ram}G.")
-    SERVER_RAM = str(max_ram) + "G"
+if int(SERVER_RAM[:-1]) > max_server_ram:
+    print(f"\nReducing server RAM from {SERVER_RAM}G to {max_server_ram}G.")
+    SERVER_RAM = str(max_server_ram) + "G"
 
 
 # Load secrets

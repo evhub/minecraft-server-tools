@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import subprocess
 import traceback
@@ -371,20 +372,24 @@ def move_old_files(updated_mod_names_to_files, mod_names_to_jar_names, mods_dir,
         os.rename(current_jar_path, new_jar_path)
 
 
-def update_mods(mods_dir, updated_mods_dir, old_mods_dir, interact=None):
+def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interact=None):
     try:
         mod_names_to_jar_names = get_mod_names_to_jar_names(mods_dir)
         mod_names_to_curseforge_names, nulled_mods = get_curseforge_names_for(mod_names_to_jar_names)
-        mod_names_to_curseforge_ids, missing_ids_mods = get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names)
-        mod_names_to_latest_versions, missing_files_mods = get_mod_names_to_latest_versions(mod_names_to_curseforge_ids)
-        updated_mod_names_to_files = get_updated_mod_names_to_files(mod_names_to_jar_names, mod_names_to_latest_versions)
-        if updated_mod_names_to_files:
-            if not os.path.exists(updated_mods_dir):
-                os.mkdir(updated_mods_dir)
-            if not os.path.exists(old_mods_dir):
-                os.mkdir(old_mods_dir)
-            update_files(updated_mod_names_to_files, updated_mods_dir)
-            move_old_files(updated_mod_names_to_files, mod_names_to_jar_names, mods_dir, old_mods_dir)
+        if not dry_run:
+            mod_names_to_curseforge_ids, missing_ids_mods = get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names)
+            mod_names_to_latest_versions, missing_files_mods = get_mod_names_to_latest_versions(mod_names_to_curseforge_ids)
+            updated_mod_names_to_files = get_updated_mod_names_to_files(mod_names_to_jar_names, mod_names_to_latest_versions)
+            if updated_mod_names_to_files:
+                if not os.path.exists(updated_mods_dir):
+                    os.mkdir(updated_mods_dir)
+                if not os.path.exists(old_mods_dir):
+                    os.mkdir(old_mods_dir)
+                update_files(updated_mod_names_to_files, updated_mods_dir)
+                move_old_files(updated_mod_names_to_files, mod_names_to_jar_names, mods_dir, old_mods_dir)
+        else:
+            missing_ids_mods = []
+            missing_files_mods = []
         return nulled_mods + missing_ids_mods + missing_files_mods
     except Exception:
         if interact is not False:
@@ -394,17 +399,16 @@ def update_mods(mods_dir, updated_mods_dir, old_mods_dir, interact=None):
             embed()
         raise
     if interact:
-
         from coconut import embed
         embed()
 
 
-def update_all(mods_dirs, interact=None):
+def update_all(mods_dirs, dry_run=False, interact=None):
     couldnt_update = []
     for mods_dir in mods_dirs:
         updated_mods_dir = mods_dir + UPDATED_MODS_DIR_SUFFIX
         old_mods_dir = mods_dir + OLD_MODS_DIR_SUFFIX
-        couldnt_update += update_mods(mods_dir, updated_mods_dir, old_mods_dir, interact=interact)
+        couldnt_update += update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=dry_run, interact=interact)
     for mod_name in couldnt_update:
         print(f"Unable to automatically update mod: {mod_name}")
 
@@ -412,10 +416,13 @@ def update_all(mods_dirs, interact=None):
 def main():
     sync_mods.main()
 
-    update_all([
-        EXTRA_CLIENT_MODS_DIR,
-        EXTRA_MODS_DIR,
-    ])
+    update_all(
+        [
+            EXTRA_CLIENT_MODS_DIR,
+            EXTRA_MODS_DIR,
+        ],
+        dry_run="--dry-run" in sys.argv,
+    )
 
     # from coconut import embed
     # embed()

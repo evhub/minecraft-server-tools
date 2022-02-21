@@ -472,5 +472,21 @@
     "mcw fences": "Macaw's Fences and Walls",
     "ResourcefulBees": "Resourceful Bees",
     "silent gear": "Silent Gear",
-    "silent lib": "Silent Lib"
+    "silent lib": "Silent Lib",
+    "3dSkinLayers": "Skin Layers 3D (Fabric/Forge)",
+    "AmbientSounds": "AmbientSounds 5",
+    "BetterF3": "BetterF3",
+    "cherishedworlds": "Cherished Worlds (Forge)",
+    "clienttweaks": "Client Tweaks",
+    "DarkModeEverywhere": "Dark Mode Everywhere",
+    "defaultoptions": "Default Options",
+    "DeleteWorldsToTrash": "Delete Worlds To Trash [Forge]",
+    "entityculling": "Entity Culling Fabric/Forge",
+    "EquipmentCompare": "Equipment Compare",
+    "extremesoundmuffler": "Extreme sound muffler (Forge)",
+    "Fallingleaves": "Falling Leaves (Forge)",
+    "farsight": "Farsight [Forge]",
+    "Highlighter": "Item Highlighter",
+    "konkrete": "Konkrete [Forge]",
+    "LegendaryTooltips": "Legendary Tooltips"
 }

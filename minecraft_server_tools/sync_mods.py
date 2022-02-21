@@ -91,6 +91,9 @@ def main():
     all_base_mods = get_location_table_for(BASE_MODS_DIR)
     all_base_mods.update(get_location_table_for(BASE_CLIENT_MODS_DIR))
 
+    extra_server_mods = get_location_table_for(EXTRA_MODS_DIR)
+    extra_client_mods = get_location_table_for(EXTRA_CLIENT_MODS_DIR)
+
     remove_mods_in_from(all_base_mods, extra_server_mods)
     remove_mods_in_from(all_base_mods, extra_client_mods)
 
