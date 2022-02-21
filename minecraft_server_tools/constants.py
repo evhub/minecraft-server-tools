@@ -181,6 +181,7 @@ NAME_ELEMS_TO_SPACE = [
     ".9",
     "   ",
     "  ",
+    "[ ]",
 ]
 
 CURSEFORGE_NAME_ELEMS_TO_STRIP = [
