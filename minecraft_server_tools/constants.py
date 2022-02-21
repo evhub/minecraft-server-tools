@@ -57,6 +57,11 @@ EXTRA_INSTALL_FOLDERS = [
     "shrines-data",
     "packmenu",
     "global_packs",
+    "patchouli_books",
+]
+
+EXTRA_INSTALL_FILES = [
+    "patchouli_data.json",
 ]
 
 SERVER_DIR = first_that_exists([
@@ -306,7 +311,7 @@ PROFILES_FILE = os.path.join(MINECRAFT_DIR, "launcher_profiles.json")
 
 README_FILE = "README.txt"
 
-EXTRA_INSTALL_FILES = [
+EXTRA_INSTALL_FILES += [
     README_FILE,
     FORGE_INSTALLER_JAR,
 ]

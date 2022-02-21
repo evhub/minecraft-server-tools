@@ -37,13 +37,15 @@ def sync_client_mods(source_dir):
     sync_mods.set_mods_from_to(all_client_mods, current_client_mods, MINECRAFT_MODS_DIR)
 
 
-def install_extras(source_dir, do_optional=True):
+def install_extras(source_dir, do_optional=True, clean=True):
     print("\nInstalling other files/folders...")
     for install_dir in EXTRA_INSTALL_FOLDERS:
         from_dir = os.path.join(source_dir, install_dir)
         to_dir = os.path.join(MINECRAFT_DIR, install_dir)
         if os.path.exists(from_dir):
             print(f"\t{install_dir}...")
+            if clean and os.path.exists(to_dir):
+                shutil.rmtree(to_dir)
             shutil.copytree(from_dir, to_dir, dirs_exist_ok=True)
         else:
             print(f"\tskipped: {install_dir}")
