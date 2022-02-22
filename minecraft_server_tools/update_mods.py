@@ -96,6 +96,8 @@ def get_curseforge_name(mod_name, jar_name):
             if "items" in search_json:
                 break
             print(f"Got no results for query {query!r}.")
+            if search_json["error"]["errors"][0]["reason"] == "rateLimitExceeded":
+                raise Exception("Google API rate limit exceeded; try waiting or switching API keys.")
             query = search_json["spelling"]["correctedQuery"]
         items = search_json["items"]
         curseforge_name = None
@@ -195,10 +197,14 @@ def run_curseforge_api_cmd(cmd):
     cmd = [str(x) for x in cmd]
     print("Executing curseforge api cmd: " + " ".join(cmd))
     api_result = subprocess.run(["node", CURSEFORGE_API_FILE] + cmd, capture_output=True).stdout.decode("utf-8")
+    if not api_result:
+        print("Got no output from curseforge api.")
+        return []
     try:
         return json.loads(api_result)
     except json.decoder.JSONDecodeError:
-        print("Could not parse curseforge api output:\n" + api_result)
+        print("Could not parse curseforge api output:")
+        print(api_result)
         raise
 
 
@@ -211,6 +217,13 @@ def get_matching_mod(results, curseforge_name, allow_inexact_name=True):
             if mod["name"].startswith(curseforge_name) or mod["name"].endswith(curseforge_name):
                 print(f"Found mod with different name {mod['name']!r} for mod {curseforge_name!r}.")
                 return mod
+
+
+def log_curseforge_results(results, verbose=False):
+    if verbose:
+        pprint(results[:MAX_DEBUG_RESULTS])
+    else:
+        pprint([m["name"] for m in results[:MAX_DEBUG_RESULTS]])
 
 
 def get_curseforge_mod(curseforge_name):
@@ -228,14 +241,15 @@ def get_curseforge_mod(curseforge_name):
     mod = get_matching_mod(versionless_results, curseforge_name)
     if mod is not None:
         return mod
-    print(f"Could not find mod {curseforge_name!r} in version-less results.")
+    print(f"Could not find mod {curseforge_name!r} in version-less results:")
+    log_curseforge_results(versionless_results)
 
-    big_results = run_curseforge_api_cmd(["bigsearch", query])
-    mod = get_matching_mod(big_results, curseforge_name)
-    if mod is not None:
-        return mod
-    print(f"Could not find mod {curseforge_name!r} in big results:")
-    pprint(big_results[:MAX_DEBUG_RESULTS])
+    # big_results = run_curseforge_api_cmd(["bigsearch", query])
+    # mod = get_matching_mod(big_results, curseforge_name)
+    # if mod is not None:
+    #     return mod
+    # print(f"Could not find mod {curseforge_name!r} in big results:")
+    # log_curseforge_results(big_results)
 
 
 def get_curseforge_id(curseforge_name):
@@ -293,13 +307,21 @@ def best_release(curseforge_files):
     return sort_releases(curseforge_files)[0]
 
 
+def correct_modloader(versions):
+    if MODLOADER in versions:
+        return True
+    if any(wrong_modloader in versions for wrong_modloader in WRONG_MODLOADERS):
+        return False
+    return True
+
+
 def get_latest_version(mod_name, curseforge_id):
     curseforge_files = get_curseforge_files(curseforge_id)
 
     curseforge_files_and_versions = []
     for file_data in curseforge_files:
         versions = [v.lower() for v in file_data["minecraft_versions"]]
-        if not any(wrong_modloader in versions for wrong_modloader in WRONG_MODLOADERS):
+        if correct_modloader(versions):
             curseforge_files_and_versions.append((file_data, versions))
 
     correctly_versioned_files = []
@@ -313,7 +335,7 @@ def get_latest_version(mod_name, curseforge_id):
     compatibly_versioned_files = []
     for file_data, versions in curseforge_files_and_versions:
         for ver in versions:
-            if ver.startswith(ver_join(MC_VERSION[:-1])):
+            if ver.startswith(ver_join(MC_VERSION[:2])):
                 compatibly_versioned_files.append(file_data)
                 break
     if compatibly_versioned_files:
@@ -372,7 +394,7 @@ def move_old_files(updated_mod_names_to_files, mod_names_to_jar_names, mods_dir,
         os.rename(current_jar_path, new_jar_path)
 
 
-def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interact=None):
+def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interact=False):
     try:
         mod_names_to_jar_names = get_mod_names_to_jar_names(mods_dir)
         mod_names_to_curseforge_names, nulled_mods = get_curseforge_names_for(mod_names_to_jar_names)
@@ -403,7 +425,7 @@ def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interac
         embed()
 
 
-def update_all(mods_dirs, dry_run=False, interact=None):
+def update_all(mods_dirs, dry_run=False, interact=False):
     couldnt_update = []
     for mods_dir in mods_dirs:
         updated_mods_dir = mods_dir + UPDATED_MODS_DIR_SUFFIX

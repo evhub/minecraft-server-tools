@@ -157,7 +157,10 @@ COMPONENT_SEPS = [
     (" ", 1),
 ]
 
-NON_NAME_COMPONENT_REGEX = full_regex(r"[0-9].*|((forge|fabric|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+")
+NON_NAME_COMPONENT_REGEX = full_regex(
+    r"[0-9].*|"
+    r"(?!cave)((forge|fabric|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+"
+)
 
 NAME_REGEXES_TO_SPACE = [
     regex(r) for r in (
