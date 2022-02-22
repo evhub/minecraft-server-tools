@@ -48,6 +48,12 @@ WINDOWS = os.name == "nt"
 MC_VERSION = (1, 18, 1)
 FORGE_VERSION = (39, 0, 75)
 
+ALWAYS_USE_LATEST_VERSION_FOR_MODS = [
+    "LibX",
+    "sophisticatedbackpacks",
+    "jei",
+]
+
 EXTRA_INSTALL_FOLDERS = [
     "config",
     "defaultconfigs",
@@ -79,14 +85,14 @@ MOD_ZIP_PATH = first_that_exists([
 ])
 
 if WINDOWS:
-    CLIENT_RAM = "16G"
+    CLIENT_RAM = "15G"
 else:
     CLIENT_RAM = "14G"
 
 if WINDOWS:
-    SERVER_RAM = "14G"
+    SERVER_RAM = "15G"
 else:
-    SERVER_RAM = "13G"
+    SERVER_RAM = "15G"
 
 
 # Fix RAMs
@@ -96,11 +102,11 @@ max_client_ram = psutil.virtual_memory().total // GB - 1
 max_server_ram = psutil.virtual_memory().available // GB
 
 if int(CLIENT_RAM[:-1]) > max_client_ram:
-    print(f"\nReducing client RAM from {CLIENT_RAM}G to {max_client_ram}G.")
+    print(f"\nWARNING: Reducing client RAM from {CLIENT_RAM}G to {max_client_ram}G.")
     CLIENT_RAM = str(max_client_ram) + "G"
 
 if int(SERVER_RAM[:-1]) > max_server_ram:
-    print(f"\nReducing server RAM from {SERVER_RAM}G to {max_server_ram}G.")
+    print(f"\nWARNING: Reducing server RAM from {SERVER_RAM}G to {max_server_ram}G.")
     SERVER_RAM = str(max_server_ram) + "G"
 
 
@@ -221,7 +227,10 @@ CURSEFORGE_NAMES_FILE = os.path.join(ROOT_DIR, "curseforge_names.json")
 
 CURSEFORGE_API_FILE = os.path.join(ROOT_DIR, "curseforge_api.js")
 
-CURSEFORGE_QUERY_TEMPLATE = '"{curseforge_name}"'
+CURSEFORGE_QUERY_TEMPLATES = [
+    '"{curseforge_name}"',
+    "{mod_name}",
+]
 
 TIMESTAMP_FORMAT_REGEX = full_regex("(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)\.?(\d+)?Z")
 
