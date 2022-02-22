@@ -18,8 +18,11 @@ def ver_join(ver):
 def ver_split(ver_str):
     return tuple(int(i) for i in ver_str.split("."))
 
+def regex(re_str):
+    return re.compile(re_str, re.UNICODE)
+
 def full_regex(re_str):
-    return re.compile("^" + re_str + "$")
+    return regex("^" + re_str + "$")
 
 def format_vers(template):
     return template.format(
@@ -154,40 +157,45 @@ COMPONENT_SEPS = [
     (" ", 1),
 ]
 
-NON_NAME_COMPONENT_REGEX = full_regex("(forge|fabric|dist(ro)?|release|alpha|beta|(mc|v|r)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+")
+NON_NAME_COMPONENT_REGEX = full_regex(r"[0-9].*|((forge|fabric|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+")
 
-NAME_ELEMS_TO_SPACE = [
-    "-",
-    "+",
-    "_",
-    "(",
-    ")",
-    "forge",
-    "FORGE",
-    "Forge",
-    "fabric",
-    "FABRIC",
-    "Fabric",
-    "dist",
-    "distro",
-    "release",
-    "alpha",
-    "beta",
-    ver_join(MC_VERSION[:-1]),
-    ".0",
-    ".1",
-    ".2",
-    ".3",
-    ".4",
-    ".5",
-    ".6",
-    ".7",
-    ".8",
-    ".9",
-    ".",
-    "   ",
-    "  ",
-    "[ ]",
+NAME_REGEXES_TO_SPACE = [
+    regex(r) for r in (
+        r"-",
+        r"\+",
+        r"_",
+        r"\(",
+        r"\)",
+        r"forge\b",
+        r"FORGE",
+        r"Forge\b",
+        r"fabric\b",
+        r"FABRIC",
+        r"Fabric\b",
+        r"\bdist(ro)?",
+        r"release",
+        r"\balpha\b",
+        r"\bALPHA\b",
+        r"\bAlpha\b",
+        r"\bbeta\b",
+        r"\bBETA\b",
+        r"\bBeta\b",
+        ver_join(MC_VERSION[:-1]).replace(".", r"\."),
+        r"\.0",
+        r"\.1",
+        r"\.2",
+        r"\.3",
+        r"\.4",
+        r"\.5",
+        r"\.6",
+        r"\.7",
+        r"\.8",
+        r"\.9",
+        r"\.",
+        r"   ",
+        r"  ",
+        r"\[ \]",
+    )
 ]
 
 CURSEFORGE_NAME_ELEMS_TO_STRIP = [

@@ -15,7 +15,7 @@ from minecraft_server_tools.constants import (
     MC_VERSION,
     COMPONENT_SEPS,
     NON_NAME_COMPONENT_REGEX,
-    NAME_ELEMS_TO_SPACE,
+    NAME_REGEXES_TO_SPACE,
     SEARCH_URL_TEMPLATE,
     SECRETS,
     GOOGLE_QUERY_TEMPLATE,
@@ -72,8 +72,8 @@ def get_mod_name(jar_name):
         print(f"Failed to find name component for jar {jar_name!r}.")
         name_cmpnts = [components[0]]
     mod_name = " ".join(name_cmpnts)
-    for to_space in NAME_ELEMS_TO_SPACE:
-        mod_name = mod_name.replace(to_space, " ")
+    for to_space in NAME_REGEXES_TO_SPACE:
+        mod_name = to_space.sub(" ", mod_name)
     mod_name = mod_name.strip()
     print(f"Determined mod name {mod_name!r} for jar {jar_name!r}.")
     return mod_name
