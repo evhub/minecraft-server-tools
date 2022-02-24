@@ -47,18 +47,18 @@ def install_forge_server():
     run_java(["-jar", FORGE_INSTALLER_JAR_PATH, "--installServer"])
 
 
-def clean_forge_jars(dir_to_clean=SERVER_DIR):
-    for fname in os.listdir(dir_to_clean):
-        if OLD_JARS_REGEX.match(fname) is not None:
-            print(f"Removing old jar {fname}...")
-            os.remove(os.path.join(dir_to_clean, fname))
-
-
 def ensure_forge_server():
     if not os.path.exists(FORGE_INSTALLER_JAR_PATH):
         print(f"Downloading forge installer {FORGE_INSTALLER_JAR_PATH}...")
         urlretrieve(FORGE_INSTALLER_URL, FORGE_INSTALLER_JAR_PATH)
         install_forge_server()
+
+
+def clean_forge_jars(dir_to_clean=SERVER_DIR):
+    for fname in os.listdir(dir_to_clean):
+        if OLD_JARS_REGEX.match(fname) is not None:
+            print(f"Removing old jar {fname}...")
+            os.remove(os.path.join(dir_to_clean, fname))
 
 
 def get_java_args(client=False):
@@ -78,6 +78,14 @@ def get_java_args(client=False):
     return args
 
 
+def fix_run_bat():
+    with open(os.path.join(SERVER_DIR, "run.bat"), "r+") as run_bat:
+        content = run_bat.read()
+        run_bat.seek(0)
+        run_bat.truncate()
+        run_bat.write(content.replace("pause", "exit"))
+
+
 def write_jvm_args():
     with open(JVM_ARGS_FILE, "w") as jvm_args_file:
         jvm_args_file.write("\n".join(get_java_args()) + "\n")
@@ -86,6 +94,7 @@ def write_jvm_args():
 def start_server():
     clean_forge_jars()
     ensure_forge_server()
+    fix_run_bat()
     write_jvm_args()
     if os.path.exists(FORGE_JAR_PATH):
         run_java(get_java_args() + [FORGE_JAR_PATH] + FORGE_ARGS)
