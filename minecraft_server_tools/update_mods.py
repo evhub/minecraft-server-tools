@@ -197,14 +197,17 @@ def get_mod_names_to_jar_names(mods_dir):
 def run_curseforge_api_cmd(cmd):
     cmd = [str(x) for x in cmd]
     print(f"Executing curseforge api cmd: {cmd!r}")
-    api_result = subprocess.run(["node", CURSEFORGE_API_FILE] + cmd, capture_output=True).stdout.decode("utf-8")
+    cmd_result = subprocess.run(["node", CURSEFORGE_API_FILE] + cmd, capture_output=True)
+    if cmd_result.stderr:
+        raise Exception(f"curseforge api cmd {cmd!r} failed:\n{cmd_result.stderr.decode('utf-8')}")
+    api_result = cmd_result.stdout.decode("utf-8")
     if not api_result:
         print("\tGot no output from curseforge api.")
         return []
     try:
         return json.loads(api_result)
     except json.decoder.JSONDecodeError:
-        print("ERROR: Could not parse curseforge api output:")
+        print("\nERROR: Could not parse curseforge api output:")
         print(api_result)
         raise
 
@@ -240,17 +243,23 @@ def get_curseforge_mod(curseforge_name, mod_name):
             return mod
         print(f"\tCould not find mod {curseforge_name!r} in version-specific results for query {query!r}.")
 
+        compatible_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION[:2])])
+        mod = get_matching_mod(compatible_version_results, curseforge_name)
+        if mod is not None:
+            return mod
+        print(f"\tCould not find mod {curseforge_name!r} in compatibly-versioned results for query {query!r}.")
+
         versionless_results = run_curseforge_api_cmd(["search", query])
         mod = get_matching_mod(versionless_results, curseforge_name)
         if mod is not None:
             return mod
         print(f"\tCould not find mod {curseforge_name!r} in version-less results for query {query!r}.")
 
-        # big_results = run_curseforge_api_cmd(["bigsearch", query])
-        # mod = get_matching_mod(big_results, curseforge_name)
-        # if mod is not None:
-        #     return mod
-        # print(f"Could not find mod {curseforge_name!r} in big results for query {query!r}.")
+        big_results = run_curseforge_api_cmd(["bigsearch", query])
+        mod = get_matching_mod(big_results, curseforge_name)
+        if mod is not None:
+            return mod
+        print(f"\tCould not find mod {curseforge_name!r} in big results for query {query!r}.")
 
     print(f"\nERROR: Failed to find mod {curseforge_name!r} in any results.\n")
 
@@ -313,11 +322,22 @@ def best_release(curseforge_files, mod_name):
     return sort_releases(curseforge_files, mod_name)[0]
 
 
-def correct_modloader(versions):
+def get_jar_name_for_curseforge_file(curseforge_file):
+    return curseforge_file["download_url"].rsplit("/", 1)[-1]
+
+
+def correct_modloader(versions, jar_name):
     if MODLOADER in versions:
         return True
     if any(wrong_modloader in versions for wrong_modloader in WRONG_MODLOADERS):
         return False
+
+    jar_name = jar_name.lower()
+    if MODLOADER in jar_name:
+        return True
+    if any(wrong_modloader in jar_name for wrong_modloader in WRONG_MODLOADERS):
+        return False
+
     return True
 
 
@@ -327,7 +347,7 @@ def get_latest_version(mod_name, curseforge_id):
     curseforge_files_and_versions = []
     for file_data in curseforge_files:
         versions = [v.lower() for v in file_data["minecraft_versions"]]
-        if correct_modloader(versions):
+        if correct_modloader(versions, get_jar_name_for_curseforge_file(file_data)):
             curseforge_files_and_versions.append((file_data, versions))
 
     correctly_versioned_files = []
@@ -360,10 +380,6 @@ def get_mod_names_to_latest_versions(mod_names_to_curseforge_ids):
         else:
             mod_names_to_latest_versions[mod_name] = latest_version
     return mod_names_to_latest_versions, missing_mods
-
-
-def get_jar_name_for_curseforge_file(curseforge_file):
-    return curseforge_file["download_url"].rsplit("/", 1)[-1]
 
 
 def get_updated_mod_names_to_files(mod_names_to_jar_names, mod_names_to_latest_versions):

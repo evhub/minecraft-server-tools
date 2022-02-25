@@ -14,10 +14,12 @@ if (args[0] === "search" || args[0] == "bigsearch") {
         throw "invalid extra arguments to search: " + args.slice(3);
     }
     if (args[0] == "bigsearch") {
-        options["pageSize"] = 500;
+        options["pageSize"] = 50;
     }
     curseforge.getMods(options).then((mods) => {
         console.log(JSON.stringify(mods));
+    }).catch((err) => {
+        console.error(err);
     });
 } else if (args[0] === "getfiles") {
     if (args.length >= 3) {
@@ -25,6 +27,8 @@ if (args[0] === "search" || args[0] == "bigsearch") {
     }
     curseforge.getModFiles(parseInt(args[1])).then((files) => {
         console.log(JSON.stringify(files));
+    }).catch((err) => {
+        console.error(err);
     });
 } else {
     throw "Unknown arg: " + args[0];
