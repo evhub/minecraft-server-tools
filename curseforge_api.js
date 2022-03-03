@@ -2,7 +2,7 @@ const curseforge = require("mc-curseforge-api");
 
 args = process.argv.slice(2);
 
-if (args[0] === "search" || args[0] == "bigsearch") {
+if (args[0] === "search" || args[0] === "bigsearch") {
     options = {}
     if (args.length >= 2) {
         options["searchFilter"] = args[1];
@@ -13,7 +13,7 @@ if (args[0] === "search" || args[0] == "bigsearch") {
     if (args.length >= 4) {
         throw "invalid extra arguments to search: " + args.slice(3);
     }
-    if (args[0] == "bigsearch") {
+    if (args[0] === "bigsearch") {
         options["pageSize"] = 50;
     }
     curseforge.getMods(options).then((mods) => {
