@@ -4,6 +4,7 @@ import json
 import subprocess
 import traceback
 import datetime
+import time
 from urllib.parse import quote_plus
 from pprint import pprint
 
@@ -35,6 +36,8 @@ from minecraft_server_tools.constants import (
     EXTRA_CLIENT_MODS_NAME,
     EXTRA_MODS_NAME,
     ALWAYS_USE_LATEST_VERSION_FOR_MODS,
+    CURSEFORGE_API_RETRIES,
+    CURSEFORGE_API_RETRY_DELAY,
     ver_join,
     ver_split,
 )
@@ -52,7 +55,7 @@ def google(query):
     )).json()
 
 
-def get_mod_name(jar_name):
+def get_mod_name(jar_name, silent=False):
     assert jar_name.endswith(".jar")
     base_name = jar_name[:-len(".jar")]
     for sep, min_count in COMPONENT_SEPS:
@@ -60,7 +63,8 @@ def get_mod_name(jar_name):
         if len(components) > min_count:
             break
     else:
-        print(f"Failed to find components for jar {jar_name!r}.")
+        if not silent:
+            print(f"Failed to find components for jar {jar_name!r}.")
         components = [base_name]
     name_cmpnts = []
     for cmpnt in components:
@@ -70,13 +74,15 @@ def get_mod_name(jar_name):
         elif name_cmpnts:
             break
     if not name_cmpnts:
-        print(f"Failed to find name component for jar {jar_name!r}.")
+        if not silent:
+            print(f"Failed to find name component for jar {jar_name!r}.")
         name_cmpnts = [components[0]]
     mod_name = " ".join(name_cmpnts)
     for to_space in NAME_REGEXES_TO_SPACE:
         mod_name = to_space.sub(" ", mod_name)
     mod_name = mod_name.strip()
-    print(f"Determined mod name {mod_name!r} for jar {jar_name!r}.")
+    if not silent:
+        print(f"Determined mod name {mod_name!r} for jar {jar_name!r}.")
     return mod_name
 
 
@@ -196,10 +202,16 @@ def get_mod_names_to_jar_names(mods_dir):
 
 def run_curseforge_api_cmd(cmd):
     cmd = [str(x) for x in cmd]
-    print(f"Executing curseforge api cmd: {cmd!r}")
-    cmd_result = subprocess.run(["node", CURSEFORGE_API_FILE] + cmd, capture_output=True)
-    if cmd_result.stderr:
-        raise Exception(f"curseforge api cmd {cmd!r} failed:\n{cmd_result.stderr.decode('utf-8')}")
+    for _ in range(CURSEFORGE_API_RETRIES):
+        print(f"Executing curseforge api cmd: {cmd!r}")
+        cmd_result = subprocess.run(["node", CURSEFORGE_API_FILE] + cmd, capture_output=True)
+        if cmd_result.stderr:
+            print(f"\tcurseforge api cmd {cmd!r} failed: {cmd_result.stderr.decode('utf-8')}")
+            time.sleep(CURSEFORGE_API_RETRY_DELAY)
+        else:
+            break
+    else:
+        raise Exception(f"Curseforge api cmd {cmd!r} failed {CURSEFORGE_API_RETRIES} times.")
     api_result = cmd_result.stdout.decode("utf-8")
     if not api_result:
         print("\tGot no output from curseforge api.")
@@ -218,7 +230,13 @@ def get_matching_mod(results, curseforge_name, allow_inexact_name=True):
             return mod
     if allow_inexact_name:
         for mod in results:
-            if curseforge_name in mod["name"]:
+            if (
+                curseforge_name in mod["name"]
+                and not (
+                    MODLOADER.lower() not in curseforge_name.lower()
+                    and any(m.lower() in curseforge_name.lower() for m in WRONG_MODLOADERS)
+                )
+            ):
                 print(f"\tFound mod with different name {mod['name']!r} for mod {curseforge_name!r}.")
                 return mod
 
@@ -231,9 +249,11 @@ def log_curseforge_results(results, verbose=False):
 
 
 def get_curseforge_mod(curseforge_name, mod_name):
+    clean_curseforge_name = get_mod_name(curseforge_name + ".jar", silent=True)
     for query_template in CURSEFORGE_QUERY_TEMPLATES:
         query = query_template.format(
             curseforge_name=curseforge_name,
+            clean_curseforge_name=clean_curseforge_name,
             mod_name=mod_name,
         )
 
@@ -327,15 +347,17 @@ def get_jar_name_for_curseforge_file(curseforge_file):
 
 
 def correct_modloader(versions, jar_name):
-    if MODLOADER in versions:
+    versions = [v.lower() for v in versions]
+
+    if MODLOADER.lower() in versions:
         return True
-    if any(wrong_modloader in versions for wrong_modloader in WRONG_MODLOADERS):
+    if any(wrong_modloader.lower() in versions for wrong_modloader in WRONG_MODLOADERS):
         return False
 
     jar_name = jar_name.lower()
-    if MODLOADER in jar_name:
+    if MODLOADER.lower() in jar_name:
         return True
-    if any(wrong_modloader in jar_name for wrong_modloader in WRONG_MODLOADERS):
+    if any(wrong_modloader.lower() in jar_name for wrong_modloader in WRONG_MODLOADERS):
         return False
 
     return True
@@ -346,7 +368,7 @@ def get_latest_version(mod_name, curseforge_id):
 
     curseforge_files_and_versions = []
     for file_data in curseforge_files:
-        versions = [v.lower() for v in file_data["minecraft_versions"]]
+        versions = file_data["minecraft_versions"]
         if correct_modloader(versions, get_jar_name_for_curseforge_file(file_data)):
             curseforge_files_and_versions.append((file_data, versions))
 

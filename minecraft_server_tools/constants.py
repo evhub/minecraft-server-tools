@@ -143,8 +143,8 @@ REMOVED_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-removed"
 
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 
-MODLOADER = "forge"
-WRONG_MODLOADERS = ["fabric"]
+MODLOADER = "Forge"
+WRONG_MODLOADERS = ["Fabric"]
 
 NON_CURSEFORGE_MODS = [
     "OptiFine",
@@ -201,6 +201,8 @@ NAME_REGEXES_TO_SPACE = [
         r"\.8",
         r"\.9",
         r"\.",
+        r" / ",
+        r" \| ",
         r"   ",
         r"  ",
         r"\[ \]",
@@ -229,6 +231,7 @@ CURSEFORGE_API_FILE = os.path.join(ROOT_DIR, "curseforge_api.js")
 
 CURSEFORGE_QUERY_TEMPLATES = [
     '"{curseforge_name}"',
+    "{clean_curseforge_name}",
     "{mod_name}",
 ]
 
@@ -238,6 +241,9 @@ UPDATED_MODS_DIR_SUFFIX = "-updates"
 OLD_MODS_DIR_SUFFIX = "-old"
 
 MAX_DEBUG_RESULTS = 20
+
+CURSEFORGE_API_RETRIES = 3
+CURSEFORGE_API_RETRY_DELAY = 0.1
 
 
 # Server start constants
