@@ -46,7 +46,7 @@ def first_that_exists(path_list):
 WINDOWS = os.name == "nt"
 
 MC_VERSION = (1, 18, 1)
-FORGE_VERSION = (39, 0, 85)
+FORGE_VERSION = (39, 1, 2)
 
 ALWAYS_USE_LATEST_VERSION_FOR_MODS = [
     "LibX",

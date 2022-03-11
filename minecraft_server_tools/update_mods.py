@@ -218,7 +218,7 @@ def get_matching_mod(results, curseforge_name, allow_inexact_name=True):
             return mod
     if allow_inexact_name:
         for mod in results:
-            if mod["name"].startswith(curseforge_name) or mod["name"].endswith(curseforge_name):
+            if curseforge_name in mod["name"]:
                 print(f"\tFound mod with different name {mod['name']!r} for mod {curseforge_name!r}.")
                 return mod
 
@@ -243,23 +243,23 @@ def get_curseforge_mod(curseforge_name, mod_name):
             return mod
         print(f"\tCould not find mod {curseforge_name!r} in version-specific results for query {query!r}.")
 
-        compatible_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION[:2])])
+        compatible_version_results = run_curseforge_api_cmd(["bigsearch", query, ver_join(MC_VERSION[:2])])
         mod = get_matching_mod(compatible_version_results, curseforge_name)
         if mod is not None:
             return mod
         print(f"\tCould not find mod {curseforge_name!r} in compatibly-versioned results for query {query!r}.")
 
-        versionless_results = run_curseforge_api_cmd(["search", query])
+        modloader_version_results = run_curseforge_api_cmd(["bigsearch", query, MODLOADER])
+        mod = get_matching_mod(modloader_version_results, curseforge_name)
+        if mod is not None:
+            return mod
+        print(f"\tCould not find mod {curseforge_name!r} in modloader-versioned results for query {query!r}.")
+
+        versionless_results = run_curseforge_api_cmd(["bigsearch", query])
         mod = get_matching_mod(versionless_results, curseforge_name)
         if mod is not None:
             return mod
         print(f"\tCould not find mod {curseforge_name!r} in version-less results for query {query!r}.")
-
-        big_results = run_curseforge_api_cmd(["bigsearch", query])
-        mod = get_matching_mod(big_results, curseforge_name)
-        if mod is not None:
-            return mod
-        print(f"\tCould not find mod {curseforge_name!r} in big results for query {query!r}.")
 
     print(f"\nERROR: Failed to find mod {curseforge_name!r} in any results.\n")
 
