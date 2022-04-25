@@ -224,11 +224,22 @@ def run_curseforge_api_cmd(cmd):
         raise
 
 
-def get_matching_mod(results, curseforge_name, allow_inexact_name=True):
+def get_matching_mod(results, curseforge_name):
+    found_mod = None
     for mod in results:
         if mod["name"] == curseforge_name:
-            return mod
-    if allow_inexact_name:
+            found_mod = mod
+    if found_mod is None:
+        for mod in results:
+            if (
+                mod["name"].startswith(curseforge_name)
+                and not (
+                    MODLOADER.lower() not in curseforge_name.lower()
+                    and any(m.lower() in curseforge_name.lower() for m in WRONG_MODLOADERS)
+                )
+            ):
+                found_mod = mod
+    if found_mod is None:
         for mod in results:
             if (
                 curseforge_name in mod["name"]
@@ -237,8 +248,10 @@ def get_matching_mod(results, curseforge_name, allow_inexact_name=True):
                     and any(m.lower() in curseforge_name.lower() for m in WRONG_MODLOADERS)
                 )
             ):
-                print(f"\tFound mod with different name {mod['name']!r} for mod {curseforge_name!r}.")
-                return mod
+                found_mod = mod
+    if found_mod is not None and found_mod["name"] != curseforge_name:
+        print(f"\tWARNING: found Curseforge mod with different name: {curseforge_name!r} -> {found_mod['name']!r}")
+    return found_mod
 
 
 def log_curseforge_results(results, verbose=False):
@@ -248,16 +261,20 @@ def log_curseforge_results(results, verbose=False):
         pprint([m["name"] for m in results[:MAX_DEBUG_RESULTS]])
 
 
+def get_core_name(name):
+    return get_mod_name(name + ".jar", silent=True)
+
+
 def get_curseforge_mod(curseforge_name, mod_name):
-    clean_curseforge_name = get_mod_name(curseforge_name + ".jar", silent=True)
+    core_curseforge_name = get_core_name(curseforge_name)
     for query_template in CURSEFORGE_QUERY_TEMPLATES:
         query = query_template.format(
             curseforge_name=curseforge_name,
-            clean_curseforge_name=clean_curseforge_name,
+            core_curseforge_name=core_curseforge_name,
             mod_name=mod_name,
         )
 
-        version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION)])
+        version_results = run_curseforge_api_cmd(["bigsearch", query, ver_join(MC_VERSION)])
         mod = get_matching_mod(version_results, curseforge_name)
         if mod is not None:
             return mod
@@ -414,20 +431,23 @@ def get_updated_mod_names_to_files(mod_names_to_jar_names, mod_names_to_latest_v
     return updated_mod_names_to_files
 
 
-def download_file(curseforge_file, updated_mods_dir):
+def download_file(curseforge_file, updated_mods_dir, mod_name):
     url = curseforge_file["download_url"]
     jar_name = get_jar_name_for_curseforge_file(curseforge_file)
     new_jar_path = os.path.join(updated_mods_dir, jar_name)
     if not os.path.exists(new_jar_path):
         print(f"Downloading {jar_name}...")
+        new_mod_name = get_mod_name(jar_name, silent=True)
+        if new_mod_name != mod_name:
+            print(f"\tWARNING: new mod name: {mod_name!r} -> {new_mod_name!r}")
         result = requests.get(url)
         with open(new_jar_path, "wb") as jar_fobj:
             jar_fobj.write(result.content)
 
 
 def update_files(updated_mod_names_to_files, updated_mods_dir):
-    for curseforge_file in updated_mod_names_to_files.values():
-        download_file(curseforge_file, updated_mods_dir)
+    for mod_name, curseforge_file in updated_mod_names_to_files.items():
+        download_file(curseforge_file, updated_mods_dir, mod_name)
 
 
 def move_old_files(updated_mod_names_to_files, mod_names_to_jar_names, mods_dir, old_mods_dir):

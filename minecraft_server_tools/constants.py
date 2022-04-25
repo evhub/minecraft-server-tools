@@ -45,8 +45,8 @@ def first_that_exists(path_list):
 
 WINDOWS = os.name == "nt"
 
-MC_VERSION = (1, 18, 1)
-FORGE_VERSION = (39, 1, 2)
+MC_VERSION = (1, 18, 2)
+FORGE_VERSION = (40, 0, 19)
 
 ALWAYS_USE_LATEST_VERSION_FOR_MODS = [
     "LibX",
@@ -155,8 +155,8 @@ COMPONENT_SEPS = [
     ("-", 2),
     ("(", 1),
     ("+", 2),
-    ("_", 2),
     ("-", 1),
+    ("_", 2),
     (" ", 2),
     ("+", 1),
     ("_", 1),
@@ -189,6 +189,8 @@ NAME_REGEXES_TO_SPACE = [
         r"\bbeta\b",
         r"\bBETA\b",
         r"\bBeta\b",
+        r"MC",
+        r"\bmc\b",
         ver_join(MC_VERSION[:-1]).replace(".", r"\."),
         r"\.0",
         r"\.1",
@@ -231,7 +233,7 @@ CURSEFORGE_API_FILE = os.path.join(ROOT_DIR, "curseforge_api.js")
 
 CURSEFORGE_QUERY_TEMPLATES = [
     '"{curseforge_name}"',
-    "{clean_curseforge_name}",
+    "{core_curseforge_name}",
     "{mod_name}",
 ]
 
