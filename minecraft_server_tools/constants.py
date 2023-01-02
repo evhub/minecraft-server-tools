@@ -40,13 +40,13 @@ def first_that_exists(path_list):
             return path
     return path_list[0]
 
+WINDOWS = os.name == "nt"
+
 
 # Commonly changed constants
 
-WINDOWS = os.name == "nt"
-
-MC_VERSION = (1, 18, 2)
-FORGE_VERSION = (40, 0, 19)
+MC_VERSION = (1, 19, 2)
+FORGE_VERSION = (43, 2, 0)
 
 ALWAYS_USE_LATEST_VERSION_FOR_MODS = [
     "LibX",
@@ -74,9 +74,9 @@ EXTRA_INSTALL_FILES = [
 ]
 
 SERVER_DIR = first_that_exists([
-    "~/1_18_mod_server",
-    "~/OneDrive/Minecraft/1.18 Mod Server",
-    "/mnt/c/Users/evanj/OneDrive/Minecraft/1.18 Mod Server",
+    "~/1_19_ctm_server",
+    "~/OneDrive/Minecraft/1.19 CTM Server",
+    "/mnt/c/Users/evanj/OneDrive/Minecraft/1.19 CTM Server",
 ])
 
 MOD_ZIP_PATH = first_that_exists([
@@ -84,15 +84,17 @@ MOD_ZIP_PATH = first_that_exists([
     "~/OneDrive/Minecraft Mods/Minecraft Mods.zip",
 ])
 
-if WINDOWS:
-    CLIENT_RAM = "15G"
-else:
-    CLIENT_RAM = "14G"
+CLIENT_RAM = SERVER_RAM = "4G"
 
-if WINDOWS:
-    SERVER_RAM = "15G"
-else:
-    SERVER_RAM = "15G"
+# if WINDOWS:
+#     CLIENT_RAM = "15G"
+# else:
+#     CLIENT_RAM = "14G"
+
+# if WINDOWS:
+#     SERVER_RAM = "15G"
+# else:
+#     SERVER_RAM = "15G"
 
 
 # Fix RAMs
