@@ -59,6 +59,7 @@ EXTRA_INSTALL_FOLDERS = [
     "defaultconfigs",
     "kubejs",
     "resourcepacks",
+    "shaderpacks",
     "scripts",
     "global_data_packs",
     "global_resource_packs",
