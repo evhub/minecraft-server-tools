@@ -85,7 +85,7 @@ MOD_ZIP_PATH = first_that_exists([
     "~/OneDrive/Minecraft Mods/Minecraft Mods.zip",
 ])
 
-CLIENT_RAM = SERVER_RAM = "4G"
+CLIENT_RAM = SERVER_RAM = "5G"
 
 # if WINDOWS:
 #     CLIENT_RAM = "15G"
