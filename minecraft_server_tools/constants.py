@@ -46,7 +46,7 @@ WINDOWS = os.name == "nt"
 # Commonly changed constants
 
 MC_VERSION = (1, 19, 2)
-FORGE_VERSION = (43, 2, 0)
+FORGE_VERSION = (43, 1, 1)
 
 ALWAYS_USE_LATEST_VERSION_FOR_MODS = [
     "LibX",
