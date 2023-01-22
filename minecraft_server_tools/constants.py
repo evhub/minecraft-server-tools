@@ -31,7 +31,7 @@ def format_vers(template):
     )
 
 def fixpath(path):
-    return os.path.normpath(os.path.expanduser(path))
+    return os.path.normpath(os.path.abspath(os.path.expanduser(path)))
 
 def first_that_exists(path_list):
     for path in path_list:
@@ -45,8 +45,30 @@ WINDOWS = os.name == "nt"
 
 # Commonly changed constants
 
+SERVER_DIR = first_that_exists([
+    "~/1_19_mod_server",
+    os.getenv("MINECRAFT_SERVER_DIR", "."),
+])
+
+MOD_ZIP_PATH = first_that_exists([
+    "~/OneDrive/Minecraft/Minecraft Mods/Minecraft Mods.zip",
+    "~/OneDrive/Minecraft Mods/Minecraft Mods.zip",
+])
+
+IS_MOD_SERVER = "mod" in SERVER_DIR.lower() and os.path.exists(SERVER_DIR)
+
 MC_VERSION = (1, 19, 2)
-FORGE_VERSION = (43, 1, 1)
+
+if IS_MOD_SERVER:
+    FORGE_VERSION = (43, 2, 3)
+else:
+    FORGE_VERSION = (43, 1, 1)
+
+if IS_MOD_SERVER:
+    CLIENT_RAM = "14G"
+    SERVER_RAM = "7G"
+else:
+    CLIENT_RAM = SERVER_RAM = "5G"
 
 ALWAYS_USE_LATEST_VERSION_FOR_MODS = [
     "LibX",
@@ -73,28 +95,6 @@ EXTRA_INSTALL_FOLDERS = [
 EXTRA_INSTALL_FILES = [
     "patchouli_data.json",
 ]
-
-SERVER_DIR = first_that_exists([
-    "~/1_19_ctm_server",
-    os.getenv("MINECRAFT_SERVER_DIR", "."),
-])
-
-MOD_ZIP_PATH = first_that_exists([
-    "~/OneDrive/Minecraft/Minecraft Mods/Minecraft Mods.zip",
-    "~/OneDrive/Minecraft Mods/Minecraft Mods.zip",
-])
-
-CLIENT_RAM = SERVER_RAM = "5G"
-
-# if WINDOWS:
-#     CLIENT_RAM = "15G"
-# else:
-#     CLIENT_RAM = "14G"
-
-# if WINDOWS:
-#     SERVER_RAM = "15G"
-# else:
-#     SERVER_RAM = "15G"
 
 
 # Fix RAMs

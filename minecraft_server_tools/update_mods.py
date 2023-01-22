@@ -568,17 +568,20 @@ def add_new_mods(new_mods_dir, to_mods_dir, all_mod_names):
 def main():
     sync_mods.main()
 
-    mods_dirs = [
+    all_mod_names = get_all_mod_names([
         EXTRA_CLIENT_MODS_DIR,
         EXTRA_MODS_DIR,
-    ]
-
-    all_mod_names = get_all_mod_names(mods_dirs)
+        sync_mods.REMOVED_MODS_DIR,
+        sync_mods.REMOVED_CLIENT_MODS_DIR,
+    ])
     add_new_mods(ADD_IF_NEW_CLIENT_MODS_NAME, EXTRA_CLIENT_MODS_DIR, all_mod_names)
     add_new_mods(ADD_IF_NEW_MODS_NAME, EXTRA_MODS_DIR, all_mod_names)
 
     update_all(
-        mods_dirs,
+        [
+            EXTRA_CLIENT_MODS_DIR,
+            EXTRA_MODS_DIR,
+        ],
         dry_run="--dry-run" in sys.argv,
     )
 
