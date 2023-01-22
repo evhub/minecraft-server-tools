@@ -35,9 +35,10 @@ def fixpath(path):
 
 def first_that_exists(path_list):
     for path in path_list:
-        path = fixpath(path)
-        if os.path.exists(path):
-            return path
+        if path is not None:
+            path = fixpath(path)
+            if os.path.exists(path):
+                return path
     return path_list[0]
 
 WINDOWS = os.name == "nt"
@@ -47,7 +48,7 @@ WINDOWS = os.name == "nt"
 
 SERVER_DIR = first_that_exists([
     "~/1_19_mod_server",
-    os.getenv("MINECRAFT_SERVER_DIR", "."),
+    os.getenv("MINECRAFT_SERVER_DIR"),
 ])
 
 MOD_ZIP_PATH = first_that_exists([
