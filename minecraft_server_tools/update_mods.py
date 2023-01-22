@@ -33,18 +33,12 @@ from minecraft_server_tools.constants import (
     MAX_DEBUG_RESULTS,
     CURSEFORGE_NAME_ELEMS_TO_STRIP,
     CURSEFORGE_QUERY_TEMPLATES,
-    SERVER_DIR,
-    EXTRA_CLIENT_MODS_NAME,
-    EXTRA_MODS_NAME,
     ALWAYS_USE_LATEST_VERSION_FOR_MODS,
     CURSEFORGE_API_RETRIES,
     CURSEFORGE_API_RETRY_DELAY,
     ver_join,
     ver_split,
 )
-
-EXTRA_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, EXTRA_CLIENT_MODS_NAME)
-EXTRA_MODS_DIR = os.path.join(SERVER_DIR, EXTRA_MODS_NAME)
 
 
 def google(query):
@@ -57,8 +51,7 @@ def google(query):
 
 
 def get_mod_name(jar_name, silent=False):
-    assert jar_name.endswith(".jar")
-    base_name = jar_name[:-len(".jar")]
+    base_name = jar_name.removesuffix(".jar")
     for sep, min_count in COMPONENT_SEPS:
         components = base_name.split(sep)
         if len(components) > min_count:
@@ -261,10 +254,10 @@ def get_matching_mod(results, curseforge_name, mod_name):
                 found_mod = mod
                 break
     if found_mod is None:
-        raw_curseforge_name = curseforge_name.rsplit("[")[0].rsplit("(")[0].strip()
-        if raw_curseforge_name:
+        core_curseforge_name = get_core_name(curseforge_name)
+        if core_curseforge_name:
             for mod in valid_modloader_results:
-                if raw_curseforge_name in mod["name"]:
+                if core_curseforge_name in mod["name"]:
                     found_mod = mod
                     break
     if found_mod is not None and found_mod["name"] != curseforge_name:
@@ -280,7 +273,7 @@ def log_curseforge_results(results, verbose=False):
 
 
 def get_core_name(name):
-    return get_mod_name(name + ".jar", silent=True)
+    return get_mod_name(name, silent=True)
 
 
 def get_curseforge_mod(curseforge_name, mod_name):
@@ -554,8 +547,10 @@ def main():
 
     update_all(
         [
-            EXTRA_CLIENT_MODS_DIR,
-            EXTRA_MODS_DIR,
+            sync_mods.EXTRA_CLIENT_MODS_DIR,
+            sync_mods.EXTRA_MODS_DIR,
+            sync_mods.BASE_CLIENT_MODS_DIR,
+            sync_mods.BASE_MODS_DIR,
         ],
         dry_run="--dry-run" in sys.argv,
     )

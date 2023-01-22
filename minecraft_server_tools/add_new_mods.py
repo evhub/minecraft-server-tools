@@ -51,8 +51,8 @@ def main():
         sync_mods.REMOVED_MODS_DIR,
         sync_mods.REMOVED_CLIENT_MODS_DIR,
     ])
-    add_new_mods(ADD_IF_NEW_CLIENT_MODS_DIR, update_mods.EXTRA_CLIENT_MODS_DIR, all_mod_names)
-    add_new_mods(ADD_IF_NEW_MODS_DIR, update_mods.EXTRA_MODS_DIR, all_mod_names)
+    add_new_mods(ADD_IF_NEW_CLIENT_MODS_DIR, sync_mods.EXTRA_CLIENT_MODS_DIR, all_mod_names)
+    add_new_mods(ADD_IF_NEW_MODS_DIR, sync_mods.EXTRA_MODS_DIR, all_mod_names)
 
 
 if __name__ == "__main__":
