@@ -65,8 +65,7 @@ else:
     FORGE_VERSION = (43, 1, 1)
 
 if IS_MOD_SERVER:
-    CLIENT_RAM = "14G"
-    SERVER_RAM = "7G"
+    CLIENT_RAM = SERVER_RAM = "7G"
 else:
     CLIENT_RAM = SERVER_RAM = "5G"
 
@@ -198,7 +197,7 @@ NAME_REGEXES_TO_SPACE = [
         r"\bBeta\b",
         r"MC",
         r"\bmc\b",
-        ver_join(MC_VERSION[:-1]).replace(".", r"\."),
+        r"1\.\d+",
         r"\.0",
         r"\.1",
         r"\.2",
@@ -214,7 +213,9 @@ NAME_REGEXES_TO_SPACE = [
         r" \| ",
         r"   ",
         r"  ",
+        r" / ",
         r"\[ \]",
+        r"  ",
     )
 ]
 
@@ -249,7 +250,8 @@ TIMESTAMP_FORMAT_REGEX = full_regex("(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\
 UPDATED_MODS_DIR_SUFFIX = "-updates"
 OLD_MODS_DIR_SUFFIX = "-old"
 
-MAX_DEBUG_RESULTS = 20
+DEBUG = False
+MAX_DEBUG_RESULTS = 2
 
 CURSEFORGE_API_RETRIES = 3
 CURSEFORGE_API_RETRY_DELAY = 0.1

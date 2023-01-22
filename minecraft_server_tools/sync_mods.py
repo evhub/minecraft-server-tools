@@ -52,11 +52,15 @@ def display_mod_path(mod_path):
     return os.path.join(mod_dir_name, mod_name)
 
 
+def rm_mod(path):
+    print("Removing {mod}...".format(mod=display_mod_path(path)))
+    os.remove(path)
+
+
 def remove_mods_in_from(remove_mod_location_table, current_mod_location_table):
     for mod, cur_path in current_mod_location_table.items():
         if mod in remove_mod_location_table and os.path.exists(cur_path):
-            print("Removing {mod}...".format(mod=display_mod_path(cur_path)))
-            os.remove(cur_path)
+            rm_mod(cur_path)
 
 
 def add_mod(from_path, to_path):
@@ -81,9 +85,9 @@ def main():
 
     print("\nFixing client only mods...")
     extra_server_mods = get_location_table_for(EXTRA_MODS_DIR)
-    extra_client_mods = get_location_table_for(EXTRA_CLIENT_MODS_DIR)
+    extra_client_only_mods = get_location_table_for(EXTRA_CLIENT_MODS_DIR)
 
-    remove_mods_in_from(extra_client_mods, extra_server_mods)
+    remove_mods_in_from(extra_server_mods, extra_client_only_mods)
 
     base_server_mods = get_location_table_for(BASE_MODS_DIR)
     base_client_only_mods = get_location_table_for(BASE_CLIENT_MODS_DIR)
@@ -91,17 +95,17 @@ def main():
     remove_mods_in_from(base_server_mods, base_client_only_mods)
 
 
-    print("\nFixing extra mods...")
+    print("\nFixing main mods...")
     all_base_mods = get_location_table_for(BASE_MODS_DIR)
     all_base_mods.update(get_location_table_for(BASE_CLIENT_MODS_DIR))
 
     extra_server_mods = get_location_table_for(EXTRA_MODS_DIR)
-    extra_client_mods = get_location_table_for(EXTRA_CLIENT_MODS_DIR)
+    extra_client_only_mods = get_location_table_for(EXTRA_CLIENT_MODS_DIR)
 
     remove_mods_in_from(all_base_mods, extra_server_mods)
-    remove_mods_in_from(all_base_mods, extra_client_mods)
+    remove_mods_in_from(all_base_mods, extra_client_only_mods)
 
-    remove_mods_in_from(extra_server_mods, extra_client_mods)
+    remove_mods_in_from(extra_server_mods, extra_client_only_mods)
 
 
     print("\nMerging server mods...")

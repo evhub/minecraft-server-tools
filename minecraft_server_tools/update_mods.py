@@ -29,6 +29,7 @@ from minecraft_server_tools.constants import (
     TIMESTAMP_FORMAT_REGEX,
     UPDATED_MODS_DIR_SUFFIX,
     OLD_MODS_DIR_SUFFIX,
+    DEBUG,
     MAX_DEBUG_RESULTS,
     CURSEFORGE_NAME_ELEMS_TO_STRIP,
     CURSEFORGE_QUERY_TEMPLATES,
@@ -38,8 +39,6 @@ from minecraft_server_tools.constants import (
     ALWAYS_USE_LATEST_VERSION_FOR_MODS,
     CURSEFORGE_API_RETRIES,
     CURSEFORGE_API_RETRY_DELAY,
-    ADD_IF_NEW_MODS_NAME,
-    ADD_IF_NEW_CLIENT_MODS_NAME,
     ver_join,
     ver_split,
 )
@@ -234,36 +233,40 @@ def has_bad_modloader(name):
 
 
 def get_matching_mod(results, curseforge_name, mod_name):
-    slug_name = mod_name.replace(" ", "-").lower()
     found_mod = None
+    valid_modloader_results = []
     for mod in results:
+        valid_modloader = not has_bad_modloader(mod["name"])
         if mod["name"] == curseforge_name:
+            if not valid_modloader:
+                print(f"\tWARNING: found Curseforge mod by name, but it looks like it has an invalid modloader: {curseforge_name}")
             found_mod = mod
             break
+        if valid_modloader:
+            valid_modloader_results.append(mod)
     if found_mod is None:
-        for mod in results:
-            if (
-                mod["name"].startswith(curseforge_name)
-                and not has_bad_modloader(mod["name"])
-            ):
+        for mod in valid_modloader_results:
+            if mod["name"].startswith(curseforge_name):
                 found_mod = mod
                 break
     if found_mod is None:
-        for mod in results:
-            if (
-                mod["slug"].startswith(slug_name)
-                and not has_bad_modloader(mod["slug"])
-            ):
+        for mod in valid_modloader_results:
+            if curseforge_name in mod["name"]:
                 found_mod = mod
                 break
     if found_mod is None:
-        for mod in results:
-            if (
-                curseforge_name in mod["name"]
-                and not has_bad_modloader(mod["name"])
-            ):
+        slug_name = mod_name.replace(" ", "").lower()
+        for mod in valid_modloader_results:
+            if mod["slug"].replace("-", "").lower() == slug_name:
                 found_mod = mod
                 break
+    if found_mod is None:
+        raw_curseforge_name = curseforge_name.rsplit("[")[0].rsplit("(")[0].strip()
+        if raw_curseforge_name:
+            for mod in valid_modloader_results:
+                if raw_curseforge_name in mod["name"]:
+                    found_mod = mod
+                    break
     if found_mod is not None and found_mod["name"] != curseforge_name:
         print(f"\tWARNING: found Curseforge mod with different name: {curseforge_name!r} -> {found_mod['name']!r}")
     return found_mod
@@ -293,37 +296,43 @@ def get_curseforge_mod(curseforge_name, mod_name):
         mod = get_matching_mod(modloader_version_results, curseforge_name, mod_name)
         if mod is not None:
             return mod
-        print(f"\tCould not find mod {curseforge_name!r} in modloader-version-specific results for query {query!r}.")
+        if DEBUG:
+            print(f"\tCould not find mod {curseforge_name!r} in modloader-version-specific results for query {query!r}.")
 
         modloader_compatible_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION[:2]), MODLOADER])
         mod = get_matching_mod(modloader_compatible_version_results, curseforge_name, mod_name)
         if mod is not None:
             return mod
-        print(f"\tCould not find mod {curseforge_name!r} in modloader-compatibly-versioned results for query {query!r}.")
+        if DEBUG:
+            print(f"\tCould not find mod {curseforge_name!r} in modloader-compatibly-versioned results for query {query!r}.")
 
         version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION)])
         mod = get_matching_mod(version_results, curseforge_name, mod_name)
         if mod is not None:
             return mod
-        print(f"\tCould not find mod {curseforge_name!r} in version-specific results for query {query!r}.")
+        if DEBUG:
+            print(f"\tCould not find mod {curseforge_name!r} in version-specific results for query {query!r}.")
 
         compatible_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION[:2])])
         mod = get_matching_mod(compatible_version_results, curseforge_name, mod_name)
         if mod is not None:
             return mod
-        print(f"\tCould not find mod {curseforge_name!r} in compatibly-versioned results for query {query!r}.")
+        if DEBUG:
+            print(f"\tCould not find mod {curseforge_name!r} in compatibly-versioned results for query {query!r}.")
 
         modloader_results = run_curseforge_api_cmd(["search", query, MODLOADER])
         mod = get_matching_mod(modloader_results, curseforge_name, mod_name)
         if mod is not None:
             return mod
-        print(f"\tCould not find mod {curseforge_name!r} in modloader-versioned results for query {query!r}.")
+        if DEBUG:
+            print(f"\tCould not find mod {curseforge_name!r} in modloader-versioned results for query {query!r}.")
 
         versionless_results = run_curseforge_api_cmd(["search", query])
         mod = get_matching_mod(versionless_results, curseforge_name, mod_name)
         if mod is not None:
             return mod
-        print(f"\tCould not find mod {curseforge_name!r} in version-less results for query {query!r}.")
+        if DEBUG:
+            print(f"\tCould not find mod {curseforge_name!r} in version-less results for query {query!r}.")
 
     print(f"\nERROR: Failed to find mod {curseforge_name!r} in any results.\n")
 
@@ -497,7 +506,9 @@ def move_old_files(updated_mod_names_to_files, mod_names_to_jar_names, mods_dir,
         os.rename(current_jar_path, new_jar_path)
 
 
-def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interact=False):
+def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interact=None):
+    if interact is None and not DEBUG:
+        interact = False
     try:
         mod_names_to_jar_names = get_mod_names_to_jar_names(mods_dir)
         mod_names_to_curseforge_names, nulled_mods = get_curseforge_names_for(mod_names_to_jar_names)
@@ -528,7 +539,7 @@ def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interac
         embed()
 
 
-def update_all(mods_dirs, dry_run=False, interact=False):
+def update_all(mods_dirs, dry_run=False, interact=None):
     couldnt_update = []
     for mods_dir in mods_dirs:
         updated_mods_dir = mods_dir + UPDATED_MODS_DIR_SUFFIX
@@ -538,44 +549,8 @@ def update_all(mods_dirs, dry_run=False, interact=False):
         print(f"Unable to automatically update mod: {mod_name}")
 
 
-def get_all_mod_names(mods_dirs):
-    all_mod_names = {}
-    for mods_dir in mods_dirs:
-        all_mod_names.update(get_mod_names_to_jar_names(mods_dir, silent=True))
-    return all_mod_names
-
-
-def add_new_mods(new_mods_dir, to_mods_dir, all_mod_names):
-    made_changes = False
-    if os.path.exists(new_mods_dir):
-        print(f"\nLooking for new mods in: {new_mods_dir}")
-        for mod_name, jar_name in get_mod_names_to_jar_names(new_mods_dir).items():
-            if mod_name not in all_mod_names:
-                print(f"Adding new mod: {mod_name} (from {jar_name!r})")
-                from_path = os.path.join(new_mods_dir, jar_name)
-                to_path = os.path.join(to_mods_dir, jar_name)
-                sync_mods.add_mod(from_path, to_path)
-                made_changes = True
-        if made_changes:
-            sync_mods.main()
-        else:
-            print(f"Found no new mods in: {new_mods_dir}\n")
-    else:
-        print(f"\nSkipping adding new mods from: {new_mods_dir}\n")
-    return made_changes
-
-
 def main():
     sync_mods.main()
-
-    all_mod_names = get_all_mod_names([
-        EXTRA_CLIENT_MODS_DIR,
-        EXTRA_MODS_DIR,
-        sync_mods.REMOVED_MODS_DIR,
-        sync_mods.REMOVED_CLIENT_MODS_DIR,
-    ])
-    add_new_mods(ADD_IF_NEW_CLIENT_MODS_NAME, EXTRA_CLIENT_MODS_DIR, all_mod_names)
-    add_new_mods(ADD_IF_NEW_MODS_NAME, EXTRA_MODS_DIR, all_mod_names)
 
     update_all(
         [
