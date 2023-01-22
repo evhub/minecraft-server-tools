@@ -6,3 +6,8 @@ mc-curseforge-api@^2.2.3:
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/mc-curseforge-api/-/mc-curseforge-api-2.2.3.tgz#91587893605e4dcd0a37de466d0b847a3d787484"
   integrity sha512-annUUdMiwhooGRNtgae1ejcNkVhdpYjKwjY5jDItrN4gdmxuDJKWIZPQeIafUnqfTyeyqg4AE+wuukihBYHcig==
+
+node-curseforge@^1.2.0:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/node-curseforge/-/node-curseforge-1.2.2.tgz#8e5cabfec14dc2aeb440c4ad14643d38c3be1cf9"
+  integrity sha512-dfvKVN7pup3we+yFLzrpWG+o20t+XhMMnIVfNBCQ513TnNI93TrMsCXjNPMLCEBB5DFSAnXGdrKwqRQrB18Qeg==

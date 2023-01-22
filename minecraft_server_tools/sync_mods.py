@@ -59,6 +59,12 @@ def remove_mods_in_from(remove_mod_location_table, current_mod_location_table):
             os.remove(cur_path)
 
 
+def add_mod(from_path, to_path):
+    print("Adding {mod} from {src}...".format(mod=display_mod_path(to_path), src=display_mod_path(from_path)))
+    os.makedirs(os.path.dirname(to_path), exist_ok=True)
+    shutil.copy(from_path, to_path)
+
+
 def set_mods_from_to(target_mod_location_table, current_mod_location_table, set_mods_dir):
     for mod, cur_path in current_mod_location_table.items():
         if mod not in target_mod_location_table and os.path.exists(cur_path):
@@ -67,9 +73,7 @@ def set_mods_from_to(target_mod_location_table, current_mod_location_table, set_
     for mod, tar_path in target_mod_location_table.items():
         if mod not in current_mod_location_table:
             new_path = os.path.join(set_mods_dir, mod)
-            print("Adding {mod} from {src}...".format(mod=display_mod_path(new_path), src=display_mod_path(tar_path)))
-            os.makedirs(os.path.dirname(new_path), exist_ok=True)
-            shutil.copy(tar_path, new_path)
+            add_mod(tar_path, new_path)
 
 
 def main():

@@ -76,8 +76,7 @@ EXTRA_INSTALL_FILES = [
 
 SERVER_DIR = first_that_exists([
     "~/1_19_ctm_server",
-    "~/OneDrive/Minecraft/1.19 CTM Server",
-    "/mnt/c/Users/evanj/OneDrive/Minecraft/1.19 CTM Server",
+    os.getenv("MINECRAFT_SERVER_DIR", "."),
 ])
 
 MOD_ZIP_PATH = first_that_exists([
@@ -135,11 +134,13 @@ MODS_NAME = "mods"
 BASE_MODS_NAME = MODS_NAME + "-base"
 EXTRA_MODS_NAME = MODS_NAME + "-main"
 REMOVED_MODS_NAME = MODS_NAME + "-removed"
+ADD_IF_NEW_MODS_NAME = MODS_NAME + "-add-if-new"
 
 CLIENT_MODS_NAME = "client_mods"
 BASE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-base"
 EXTRA_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-main"
 REMOVED_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-removed"
+ADD_IF_NEW_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-add-if-new"
 
 
 # Auto updater Constants
@@ -147,7 +148,7 @@ REMOVED_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-removed"
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 
 MODLOADER = "Forge"
-WRONG_MODLOADERS = ["Fabric"]
+WRONG_MODLOADERS = ["Fabric", "Quilt"]
 
 NON_CURSEFORGE_MODS = [
     "OptiFine",
@@ -168,7 +169,7 @@ COMPONENT_SEPS = [
 
 NON_NAME_COMPONENT_REGEX = full_regex(
     r"[0-9].*|"
-    r"(?!cave)((forge|fabric|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+"
+    r"(?!cave|a$|ae2)((forge|fabric|quilt|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+"
 )
 
 NAME_REGEXES_TO_SPACE = [
@@ -184,6 +185,9 @@ NAME_REGEXES_TO_SPACE = [
         r"fabric\b",
         r"FABRIC",
         r"Fabric\b",
+        r"quilt\b",
+        r"QUILT",
+        r"Quilt\b",
         r"\bdist(ro)?",
         r"release",
         r"\balpha\b",
@@ -266,7 +270,7 @@ BASE_JVM_ARGS = [
     "-XX:+OptimizeStringConcat",
     "-XX:+AlwaysPreTouch",
     # "-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses",  # OLD
-    "-XX:+DisableExplicitGC",  # NEW
+    "-XX:+DisableExplicitGC",
     "-XX:+ParallelRefProcEnabled",
     "-XX:+UseCompressedOops",
     "-XX:+ScavengeBeforeFullGC",
@@ -280,20 +284,21 @@ BASE_JVM_ARGS = [
     "-XX:InitiatingHeapOccupancyPercent=20",  # atm: 15; default: 45
     "-XX:MaxTenuringThreshold=1",  # atm: 1; default: 15
     # "-XX:TargetSurvivorRatio=90",  # atm: 32; default: 50
+    "-XX:SurvivorRatio=32",  # atm: 32; default: 8
 ]
 
 def get_jvm_args_for_gc(gc):
     if gc == "G1":
         return [
             "-XX:+UseG1GC",
-            "-XX:G1ReservePercent=20",
-            "-XX:G1NewSizePercent=20",
-            "-XX:G1HeapRegionSize=32M",
-            "-XX:G1MixedGCCountTarget=4",  # NEW; default: 8
+            "-XX:G1ReservePercent=20",  # atm: 20
+            "-XX:G1NewSizePercent=20",  # atm: 30
+            "-XX:G1HeapRegionSize=32M",  # atm: 8M
+            "-XX:G1MixedGCCountTarget=4",  # atm: 4; default: 8
             # "-XX:G1MixedGCLiveThresholdPercent=35",  # atm: 90; default: 85
             # "-XX:G1MaxNewSizePercent=60",  # atm: 40; default: 60
-            # "-XX:G1HeapWastePercent=5",  # NEW; default: 5
-            # "-XX:G1RSetUpdatingPauseTimePercent=5",  # NEW; default: 10
+            # "-XX:G1HeapWastePercent=5",  # atm: 5; default: 5
+            # "-XX:G1RSetUpdatingPauseTimePercent=5",  # atm: 5; default: 10
         ]
     elif gc == "Shenandoah":
         return [
