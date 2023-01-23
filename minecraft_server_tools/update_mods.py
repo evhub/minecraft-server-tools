@@ -36,6 +36,7 @@ from minecraft_server_tools.constants import (
     ALWAYS_USE_LATEST_VERSION_FOR_MODS,
     CURSEFORGE_API_RETRIES,
     CURSEFORGE_API_RETRY_DELAY,
+    PREFER_TWO_NUM_VER_TO_WRONG_THREE_NUM,
     ver_join,
     ver_split,
 )
@@ -431,6 +432,14 @@ def get_latest_version(mod_name, curseforge_id):
     if correctly_versioned_files:
         return best_release(correctly_versioned_files, mod_name)
     print(f"No correctly versioned files found for mod {mod_name!r}.")
+
+    if PREFER_TWO_NUM_VER_TO_WRONG_THREE_NUM:
+        two_num_ver_files = []
+        for file_data, versions in curseforge_files_and_versions:
+            if ver_join(MC_VERSION[:2]) in versions:
+                two_num_ver_files.append(file_data)
+        if two_num_ver_files:
+            return best_release(two_num_ver_files, mod_name)
 
     compatibly_versioned_files = []
     for file_data, versions in curseforge_files_and_versions:

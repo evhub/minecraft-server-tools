@@ -150,6 +150,8 @@ ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 MODLOADER = "Forge"
 WRONG_MODLOADERS = ["Fabric", "Quilt"]
 
+PREFER_TWO_NUM_VER_TO_WRONG_THREE_NUM = True
+
 NON_CURSEFORGE_MODS = [
     "OptiFine",
     "preview OptiFine",

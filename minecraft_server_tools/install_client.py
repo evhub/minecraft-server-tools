@@ -42,22 +42,26 @@ def install_extras(source_dir, do_optional=True, clean=True):
     for install_dir in EXTRA_INSTALL_FOLDERS:
         from_dir = os.path.join(source_dir, install_dir)
         to_dir = os.path.join(MINECRAFT_DIR, install_dir)
+        print(f"\t{install_dir}...")
+        cleaned = False
+        if clean and os.path.exists(to_dir):
+            shutil.rmtree(to_dir)
+            cleaned = True
         if os.path.exists(from_dir):
-            print(f"\t{install_dir}...")
-            if clean and os.path.exists(to_dir):
-                shutil.rmtree(to_dir)
             shutil.copytree(from_dir, to_dir, dirs_exist_ok=True)
+        elif cleaned:
+            print("\t\t(cleaned)")
         else:
-            print(f"\tskipped: {install_dir}")
+            print("\t\t(skipped)")
 
     for install_file in EXTRA_INSTALL_FILES + (OPTIONAL_INSTALL_FILES if do_optional else []):
         from_path = os.path.join(source_dir, install_file)
         to_path = os.path.join(MINECRAFT_DIR, install_file)
+        print(f"\t{install_file}...")
         if os.path.exists(from_path):
-            print(f"\t{install_file}...")
             shutil.copy(from_path, to_path)
         else:
-            print(f"\tskipped: {install_file}")
+            print("\t\t(skipped)")
 
 
 def ensure_forge_client(source_dir):
