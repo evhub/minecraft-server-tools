@@ -3,19 +3,20 @@ import os
 from minecraft_server_tools import sync_mods, update_mods
 from minecraft_server_tools.constants import (
     SERVER_DIR,
-    ADD_IF_NEW_MODS_NAME,
-    ADD_IF_NEW_CLIENT_MODS_NAME,
+    DEDUPLICATE_MODS_NAME,
+    DEDUPLICATE_CLIENT_MODS_NAME,
 )
 
 
-ADD_IF_NEW_MODS_DIR = os.path.join(SERVER_DIR, ADD_IF_NEW_MODS_NAME)
-ADD_IF_NEW_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, ADD_IF_NEW_CLIENT_MODS_NAME)
+DEDUPLICATE_MODS_DIR = os.path.join(SERVER_DIR, DEDUPLICATE_MODS_NAME)
+DEDUPLICATE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, DEDUPLICATE_CLIENT_MODS_NAME)
 
 
 def get_all_mod_names(mods_dirs):
     all_mod_names = {}
-    for mods_dir in mods_dirs:
-        all_mod_names.update(update_mods.get_mod_names_to_jar_names(mods_dir, silent=True))
+    for dirname in mods_dirs:
+        if os.path.exists(dirname):
+            all_mod_names.update(update_mods.get_mod_names_to_jar_names(dirname, silent=True))
     return all_mod_names
 
 
@@ -42,8 +43,23 @@ def add_new_mods(new_mods_dir, to_mods_dir, all_mod_names):
     return made_changes
 
 
+def deduplicate_mods(new_mods_dir, all_mod_names):
+    if os.path.exists(new_mods_dir):
+        print(f"\nDeduplicating mods in: {new_mods_dir}")
+        for mod_name, jar_name in update_mods.get_mod_names_to_jar_names(new_mods_dir).items():
+            from_path = os.path.join(new_mods_dir, jar_name)
+            if mod_name in all_mod_names:
+                sync_mods.rm_mod(from_path)
+
+
 def main():
     sync_mods.main()
+
+    print("\nFixing to deduplicate mods...")
+    sync_mods.remove_mods_in_from(
+        sync_mods.get_location_table_for(DEDUPLICATE_MODS_DIR),
+        sync_mods.get_location_table_for(DEDUPLICATE_CLIENT_MODS_DIR),
+    )
 
     all_mod_names = get_all_mod_names([
         sync_mods.MODS_DIR,
@@ -51,8 +67,8 @@ def main():
         sync_mods.REMOVED_MODS_DIR,
         sync_mods.REMOVED_CLIENT_MODS_DIR,
     ])
-    add_new_mods(ADD_IF_NEW_CLIENT_MODS_DIR, sync_mods.EXTRA_CLIENT_MODS_DIR, all_mod_names)
-    add_new_mods(ADD_IF_NEW_MODS_DIR, sync_mods.EXTRA_MODS_DIR, all_mod_names)
+    deduplicate_mods(DEDUPLICATE_CLIENT_MODS_DIR, all_mod_names)
+    deduplicate_mods(DEDUPLICATE_MODS_DIR, all_mod_names)
 
 
 if __name__ == "__main__":
