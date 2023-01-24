@@ -322,7 +322,7 @@ def get_jvm_args_for_gc(gc):
 
 FML_ARGS = [
     "-Dfml.queryResult=confirm",
-    "-Dfml.readTimeout=300",
+    "-Dfml.readTimeout=360",
     "-Dfml.ignoreInvalidMinecraftCertificates=true",
 ]
 
