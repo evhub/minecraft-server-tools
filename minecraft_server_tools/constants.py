@@ -66,7 +66,11 @@ else:
     FORGE_VERSION = (43, 1, 1)
 
 if IS_MOD_SERVER:
-    CLIENT_RAM = SERVER_RAM = "15G"
+    CLIENT_RAM = "15G"
+    if WINDOWS:
+        SERVER_RAM = "10G"
+    else:
+        SERVER_RAM = "28G"
 else:
     CLIENT_RAM = SERVER_RAM = "5G"
 
