@@ -1,7 +1,7 @@
 .PHONY: local-install
 local-install:
 	npm install --global yarn
-	yarn add mc-curseforge-api
+	yarn add node-curseforge
 	python3 -m pip install -Ue .
 
 .PHONY: aws-install

@@ -104,11 +104,11 @@ max_client_ram = psutil.virtual_memory().total // GB - 1
 max_server_ram = psutil.virtual_memory().available // GB
 
 if int(CLIENT_RAM[:-1]) > max_client_ram:
-    print(f"\nWARNING: Reducing client RAM from {CLIENT_RAM}G to {max_client_ram}G.")
+    print(f"\nWARNING: Reducing client RAM from {CLIENT_RAM} to {max_client_ram}G.")
     CLIENT_RAM = str(max_client_ram) + "G"
 
 if int(SERVER_RAM[:-1]) > max_server_ram:
-    print(f"\nWARNING: Reducing server RAM from {SERVER_RAM}G to {max_server_ram}G.")
+    print(f"\nWARNING: Reducing server RAM from {SERVER_RAM} to {max_server_ram}G.")
     SERVER_RAM = str(max_server_ram) + "G"
 
 

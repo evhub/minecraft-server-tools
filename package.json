@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "mc-curseforge-api": "^2.2.3",
-    "node-curseforge": "^1.2.0"
+    "node-curseforge": "^1.2.2"
   }
 }
