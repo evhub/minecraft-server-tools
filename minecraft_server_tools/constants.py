@@ -56,7 +56,7 @@ MOD_ZIP_PATH = first_that_exists([
     "~/OneDrive/Minecraft Mods/Minecraft Mods.zip",
 ])
 
-IS_MOD_SERVER = "mod" in SERVER_DIR.lower() and os.path.exists(SERVER_DIR)
+IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 
 MC_VERSION = (1, 19, 2)
 
@@ -66,7 +66,7 @@ else:
     FORGE_VERSION = (43, 1, 1)
 
 if IS_MOD_SERVER:
-    CLIENT_RAM = SERVER_RAM = "11G"
+    CLIENT_RAM = SERVER_RAM = "14G"
 else:
     CLIENT_RAM = SERVER_RAM = "5G"
 
