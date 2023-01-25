@@ -295,6 +295,7 @@ BASE_JVM_ARGS = [
     # "-XX:TargetSurvivorRatio=90",  # atm: 32; default: 50
     # "-XX:SurvivorRatio=32",  # atm: 32; default: 8
     "-XX:+UseNUMA",  # hilltty-flags
+    "-XX:-UseBiasedLocking",  # hilltty-flags
 ]
 
 def get_jvm_args_for_gc(gc):
@@ -313,6 +314,7 @@ def get_jvm_args_for_gc(gc):
     elif gc == "Shenandoah":
         return [
             "-XX:+UseShenandoahGC",
+            "-XX:LargePageSizeInBytes=2M",  # hilltty-flags
             "-XX:ShenandoahGCMode=iu",  # hilltty-flags
         ]
     elif gc == "Z":
