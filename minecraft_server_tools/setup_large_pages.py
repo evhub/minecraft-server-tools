@@ -5,12 +5,12 @@ from minecraft_server_tools.constants import (
 
 SYSCTL_CONF_PATH = fixpath("/etc/sysctl.conf")
 
-NR_HUGEPAGES = int(SERVER_RAM.removesuffix("G")) * 1024 // 2
+NR_HUGEPAGES = int(SERVER_RAM[:-1]) * 1024 // 2
 SET_HUGEPAGES_LINE = f"vm.nr_hugepages = {NR_HUGEPAGES}"
 
 
-def enable_large_pages():
-    print("Enabling large pages...")
+def setup_large_pages():
+    print("Setting up large pages...")
     with open(SYSCTL_CONF_PATH, "r") as sysctl_conf_file:
         sysctl_conf = sysctl_conf_file.read()
     new_lines = []
@@ -27,8 +27,8 @@ def enable_large_pages():
         new_lines.append(SET_HUGEPAGES_LINE)
     with open(SYSCTL_CONF_PATH, "w") as sysctl_conf_file:
         sysctl_conf_file.write("\n".join(new_lines))
-    print("\tLarge pages enabled; REBOOT REQUIRED.")
+    print("\tLarge pages set up; REBOOT REQUIRED!")
 
 
 if __name__ == "__main__":
-    enable_large_pages()
+    setup_large_pages()
