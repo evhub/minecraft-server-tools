@@ -286,7 +286,7 @@ BASE_JVM_ARGS = [
     "-XX:+PerfDisableSharedMem",  # aikar-flags
     "-XX:+UseStringDeduplication",
     "-XX:+OmitStackTraceInFastThrow",  # aikar-flags
-    "-XX:+UseLargePagesInMetaspace",  # aikar-flags
+    # "-XX:+UseLargePagesInMetaspace",  # OLD
     "-XX:+UseLargePages",  # hilltty-flags
     "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
     "-XX:MaxGCPauseMillis=100",  # atm: 200; default: 200
