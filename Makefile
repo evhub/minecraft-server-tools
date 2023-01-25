@@ -6,8 +6,10 @@ local-install:
 
 .PHONY: aws-install
 aws-install: update-repo
-	sudo yum install python3 java-17-amazon-corretto
+	sudo yum install python3 java-17-amazon-corretto tuned
+	sudo tuned-adm profile throughput-performance
 	sudo python3 -m pip install -Ue .
+	sudo python3 -m minecraft_server_tools.enable_large_pages
 
 .PHONY: update-repo
 update-repo:
