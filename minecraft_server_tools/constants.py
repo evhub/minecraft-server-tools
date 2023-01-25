@@ -105,7 +105,7 @@ EXTRA_INSTALL_FILES = [
 
 GB = 1024**3
 max_client_ram = psutil.virtual_memory().total // GB - 1
-max_server_ram = psutil.virtual_memory().available // GB
+max_server_ram = psutil.virtual_memory().total // GB - 3
 
 if int(CLIENT_RAM[:-1]) > max_client_ram:
     print(f"\nWARNING: Reducing client RAM from {CLIENT_RAM} to {max_client_ram}G.")
