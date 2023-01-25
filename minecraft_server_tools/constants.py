@@ -269,31 +269,32 @@ CURSEFORGE_API_RETRY_DELAY = 0.1
 JAVA_EXECUTABLE = "java"
 
 CLIENT_GC = "G1"
-SERVER_GC = "G1"
+SERVER_GC = "Shenandoah"
 
 BASE_JVM_ARGS = [
     # "-d64",  # OLD
     "-server",
     # "-XX:+AggressiveOpts",  # OLD
     "-XX:+UnlockExperimentalVMOptions",
-    "-XX:+OptimizeStringConcat",
     "-XX:+AlwaysPreTouch",
     # "-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses",  # OLD
     "-XX:+DisableExplicitGC",
-    "-XX:+ParallelRefProcEnabled",
+    "-XX:+OptimizeStringConcat",
+    "-XX:+ParallelRefProcEnabled",  # aikar-flags
     "-XX:+UseCompressedOops",
     "-XX:+ScavengeBeforeFullGC",
-    "-XX:+PerfDisableSharedMem",
+    "-XX:+PerfDisableSharedMem",  # aikar-flags
     "-XX:+UseStringDeduplication",
-    "-XX:+OmitStackTraceInFastThrow",  # NEW
-    # "-XX:+UseLargePagesInMetaspace",  # OLD
-    # "-XX:+UseLargePages",  # NEW
+    "-XX:+OmitStackTraceInFastThrow",  # aikar-flags
+    "-XX:+UseLargePagesInMetaspace",  # aikar-flags
+    "-XX:+UseLargePages",  # hilltty-flags
     "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
-    "-XX:MaxGCPauseMillis=40",  # atm: 200; default: 200
+    "-XX:MaxGCPauseMillis=100",  # atm: 200; default: 200
     "-XX:InitiatingHeapOccupancyPercent=20",  # atm: 15; default: 45
     "-XX:MaxTenuringThreshold=1",  # atm: 1; default: 15
     # "-XX:TargetSurvivorRatio=90",  # atm: 32; default: 50
-    "-XX:SurvivorRatio=32",  # atm: 32; default: 8
+    # "-XX:SurvivorRatio=32",  # atm: 32; default: 8
+    "-XX:+UseNUMA",  # hilltty-flags
 ]
 
 def get_jvm_args_for_gc(gc):
@@ -312,6 +313,7 @@ def get_jvm_args_for_gc(gc):
     elif gc == "Shenandoah":
         return [
             "-XX:+UseShenandoahGC",
+            "-XX:ShenandoahGCMode=iu",  # hilltty-flags
         ]
     elif gc == "Z":
         return [
