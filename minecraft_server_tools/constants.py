@@ -70,7 +70,7 @@ if IS_MOD_SERVER:
     if WINDOWS:
         SERVER_RAM = "10G"
     else:
-        SERVER_RAM = "24G"
+        SERVER_RAM = "26G"
 else:
     CLIENT_RAM = SERVER_RAM = "5G"
 
@@ -269,7 +269,7 @@ CURSEFORGE_API_RETRY_DELAY = 0.1
 JAVA_EXECUTABLE = "java"
 
 CLIENT_GC = "G1"
-SERVER_GC = "Shenandoah"
+SERVER_GC = "G1"
 
 BASE_JVM_ARGS = [
     # "-d64",  # OLD
