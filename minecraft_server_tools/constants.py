@@ -66,7 +66,7 @@ else:
     FORGE_VERSION = (43, 1, 1)
 
 if IS_MOD_SERVER:
-    CLIENT_RAM = "15G"
+    CLIENT_RAM = "16G"
     if WINDOWS:
         SERVER_RAM = "10G"
     else:
@@ -322,7 +322,7 @@ def get_jvm_args_for_gc(gc):
 
 FML_ARGS = [
     "-Dfml.queryResult=confirm",
-    "-Dfml.readTimeout=360",
+    "-Dfml.readTimeout=900",
     "-Dfml.ignoreInvalidMinecraftCertificates=true",
 ]
 
