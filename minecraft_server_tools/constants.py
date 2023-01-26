@@ -368,6 +368,7 @@ EXTRA_INSTALL_FILES += [
 OPTIONAL_INSTALL_FILES = [
     "options.txt",
     "optionsof.txt",
+    "optionsshaders.txt",
 ]
 
 YES_STRS = [

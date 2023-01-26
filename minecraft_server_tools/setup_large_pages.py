@@ -6,7 +6,7 @@ from minecraft_server_tools.constants import (
 SYSCTL_CONF_PATH = fixpath("/etc/sysctl.conf")
 
 NR_HUGEPAGES = (
-    int(SERVER_RAM[:-1]) * 1024 // 2 + 600
+    (int(SERVER_RAM[:-1]) + 1) * 1024 // 2
 )
 SET_HUGEPAGES_LINE = f"vm.nr_hugepages = {NR_HUGEPAGES}"
 
