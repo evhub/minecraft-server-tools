@@ -371,6 +371,10 @@ OPTIONAL_INSTALL_FILES = [
     "optionsshaders.txt",
 ]
 
+OPTIONAL_INSTALL_FOLDERS = [
+    os.path.join("journeymap", "config"),
+]
+
 YES_STRS = [
     "y",
     "yes",

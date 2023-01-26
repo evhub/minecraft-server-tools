@@ -18,6 +18,7 @@ from minecraft_server_tools.constants import (
     README_FILE,
     MOD_ZIP_PATH,
     OPTIONAL_INSTALL_FILES,
+    OPTIONAL_INSTALL_FOLDERS,
     MODS_NAME,
     CLIENT_MODS_NAME,
     YES_STRS,
@@ -39,7 +40,7 @@ def sync_client_mods(source_dir):
 
 def install_extras(source_dir, do_optional=True, clean=True):
     print("\nInstalling other files/folders...")
-    for install_dir in EXTRA_INSTALL_FOLDERS:
+    for install_dir in EXTRA_INSTALL_FOLDERS + (OPTIONAL_INSTALL_FOLDERS if do_optional else []):
         from_dir = os.path.join(source_dir, install_dir)
         to_dir = os.path.join(MINECRAFT_DIR, install_dir)
         print(f"\t{install_dir}...")
@@ -71,9 +72,16 @@ def ensure_forge_client(source_dir):
 
 
 def get_paths_to_zip():
-    for install_fname in EXTRA_INSTALL_FILES + OPTIONAL_INSTALL_FILES:
+    for install_fname in (
+        EXTRA_INSTALL_FILES
+        + OPTIONAL_INSTALL_FILES
+    ):
         yield os.path.join(MINECRAFT_DIR, install_fname)
-    for install_dirname in EXTRA_INSTALL_FOLDERS + [MODS_NAME]:
+    for install_dirname in (
+        EXTRA_INSTALL_FOLDERS
+        + OPTIONAL_INSTALL_FOLDERS
+        + [MODS_NAME]
+    ):
         install_dirpath = os.path.join(MINECRAFT_DIR, install_dirname)
         for dirpath, dirnames, filenames in os.walk(install_dirpath):
             yield dirpath
@@ -137,7 +145,7 @@ def install_from_server():
 
 
 def install_from_zip():
-    do_optional = input(f"\nInstall optional files {OPTIONAL_INSTALL_FILES}? [y/N] ").lower() in YES_STRS
+    do_optional = input(f"\nInstall optional files {OPTIONAL_INSTALL_FILES + OPTIONAL_INSTALL_FOLDERS}? [y/N] ").lower() in YES_STRS
     if do_optional:
         print("Will install optional files.")
     else:
