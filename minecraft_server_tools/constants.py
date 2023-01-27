@@ -275,10 +275,10 @@ BASE_JVM_ARGS = [
     # "-d64",  # OLD
     "-server",
     # "-XX:+AggressiveOpts",  # OLD
-    "-XX:+UnlockExperimentalVMOptions",
-    "-XX:+AlwaysPreTouch",
+    "-XX:+UnlockExperimentalVMOptions",  # always
+    "-XX:+AlwaysPreTouch",  # always
+    "-XX:+DisableExplicitGC",  # always
     # "-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses",  # OLD
-    "-XX:+DisableExplicitGC",
     "-XX:+OptimizeStringConcat",
     "-XX:+ParallelRefProcEnabled",  # aikar-flags
     "-XX:+UseCompressedOops",
@@ -288,8 +288,9 @@ BASE_JVM_ARGS = [
     # "-XX:+OmitStackTraceInFastThrow",
     # "-XX:+UseLargePagesInMetaspace",  # OLD
     "-XX:+UseLargePages",  # hilltty-flags
+    "-XX:LargePageSizeInBytes=2M",  # hilltty-flags
     "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
-    "-XX:MaxGCPauseMillis=66",  # atm: 200; default: 200
+    "-XX:MaxGCPauseMillis=60",  # atm: 200; default: 200
     "-XX:InitiatingHeapOccupancyPercent=20",  # atm: 15; default: 45
     "-XX:MaxTenuringThreshold=1",  # atm: 1; default: 15
     # "-XX:TargetSurvivorRatio=90",  # atm: 32; default: 50
@@ -314,7 +315,6 @@ def get_jvm_args_for_gc(gc):
     elif gc == "Shenandoah":
         return [
             "-XX:+UseShenandoahGC",
-            "-XX:LargePageSizeInBytes=2M",  # hilltty-flags
             "-XX:ShenandoahGCMode=iu",  # hilltty-flags
         ]
     elif gc == "Z":
