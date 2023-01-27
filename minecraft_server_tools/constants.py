@@ -285,11 +285,11 @@ BASE_JVM_ARGS = [
     "-XX:+ScavengeBeforeFullGC",
     "-XX:+PerfDisableSharedMem",  # aikar-flags
     "-XX:+UseStringDeduplication",
-    "-XX:+OmitStackTraceInFastThrow",  # aikar-flags
+    # "-XX:+OmitStackTraceInFastThrow",
     # "-XX:+UseLargePagesInMetaspace",  # OLD
     "-XX:+UseLargePages",  # hilltty-flags
     "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
-    "-XX:MaxGCPauseMillis=50",  # atm: 200; default: 200
+    "-XX:MaxGCPauseMillis=66",  # atm: 200; default: 200
     "-XX:InitiatingHeapOccupancyPercent=20",  # atm: 15; default: 45
     "-XX:MaxTenuringThreshold=1",  # atm: 1; default: 15
     # "-XX:TargetSurvivorRatio=90",  # atm: 32; default: 50
