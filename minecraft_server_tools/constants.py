@@ -77,9 +77,7 @@ else:
     CLIENT_RAM = SERVER_RAM = "5G"
 
 ALWAYS_USE_LATEST_VERSION_FOR_MODS = [
-    # "LibX",
-    # "sophisticatedbackpacks",
-    # "jei",
+    "toofast",
 ]
 
 EXTRA_INSTALL_FOLDERS = [
