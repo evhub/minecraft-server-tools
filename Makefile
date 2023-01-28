@@ -14,7 +14,3 @@ aws-install: update-repo
 .PHONY: update-repo
 update-repo:
 	git pull
-
-.PHONY: install-client
-install-client:
-	install-client.bat

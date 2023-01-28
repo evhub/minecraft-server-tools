@@ -40,7 +40,7 @@ def first_that_exists(path_list):
             path = fixpath(path)
             if os.path.exists(path):
                 return path
-    return path_list[0]
+    return [p for p in path_list if p is not None][0]
 
 WINDOWS = os.name == "nt"
 
@@ -48,8 +48,9 @@ WINDOWS = os.name == "nt"
 # Commonly changed constants
 
 SERVER_DIR = first_that_exists([
-    "~/1_19_mod_server",
     os.getenv("MINECRAFT_SERVER_DIR"),
+    "~/1_19_mod_server",
+    "~/OneDrive/Minecraft/1.19 Mod Server",
 ])
 
 MOD_ZIP_PATH = first_that_exists([
@@ -267,6 +268,11 @@ CURSEFORGE_API_RETRIES = 3
 CURSEFORGE_API_RETRY_DELAY = 0.1
 
 
+# Large page setup constants
+
+USE_LARGE_PAGES = False
+
+
 # Server start constants
 
 JAVA_EXECUTABLE = "java"
@@ -291,7 +297,6 @@ BASE_JVM_ARGS = [
     # "-XX:+OmitStackTraceInFastThrow",
     # "-XX:+UseLargePagesInMetaspace",  # OLD
     "-XX:+UseLargePages",  # hilltty-flags
-    "-XX:LargePageSizeInBytes=2M",  # hilltty-flags
     "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
     "-XX:MaxGCPauseMillis=60",  # atm: 200; default: 200
     "-XX:InitiatingHeapOccupancyPercent=20",  # atm: 15; default: 45
@@ -300,7 +305,9 @@ BASE_JVM_ARGS = [
     # "-XX:SurvivorRatio=32",  # atm: 32; default: 8
     "-XX:+UseNUMA",  # hilltty-flags
     "-XX:-UseBiasedLocking",  # hilltty-flags
-]
+] + ([
+    "-XX:LargePageSizeInBytes=2M",  # hilltty-flags
+] if USE_LARGE_PAGES else [])
 
 def get_jvm_args_for_gc(gc):
     if gc == "G1":
@@ -382,6 +389,26 @@ YES_STRS = [
     "y",
     "yes",
 ]
+
+
+# Make launcher constants
+
+LAUNCHER_FILE = first_that_exists([
+    "~/Applications/Minecraft.app",
+    "/Applications/Minecraft.app",
+    r"C:\Program Files (x86)\Minecraft Launcher\MinecraftLauncher.exe",
+    r"C:\Users\Public\Desktop\Minecraft Launcher.ink",
+])
+
+DESKTOP_DIR = first_that_exists([
+    "~/Desktop",
+    "~/OneDrive/Desktop",
+])
+
+NEW_LAUNCHER_PATH = fixpath(os.path.join(
+    DESKTOP_DIR,
+    "Evan's Modded Minecraft" + (".bat" if WINDOWS else ".sh"),
+))
 
 
 # Searchable mods constants

@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 import zipfile
 import tempfile
@@ -137,30 +138,39 @@ def install_from_dir(source_dir, do_optional=False):
 
 
 def install_from_server():
+    """Install from server and return whether or not to install optional files."""
     sync_mods.main()
 
     install_from_dir(SERVER_DIR, do_optional=True)
 
     zip_mods()
+    return True
 
 
 def install_from_zip():
-    do_optional = input(f"\nInstall optional files {OPTIONAL_INSTALL_FILES + OPTIONAL_INSTALL_FOLDERS}? [y/N] ").lower() in YES_STRS
+    """Install from zip and return whether or not to install optional files."""
+    if "--yes-optional" in sys.argv:
+        do_optional = True
+    elif "--no-optional" in sys.argv:
+        do_optional = False
+    else:
+        do_optional = input(f"\nInstall optional files {OPTIONAL_INSTALL_FILES + OPTIONAL_INSTALL_FOLDERS}? [y/N] ").lower() in YES_STRS
     if do_optional:
         print("Will install optional files.")
     else:
         print("Will NOT install optional files.")
     with unzipped_mods() as temp_dir:
         install_from_dir(temp_dir, do_optional)
+    return do_optional
 
 
 def main():
     if os.path.exists(SERVER_DIR):
         print("\nInstalling from server...")
-        install_from_server()
+        return install_from_server()
     elif os.path.exists(MOD_ZIP_PATH):
         print("\nInstalling from zipfile...")
-        install_from_zip()
+        return install_from_zip()
     else:
         raise IOError("Could not find files for install.")
 
