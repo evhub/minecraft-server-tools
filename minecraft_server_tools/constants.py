@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+from datetime import timedelta
 
 import psutil
 try:
@@ -235,6 +236,8 @@ CURSEFORGE_NAME_ELEMS_TO_STRIP = [
     "Curseforge",
     "...",
 ]
+
+AVOID_FILES_PUBLISHED_WITHIN = timedelta(days=2)
 
 SEARCH_URL_TEMPLATE = "https://www.googleapis.com/customsearch/v1/siterestrict?key={google_api_key}&cx={search_engine_id}&q={query}&nfpr=1&nirf={query}"
 

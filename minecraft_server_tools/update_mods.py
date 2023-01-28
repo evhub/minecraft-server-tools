@@ -37,6 +37,7 @@ from minecraft_server_tools.constants import (
     CURSEFORGE_API_RETRIES,
     CURSEFORGE_API_RETRY_DELAY,
     PREFER_TWO_NUM_VER_TO_WRONG_THREE_NUM,
+    AVOID_FILES_PUBLISHED_WITHIN,
     ver_join,
     ver_split,
 )
@@ -353,15 +354,26 @@ def get_curseforge_files(curseforge_id):
     return run_curseforge_api_cmd(["getfiles", curseforge_id])
 
 
-def get_time_from_timestamp(timestamp):
+def get_time_from_timestamp(timestamp, mod_name):
     match_results = TIMESTAMP_FORMAT_REGEX.match(timestamp)
     if match_results is None:
         raise ValueError(f"failed to parse timestamp {timestamp!r}")
-    return datetime.datetime(*(int(match_results[i]) for i in range(1, 7)))
+    parsed_time = datetime.datetime(*(int(match_results[i]) for i in range(1, 7)))
+    if (
+        AVOID_FILES_PUBLISHED_WITHIN is not None
+        and mod_name not in ALWAYS_USE_LATEST_VERSION_FOR_MODS
+        and datetime.datetime.now() - parsed_time < AVOID_FILES_PUBLISHED_WITHIN
+    ):
+        parsed_time = datetime.datetime(1, 1, 1)
+    return parsed_time
 
 
 def timestamp_sort(curseforge_files):
-    return sorted(curseforge_files, key=lambda f: get_time_from_timestamp(f["fileDate"]), reverse=True)
+    return sorted(
+        curseforge_files,
+        key=lambda f: get_time_from_timestamp(f["fileDate"], mod_name=None),
+        reverse=True,
+    )
 
 
 def get_max_version(versions):
@@ -381,7 +393,7 @@ def sort_releases(curseforge_files, mod_name):
             0 if mod_name in ALWAYS_USE_LATEST_VERSION_FOR_MODS
             else -f["releaseType"]
         ),
-        get_time_from_timestamp(f["fileDate"]),
+        get_time_from_timestamp(f["fileDate"], mod_name),
     ), reverse=True)
 
 
