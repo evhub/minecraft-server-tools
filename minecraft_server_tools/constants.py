@@ -352,7 +352,7 @@ FORGE_INSTALLER_URL = format_vers("https://files.minecraftforge.net/maven/net/mi
 FORGE_INSTALLER_JAR = format_vers("forge-{mc_version}-{forge_version}-installer.jar")
 FORGE_JAR = format_vers("forge-{mc_version}-{forge_version}.jar")
 
-OLD_JARS_REGEX = full_regex(format_vers("(forge-(?!{mc_version}-{forge_version})[0-9.]+-[0-9.]+(-installer)?|minecraft_server\.(?!{mc_version})[0-9.]+)\.jar"))
+OLD_JARS_REGEX = full_regex(format_vers(r"(forge-(?!{mc_version}-{forge_version})[0-9.]+-[0-9.]+(-installer)?|minecraft_server\.(?!{mc_version})[0-9.]+)\.jar"))
 
 
 # Client install constants

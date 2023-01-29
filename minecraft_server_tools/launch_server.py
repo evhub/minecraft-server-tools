@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 from urllib.request import urlretrieve
 
@@ -91,16 +92,21 @@ def write_jvm_args():
         jvm_args_file.write("\n".join(get_java_args()) + "\n")
 
 
-def start_server():
+def start_server(dry_run=False):
     clean_forge_jars()
     ensure_forge_server()
     fix_run_bat()
     write_jvm_args()
-    if os.path.exists(FORGE_JAR_PATH):
-        run_java(get_java_args() + [FORGE_JAR_PATH] + FORGE_ARGS)
-    else:
-        run_high_priority(FORGE_LAUNCH_CMD + FORGE_ARGS)
+    if not dry_run:
+        if os.path.exists(FORGE_JAR_PATH):
+            run_java(get_java_args() + [FORGE_JAR_PATH] + FORGE_ARGS)
+        else:
+            run_high_priority(FORGE_LAUNCH_CMD + FORGE_ARGS)
+
+
+def main():
+    start_server(dry_run="--dry-run" in sys.argv)
 
 
 if __name__ == "__main__":
-    start_server()
+    main()

@@ -140,6 +140,7 @@ def install_from_dir(source_dir, do_optional=False):
 def install_from_server():
     """Install from server and return whether or not to install optional files."""
     sync_mods.main()
+    launch_server.start_server(dry_run=True)
 
     install_from_dir(SERVER_DIR, do_optional=True)
 
