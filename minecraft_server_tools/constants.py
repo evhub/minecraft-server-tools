@@ -395,6 +395,7 @@ LAUNCHER_FILE = first_that_exists([
     "~/Applications/Minecraft.app",
     "/Applications/Minecraft.app",
     r"C:\Program Files (x86)\Minecraft Launcher\MinecraftLauncher.exe",
+    r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Minecraft Launcher\Minecraft Launcher.ink",
     r"C:\Users\Public\Desktop\Minecraft Launcher.ink",
 ])
 

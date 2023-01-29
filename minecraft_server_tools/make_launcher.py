@@ -11,6 +11,7 @@ OPEN_CMD = "" if WINDOWS else "open "
 
 def get_launcher_file_contents(install_client_args=""):
     """Get the contents that should go in the launcher script."""
+    print(f"\tIdentified Minecraft Launcher location as: {LAUNCHER_FILE!r}")
     return f"""
 cd "{ROOT_DIR}"
 git pull
@@ -28,7 +29,7 @@ def make_launcher_file(do_optional=False):
         install_client_args = " --yes-optional"
     else:
         install_client_args = " --no-optional"
-    print(f"Writing mod launcher to {NEW_LAUNCHER_PATH!r}...")
+    print(f"\nWriting mod launcher to {NEW_LAUNCHER_PATH!r}...")
     with open(NEW_LAUNCHER_PATH, "w") as new_launcher_file:
         new_launcher_file.write(get_launcher_file_contents(install_client_args))
 
