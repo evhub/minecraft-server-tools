@@ -63,7 +63,7 @@ IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 MC_VERSION = (1, 19, 2)
 
 if IS_MOD_SERVER:
-    FORGE_VERSION = (43, 2, 3)
+    FORGE_VERSION = (43, 2, 4)
 else:
     FORGE_VERSION = (43, 1, 1)
 
