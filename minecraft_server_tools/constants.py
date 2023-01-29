@@ -286,10 +286,10 @@ BASE_JVM_ARGS = [
     "-XX:+AlwaysPreTouch",  # always
     "-XX:+DisableExplicitGC",  # always
     # "-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses",  # OLD
-    "-XX:+OptimizeStringConcat",
+    "-XX:+OptimizeStringConcat",  # default: True
+    "-XX:+UseCompressedOops",  # default: True
+    "-XX:+ScavengeBeforeFullGC",  # default: True
     "-XX:+ParallelRefProcEnabled",  # aikar-flags
-    "-XX:+UseCompressedOops",
-    "-XX:+ScavengeBeforeFullGC",
     "-XX:+PerfDisableSharedMem",  # aikar-flags
     "-XX:+UseStringDeduplication",
     # "-XX:+OmitStackTraceInFastThrow",
@@ -297,10 +297,10 @@ BASE_JVM_ARGS = [
     "-XX:+UseLargePages",  # hilltty-flags
     "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
     "-XX:MaxGCPauseMillis=60",  # atm: 200; default: 200
-    "-XX:InitiatingHeapOccupancyPercent=20",  # atm: 15; default: 45
+    "-XX:InitiatingHeapOccupancyPercent=20",  # atm: 15; aikar: 20; default: 45
     "-XX:MaxTenuringThreshold=1",  # atm: 1; default: 15
     # "-XX:TargetSurvivorRatio=90",  # atm: 32; default: 50
-    # "-XX:SurvivorRatio=32",  # atm: 32; default: 8
+    "-XX:SurvivorRatio=32",  # atm: 32; default: 8
     "-XX:+UseNUMA",  # hilltty-flags
     "-XX:-UseBiasedLocking",  # hilltty-flags
 ] + ([
@@ -311,14 +311,14 @@ def get_jvm_args_for_gc(gc):
     if gc == "G1":
         return [
             "-XX:+UseG1GC",
-            "-XX:G1ReservePercent=20",  # atm: 20
-            "-XX:G1NewSizePercent=20",  # atm: 30
-            "-XX:G1HeapRegionSize=32M",  # atm: 8M
+            "-XX:G1ReservePercent=20",  # atm: 20; aikar: 15
+            "-XX:G1NewSizePercent=30",  # atm: 30; aikar: 40
+            "-XX:G1HeapRegionSize=32M",  # atm: 8M; aikar: 16M
             "-XX:G1MixedGCCountTarget=4",  # atm: 4; default: 8
+            "-XX:G1RSetUpdatingPauseTimePercent=5",  # atm: 5; default: 10
             # "-XX:G1MixedGCLiveThresholdPercent=35",  # atm: 90; default: 85
-            # "-XX:G1MaxNewSizePercent=60",  # atm: 40; default: 60
+            # "-XX:G1MaxNewSizePercent=60",  # atm: 40; aikar: 50; default: 60
             # "-XX:G1HeapWastePercent=5",  # atm: 5; default: 5
-            # "-XX:G1RSetUpdatingPauseTimePercent=5",  # atm: 5; default: 10
         ]
     elif gc == "Shenandoah":
         return [
