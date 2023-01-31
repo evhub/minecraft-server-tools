@@ -85,7 +85,6 @@ EXTRA_INSTALL_FOLDERS = [
     "defaultconfigs",
     "kubejs",
     "resourcepacks",
-    "shaderpacks",
     "scripts",
     "global_data_packs",
     "global_resource_packs",
@@ -381,6 +380,7 @@ OPTIONAL_INSTALL_FILES = [
 
 OPTIONAL_INSTALL_FOLDERS = [
     os.path.join("journeymap", "config"),
+    "shaderpacks",
 ]
 
 YES_STRS = [
