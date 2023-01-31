@@ -1,3 +1,5 @@
+import os
+
 from minecraft_server_tools import install_client
 from minecraft_server_tools.constants import (
     WINDOWS,
