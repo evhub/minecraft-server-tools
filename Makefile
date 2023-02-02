@@ -5,7 +5,7 @@ local-install:
 	python3 -m pip install -Ue .
 
 .PHONY: aws-install
-aws-install: update-repo
+aws-install: update-repo fix-spark
 	sudo yum install python3 java-17-amazon-corretto tuned
 	sudo yum update
 	sudo tuned-adm profile throughput-performance
@@ -15,3 +15,8 @@ aws-install: update-repo
 .PHONY: update-repo
 update-repo:
 	git pull
+
+.PHONY: fix-spark
+fix-spark:
+	sudo sysctl kernel.perf_event_paranoid=1
+	sudo sysctl kernel.kptr_restrict=0
