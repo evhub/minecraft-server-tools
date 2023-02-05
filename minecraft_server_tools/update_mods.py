@@ -36,7 +36,6 @@ from minecraft_server_tools.constants import (
     ALWAYS_USE_LATEST_VERSION_FOR_MODS,
     CURSEFORGE_API_RETRIES,
     CURSEFORGE_API_RETRY_DELAY,
-    PREFER_TWO_NUM_VER_TO_WRONG_THREE_NUM,
     AVOID_FILES_PUBLISHED_WITHIN,
     ver_join,
     ver_split,
@@ -445,22 +444,27 @@ def get_latest_version(mod_name, curseforge_id):
         return best_release(correctly_versioned_files, mod_name)
     print(f"No correctly versioned files found for mod {mod_name!r}.")
 
-    if PREFER_TWO_NUM_VER_TO_WRONG_THREE_NUM:
-        two_num_ver_files = []
-        for file_data, versions in curseforge_files_and_versions:
-            if ver_join(MC_VERSION[:2]) in versions:
-                two_num_ver_files.append(file_data)
-        if two_num_ver_files:
-            return best_release(two_num_ver_files, mod_name)
-
     compatibly_versioned_files = []
+    for file_data, versions in curseforge_files_and_versions:
+        for raw_ver in versions:
+            try:
+                ver = ver_split(raw_ver)
+            except ValueError:
+                pass
+            else:
+                if MC_VERSION[:2] <= ver <= MC_VERSION:
+                    compatibly_versioned_files.append(file_data)
+    if compatibly_versioned_files:
+        return best_release(compatibly_versioned_files, mod_name)
+
+    maybe_compatible_files = []
     for file_data, versions in curseforge_files_and_versions:
         for ver in versions:
             if ver.startswith(ver_join(MC_VERSION[:2])):
-                compatibly_versioned_files.append(file_data)
+                maybe_compatible_files.append(file_data)
                 break
-    if compatibly_versioned_files:
-        return best_release(compatibly_versioned_files, mod_name)
+    if maybe_compatible_files:
+        return best_release(maybe_compatible_files, mod_name)
     print(f"No compatibly versioned files found for mod {mod_name!r} in:")
     pprint(list(timestamp_sort(curseforge_files))[:MAX_DEBUG_RESULTS])
 

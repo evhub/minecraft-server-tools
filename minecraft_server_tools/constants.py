@@ -153,8 +153,6 @@ ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 MODLOADER = "Forge"
 WRONG_MODLOADERS = ["Fabric", "Quilt"]
 
-PREFER_TWO_NUM_VER_TO_WRONG_THREE_NUM = True
-
 NON_CURSEFORGE_MODS = [
     "OptiFine",
     "preview OptiFine",
@@ -174,7 +172,7 @@ COMPONENT_SEPS = [
 
 NON_NAME_COMPONENT_REGEX = full_regex(
     r"[0-9].*|"
-    r"(?!cave|a$|ae2)((forge|fabric|quilt|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+"
+    r"(?!cave|a$|ae2|rare)((forge|fabric|quilt|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+"
 )
 
 NAME_REGEXES_TO_SPACE = [
