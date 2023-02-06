@@ -42,6 +42,9 @@ from minecraft_server_tools.constants import (
 )
 
 
+BEGINNING_OF_TIME = datetime.datetime(1, 1, 1)
+
+
 def google(query):
     print(f"Sending google search query {query!r}...")
     return requests.get(SEARCH_URL_TEMPLATE.format(
@@ -353,7 +356,8 @@ def get_curseforge_files(curseforge_id):
     return run_curseforge_api_cmd(["getfiles", curseforge_id])
 
 
-def get_time_from_timestamp(timestamp, mod_name):
+def get_curseforge_file_time(curseforge_file, mod_name):
+    timestamp = curseforge_file["fileDate"]
     match_results = TIMESTAMP_FORMAT_REGEX.match(timestamp)
     if match_results is None:
         raise ValueError(f"failed to parse timestamp {timestamp!r}")
@@ -363,14 +367,14 @@ def get_time_from_timestamp(timestamp, mod_name):
         and mod_name not in ALWAYS_USE_LATEST_VERSION_FOR_MODS
         and datetime.datetime.now() - parsed_time < AVOID_FILES_PUBLISHED_WITHIN
     ):
-        parsed_time = datetime.datetime(1, 1, 1)
+        parsed_time = BEGINNING_OF_TIME
     return parsed_time
 
 
 def timestamp_sort(curseforge_files):
     return sorted(
         curseforge_files,
-        key=lambda f: get_time_from_timestamp(f["fileDate"], mod_name=None),
+        key=lambda f: get_curseforge_file_time(f, mod_name=None),
         reverse=True,
     )
 
@@ -392,7 +396,7 @@ def sort_releases(curseforge_files, mod_name):
             0 if mod_name in ALWAYS_USE_LATEST_VERSION_FOR_MODS
             else -f["releaseType"]
         ),
-        get_time_from_timestamp(f["fileDate"], mod_name),
+        get_curseforge_file_time(f, mod_name),
     ), reverse=True)
 
 
@@ -424,8 +428,21 @@ def correct_modloader(versions, jar_name):
     return True
 
 
-def get_latest_version(mod_name, curseforge_id):
+def find_curseforge_file_for_jar(curseforge_files, find_jar_name):
+    for file_data in curseforge_files:
+        jar_name = get_jar_name_for_curseforge_file(file_data)
+        if are_same_jar(jar_name, find_jar_name):
+            return file_data
+    return None
+
+
+def get_latest_version(mod_name, curseforge_id, old_jar_name):
     curseforge_files = get_curseforge_files(curseforge_id)
+
+    old_curseforge_file = find_curseforge_file_for_jar(curseforge_files, old_jar_name)
+    if old_curseforge_file is None:
+        print(f"WARNING: Could not find curseforge file for existing jar: {old_jar_name}")
+    old_file_time = get_curseforge_file_time(old_curseforge_file, mod_name) if old_curseforge_file is not None else BEGINNING_OF_TIME
 
     curseforge_files_and_versions = []
     for file_data in curseforge_files:
@@ -433,6 +450,7 @@ def get_latest_version(mod_name, curseforge_id):
         if (
             file_data["downloadUrl"] is not None
             and correct_modloader(versions, get_jar_name_for_curseforge_file(file_data))
+            and get_curseforge_file_time(file_data, mod_name) >= old_file_time
         ):
             curseforge_files_and_versions.append((file_data, versions))
 
@@ -469,11 +487,16 @@ def get_latest_version(mod_name, curseforge_id):
     pprint(list(timestamp_sort(curseforge_files))[:MAX_DEBUG_RESULTS])
 
 
-def get_mod_names_to_latest_versions(mod_names_to_curseforge_ids):
+def are_same_jar(jar_name_1, jar_name_2):
+    return jar_name_1.replace(" ", "+") == jar_name_2.replace(" ", "+")
+
+
+def get_mod_names_to_latest_versions(mod_names_to_curseforge_ids, mod_names_to_jar_names):
     mod_names_to_latest_versions = {}
     missing_mods = []
     for mod_name, curseforge_id in mod_names_to_curseforge_ids.items():
-        latest_version = get_latest_version(mod_name, curseforge_id)
+        jar_name = mod_names_to_jar_names[mod_name]
+        latest_version = get_latest_version(mod_name, curseforge_id, jar_name)
         if latest_version is None:
             missing_mods.append(mod_name)
         else:
@@ -486,7 +509,7 @@ def get_updated_mod_names_to_files(mod_names_to_jar_names, mod_names_to_latest_v
     for mod_name, latest_file in mod_names_to_latest_versions.items():
         old_jar = mod_names_to_jar_names[mod_name]
         new_jar = get_jar_name_for_curseforge_file(latest_file)
-        if new_jar.replace(" ", "+") != old_jar.replace(" ", "+"):
+        if not are_same_jar(new_jar, old_jar):
             updated_mod_names_to_files[mod_name] = latest_file
     return updated_mod_names_to_files
 
@@ -532,7 +555,7 @@ def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interac
         mod_names_to_curseforge_names, nulled_mods = get_curseforge_names_for(mod_names_to_jar_names)
         if not dry_run:
             mod_names_to_curseforge_ids, missing_ids_mods = get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names)
-            mod_names_to_latest_versions, missing_files_mods = get_mod_names_to_latest_versions(mod_names_to_curseforge_ids)
+            mod_names_to_latest_versions, missing_files_mods = get_mod_names_to_latest_versions(mod_names_to_curseforge_ids, mod_names_to_jar_names)
             updated_mod_names_to_files = get_updated_mod_names_to_files(mod_names_to_jar_names, mod_names_to_latest_versions)
             if updated_mod_names_to_files:
                 if not os.path.exists(updated_mods_dir):
