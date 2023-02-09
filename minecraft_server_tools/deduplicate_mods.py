@@ -16,7 +16,9 @@ def get_all_mod_names(mods_dirs):
     all_mod_names = {}
     for dirname in mods_dirs:
         if os.path.exists(dirname):
-            all_mod_names.update(update_mods.get_mod_names_to_jar_names(dirname, silent=True))
+            for mod_name, jar_name in update_mods.get_mod_names_to_jar_names(dirname, silent=True).items():
+                assert mod_name not in all_mod_names, f"found multiple jars with same mod name {mod_name!r}: {all_mod_names[mod_name]!r}, {jar_name!r}"
+                all_mod_names[mod_name] = jar_name
     return all_mod_names
 
 

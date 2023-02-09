@@ -54,7 +54,9 @@ def google(query):
     )).json()
 
 
-def get_mod_name(jar_name, silent=False):
+def get_mod_name(jar_name, silent=None):
+    if silent is None:
+        silent = not DEBUG
     base_name = jar_name.removesuffix(".jar")
     for sep, min_count in COMPONENT_SEPS:
         components = base_name.split(sep)
@@ -188,7 +190,7 @@ def get_jar_names(mods_dir):
             yield fname
 
 
-def get_mod_names_to_jar_names(mods_dir, silent=False):
+def get_mod_names_to_jar_names(mods_dir, silent=None):
     mod_names_to_jar_names = {}
     for jar_name in get_jar_names(mods_dir):
         mod_name = get_mod_name(jar_name, silent=silent)
