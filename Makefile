@@ -6,8 +6,8 @@ local-install:
 
 .PHONY: aws-install
 aws-install: update-repo fix-spark
-	sudo yum install python3 java-17-amazon-corretto tuned
-	sudo yum update
+	sudo yum -y install python3 java-17-amazon-corretto tuned
+	sudo yum -y update
 	sudo tuned-adm profile throughput-performance
 	sudo python3 -m pip install -Ue .
 	sudo python3 -m minecraft_server_tools.setup_large_pages
