@@ -99,6 +99,18 @@ EXTRA_INSTALL_FILES = [
     "patchouli_data.json",
 ]
 
+OPTIONAL_INSTALL_FILES = [
+    "options.txt",
+    "optionsof.txt",
+    "optionsshaders.txt",
+]
+
+OPTIONAL_INSTALL_FOLDERS = [
+    os.path.join("journeymap", "config"),
+    "shaderpacks",
+    "ESM",
+]
+
 
 # Fix RAMs
 
@@ -368,17 +380,6 @@ README_FILE = "README.txt"
 EXTRA_INSTALL_FILES += [
     README_FILE,
     FORGE_INSTALLER_JAR,
-]
-
-OPTIONAL_INSTALL_FILES = [
-    "options.txt",
-    "optionsof.txt",
-    "optionsshaders.txt",
-]
-
-OPTIONAL_INSTALL_FOLDERS = [
-    os.path.join("journeymap", "config"),
-    "shaderpacks",
 ]
 
 YES_STRS = [
