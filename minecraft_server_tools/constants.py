@@ -68,9 +68,9 @@ else:
     FORGE_VERSION = (43, 1, 1)
 
 if IS_MOD_SERVER:
-    CLIENT_RAM = "16G"
+    CLIENT_RAM = "17G"
     if WINDOWS:
-        SERVER_RAM = "10G"
+        SERVER_RAM = "12G"
     else:
         SERVER_RAM = "26G"
 else:
@@ -305,7 +305,7 @@ BASE_JVM_ARGS = [
     # "-XX:+UseLargePagesInMetaspace",  # OLD
     "-XX:+UseLargePages",  # hilltty-flags
     "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
-    "-XX:MaxGCPauseMillis=60",  # atm: 200; default: 200
+    "-XX:MaxGCPauseMillis=40",  # atm: 200; default: 200
     "-XX:InitiatingHeapOccupancyPercent=20",  # atm: 15; aikar: 20; default: 45
     "-XX:MaxTenuringThreshold=1",  # atm: 1; default: 15
     # "-XX:TargetSurvivorRatio=90",  # atm: 32; default: 50
