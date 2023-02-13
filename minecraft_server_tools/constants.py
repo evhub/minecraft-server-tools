@@ -115,7 +115,7 @@ OPTIONAL_INSTALL_FOLDERS = [
 # Fix RAMs
 
 GB = 1024**3
-max_client_ram = psutil.virtual_memory().total // GB - 1
+max_client_ram = psutil.virtual_memory().total // GB - 2
 max_server_ram = psutil.virtual_memory().total // GB - 3
 
 if int(CLIENT_RAM[:-1]) > max_client_ram:
