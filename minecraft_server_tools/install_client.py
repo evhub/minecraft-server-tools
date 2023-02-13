@@ -144,7 +144,8 @@ def install_from_server():
 
     install_from_dir(SERVER_DIR, do_optional=True)
 
-    zip_mods()
+    if "--no-zip" not in sys.argv:
+        zip_mods()
     return True
 
 
