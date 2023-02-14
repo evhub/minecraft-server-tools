@@ -409,8 +409,9 @@ def best_release(curseforge_files, mod_name):
 def get_jar_name_for_curseforge_file(curseforge_file):
     url = curseforge_file["downloadUrl"]
     if url is None:
-        raise ValueError("got invalid downloadUrl in: " + repr(curseforge_file))
-    return url.rsplit("/", 1)[-1]
+        return None
+    else:
+        return url.rsplit("/", 1)[-1]
 
 
 def correct_modloader(versions, jar_name):
@@ -433,7 +434,7 @@ def correct_modloader(versions, jar_name):
 def find_curseforge_file_for_jar(curseforge_files, find_jar_name):
     for file_data in curseforge_files:
         jar_name = get_jar_name_for_curseforge_file(file_data)
-        if are_same_jar(jar_name, find_jar_name):
+        if jar_name is not None and are_same_jar(jar_name, find_jar_name):
             return file_data
     return None
 
@@ -449,9 +450,10 @@ def get_latest_version(mod_name, curseforge_id, old_jar_name):
     curseforge_files_and_versions = []
     for file_data in curseforge_files:
         versions = file_data["gameVersions"]
+        jar_name = get_jar_name_for_curseforge_file(file_data)
         if (
-            file_data["downloadUrl"] is not None
-            and correct_modloader(versions, get_jar_name_for_curseforge_file(file_data))
+            jar_name is not None
+            and correct_modloader(versions, jar_name)
             and get_curseforge_file_time(file_data, mod_name) >= old_file_time
         ):
             curseforge_files_and_versions.append((file_data, versions))
@@ -511,16 +513,19 @@ def get_updated_mod_names_to_files(mod_names_to_jar_names, mod_names_to_latest_v
     for mod_name, latest_file in mod_names_to_latest_versions.items():
         old_jar = mod_names_to_jar_names[mod_name]
         new_jar = get_jar_name_for_curseforge_file(latest_file)
-        if not are_same_jar(new_jar, old_jar):
+        if new_jar is not None and not are_same_jar(new_jar, old_jar):
             updated_mod_names_to_files[mod_name] = latest_file
     return updated_mod_names_to_files
 
 
 def download_file(curseforge_file, updated_mods_dir, mod_name):
     jar_name = get_jar_name_for_curseforge_file(curseforge_file)
+    assert jar_name is not None, f"cannot download from curseforge file: {curseforge_file!r}"
     url = curseforge_file["downloadUrl"]
     new_jar_path = os.path.join(updated_mods_dir, jar_name)
-    if not os.path.exists(new_jar_path):
+    if os.path.exists(new_jar_path):
+        print(f"WARNING: attempting to redownload existing jar {jar_name!r}")
+    else:
         print(f"Downloading {jar_name}...")
         new_mod_name = get_mod_name(jar_name, silent=True)
         if new_mod_name != mod_name:
@@ -534,6 +539,7 @@ def update_files(updated_mod_names_to_files, updated_mods_dir):
     seen_jar_names = {}
     for mod_name, curseforge_file in updated_mod_names_to_files.items():
         jar_name = get_jar_name_for_curseforge_file(curseforge_file)
+        assert jar_name is not None, f"cannot update using curseforge file: {curseforge_file!r}"
         if jar_name in seen_jar_names:
             print(f"\tWARNING: resolved multiple mod names to same jar name {jar_name!r}: {seen_jar_names[jar_name]!r} and {mod_name!r}")
         else:
