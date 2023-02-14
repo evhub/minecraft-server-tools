@@ -70,7 +70,7 @@ else:
 if IS_MOD_SERVER:
     CLIENT_RAM = "18G"
     if WINDOWS:
-        SERVER_RAM = "12G"
+        SERVER_RAM = "10G"
     else:
         SERVER_RAM = "26G"
 else:
