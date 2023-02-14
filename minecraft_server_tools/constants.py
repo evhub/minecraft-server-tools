@@ -54,6 +54,7 @@ SERVER_DIR = first_that_exists([
 ])
 
 MOD_ZIP_PATH = first_that_exists([
+    "D:\\\\Minecraft Mods.zip",
     "~/OneDrive/Minecraft/Minecraft Mods/Minecraft Mods.zip",
     "~/OneDrive/Minecraft Mods/Minecraft Mods.zip",
 ])
