@@ -103,7 +103,7 @@ def get_binary_search_location_table(binary_search):
 
     mods_a = get_sorted_location_table_items_for(folder_a)
     mods_b = get_sorted_location_table_items_for(folder_b)
-    assert len(mods_a) == len(mods_b), f"{len(mods_a)} != {len(mods_b)} ({folder_a=}, {folder_b=})"
+    assert len(mods_a) == len(mods_b), f"{len(mods_a)} != {len(mods_b)} ({folder_a}, {folder_b})"
 
     num_a = binary_search["num_a"]
 
