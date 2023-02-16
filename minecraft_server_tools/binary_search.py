@@ -124,7 +124,7 @@ def run_binary_search(binary_search):
 
     done = False
     while not done:
-        done, new_binary_search = binary_search_step(add_result(binary_search, get_bool_input("Enter binary search result (dit it work?):")))
+        done, new_binary_search = binary_search_step(add_result(binary_search, get_bool_input("Enter binary search result (did it work?):")))
         if not done:
             show_search_delta(binary_search, new_binary_search)
         binary_search = new_binary_search
