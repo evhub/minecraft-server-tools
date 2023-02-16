@@ -109,7 +109,7 @@ def get_binary_search_location_table(binary_search):
     assert len(mods_a) == len(mods_b), f"{len(mods_a)} != {len(mods_b)} ({folder_a}, {folder_b})"
 
     num_a = binary_search["num_a"]
-    assert 0 <= num_a <= len(mods_a), f"invalid {num_a=} ({len(mods_a)=})"
+    assert 0 <= num_a <= len(mods_a), f"invalid num_a: {num_a} (must be in [0, {len(mods_a)}])"
 
     new_mods = dict(mods_a[:num_a] + mods_b[num_a:])
     assert len(new_mods) == len(mods_a), f"{len(new_mods)} != {len(mods_a)}"
