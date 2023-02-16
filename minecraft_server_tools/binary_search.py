@@ -17,7 +17,7 @@ def get_num_mods_in(folder):
     return len(sync_mods.get_location_table_for(folder))
 
 
-def init_binary_search(folder_a, folder_b):
+def init_binary_search(folder_a, folder_b, destination):
     num_mods_in_a = get_num_mods_in(folder_a)
     num_mods_in_b = get_num_mods_in(folder_b)
     assert num_mods_in_a == num_mods_in_b, f"{num_mods_in_a} != {num_mods_in_b}"
@@ -26,6 +26,7 @@ def init_binary_search(folder_a, folder_b):
         "searching": True,
         "folder_a": folder_a,
         "folder_b": folder_b,
+        "destination": destination,
         "num_a": num_mods_in_a // 2,
         "results": [],
     }
@@ -131,7 +132,13 @@ def run_binary_search(binary_search):
     show_search_results(binary_search)
 
 
-def main(folder_a, folder_b):
+def disable_binary_search(binary_search):
+    new_binary_search = binary_search.copy()
+    new_binary_search["searching"] = False
+    write_binary_search_file(new_binary_search)
+
+
+def main(folder_a, folder_b, destination):
     binary_search = sync_mods.load_binary_search_file()
     if binary_search["searching"]:
         new = not get_bool_input("It looks like you already have a search in progress. Continue?")
@@ -139,9 +146,10 @@ def main(folder_a, folder_b):
         new = True
 
     if new:
-        binary_search = init_binary_search(folder_a, folder_b)
+        binary_search = init_binary_search(folder_a, folder_b, destination)
 
     run_binary_search(binary_search)
+    disable_binary_search(binary_search)
 
 
 
@@ -149,4 +157,5 @@ if __name__ == "__main__":
     main(
         sync_mods.BASE_MODS_DIR + UPDATED_MODS_DIR_SUFFIX,
         sync_mods.BASE_MODS_DIR + OLD_MODS_DIR_SUFFIX,
+        sync_mods.MODS_DIR,
     )
