@@ -132,16 +132,19 @@ if int(SERVER_RAM[:-1]) > max_server_ram:
 
 SECRETS_FILE = os.path.join(SERVER_DIR, "secrets.json")
 
-if JsonComment is not None:
-    COMMENT_JSON = JsonComment()
+COMMENT_JSON = JsonComment() if JsonComment is not None else None
 
+
+def load_json(filename, default=None):
+    assert COMMENT_JSON is not None, "loading json requires JsonComment"
     try:
-        with open(SECRETS_FILE, "r") as fp:
-            SECRETS = COMMENT_JSON.load(fp)
-    except FileNotFoundError:
-        SECRETS = {}
-else:
-    SECRETS = {}
+        with open(filename, "r") as fp:
+            return COMMENT_JSON.load(fp)
+    except (FileNotFoundError, ValueError):
+        return default
+
+
+SECRETS = load_json(SECRETS_FILE, {})
 
 
 # Mod sync constants
@@ -386,6 +389,17 @@ EXTRA_INSTALL_FILES += [
 YES_STRS = [
     "y",
     "yes",
+    "t",
+    "true",
+    "1",
+]
+
+NO_STRS = [
+    "n",
+    "no",
+    "f",
+    "false",
+    "0",
 ]
 
 
@@ -414,3 +428,8 @@ NEW_LAUNCHER_PATH = fixpath(os.path.join(
 
 SEARCHABLE_MODS_NAME = MODS_NAME + "-searchable"
 SEARCHABLE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-searchable"
+
+
+# Binary search constants
+
+BINARY_SEARCH_FILE = os.path.join(SERVER_DIR, "binary_search.json")
