@@ -132,8 +132,6 @@ if int(SERVER_RAM[:-1]) > max_server_ram:
 
 SECRETS_FILE = os.path.join(SERVER_DIR, "secrets.json")
 
-COMMENT_JSON = JsonComment() if JsonComment is not None else None
-
 
 def load_json(filename, default=None):
     assert COMMENT_JSON is not None, "loading json requires JsonComment"
@@ -144,7 +142,11 @@ def load_json(filename, default=None):
         return default
 
 
-SECRETS = load_json(SECRETS_FILE, {})
+if JsonComment is None:
+    COMMENT_JSON = SECRETS = None
+else:
+    COMMENT_JSON = JsonComment()
+    SECRETS = load_json(SECRETS_FILE, {})
 
 
 # Mod sync constants
