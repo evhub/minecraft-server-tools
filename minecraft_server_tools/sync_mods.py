@@ -87,12 +87,16 @@ def add_mods_from_to(target_mod_location_table, current_mod_location_table, set_
             add_mod(tar_path, new_path)
 
 
+def get_binary_search_folder(binary_search, folder_name):
+    return os.path.join(SERVER_DIR, binary_search[folder_name])
+
+
 def load_binary_search_file():
     binary_search = load_json(BINARY_SEARCH_FILE, {
         "searching": False,
     })
-    if binary_search.get("num_a") == "max":
-        binary_search["num_a"] = len(get_location_table_for(binary_search["folder_a"]))
+    if binary_search.get("num_a") == "all":
+        binary_search["num_a"] = len(get_location_table_for(get_binary_search_folder(binary_search, "folder_a")))
     return binary_search
 
 
@@ -101,8 +105,8 @@ def get_sorted_location_table_items_for(folder):
 
 
 def get_binary_search_location_table(binary_search):
-    folder_a = binary_search["folder_a"]
-    folder_b = binary_search["folder_b"]
+    folder_a = get_binary_search_folder(binary_search, "folder_a")
+    folder_b = get_binary_search_folder(binary_search, "folder_b")
 
     mods_a = get_sorted_location_table_items_for(folder_a)
     mods_b = get_sorted_location_table_items_for(folder_b)

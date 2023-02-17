@@ -6,6 +6,8 @@ from minecraft_server_tools.constants import (
     NO_STRS,
     UPDATED_MODS_DIR_SUFFIX,
     OLD_MODS_DIR_SUFFIX,
+    BASE_MODS_NAME,
+    MODS_NAME,
 )
 
 
@@ -18,18 +20,20 @@ def get_num_mods_in(folder):
 
 
 def init_binary_search(folder_a, folder_b, destination):
-    num_mods_in_a = get_num_mods_in(folder_a)
-    num_mods_in_b = get_num_mods_in(folder_b)
-    assert num_mods_in_a == num_mods_in_b, f"{num_mods_in_a} != {num_mods_in_b}"
-
     binary_search = {
         "searching": True,
         "folder_a": folder_a,
         "folder_b": folder_b,
         "destination": destination,
-        "num_a": num_mods_in_a // 2,
         "results": [],
     }
+
+    num_mods_in_a = get_num_mods_in(sync_mods.get_binary_search_folder(binary_search, "folder_a"))
+    num_mods_in_b = get_num_mods_in(sync_mods.get_binary_search_folder(binary_search, "folder_b"))
+    assert num_mods_in_a == num_mods_in_b, f"{num_mods_in_a} != {num_mods_in_b}"
+
+    binary_search["num_a"] = num_mods_in_a // 2
+
     old_binary_search = sync_mods.load_binary_search_file()
     if old_binary_search not in (binary_search, {"searching": False}):
         binary_search["backup"] = old_binary_search
@@ -39,7 +43,7 @@ def init_binary_search(folder_a, folder_b, destination):
 
 
 def get_binary_search_window(binary_search):
-    num_mods_in_a = get_num_mods_in(binary_search["folder_a"])
+    num_mods_in_a = get_num_mods_in(sync_mods.get_binary_search_folder(binary_search, "folder_a"))
 
     window_min, window_max = 0, num_mods_in_a
     prev_num_a = None
@@ -107,8 +111,8 @@ def show_search_delta(old_binary_search, new_binary_search):
 def show_search_results(binary_search):
     window_min, window_max, prev_num_a, new_num_a = get_binary_search_window(binary_search)
 
-    mods_a = sync_mods.get_sorted_location_table_items_for(binary_search["folder_a"])
-    mods_b = sync_mods.get_sorted_location_table_items_for(binary_search["folder_b"])
+    mods_a = sync_mods.get_sorted_location_table_items_for(sync_mods.get_binary_search_folder(binary_search, "folder_a"))
+    mods_b = sync_mods.get_sorted_location_table_items_for(sync_mods.get_binary_search_folder(binary_search, "folder_b"))
 
     zipped_mods = list(zip(mods_a, mods_b))
     clean_mods = zipped_mods[: window_min]
@@ -166,7 +170,7 @@ def main(folder_a, folder_b, destination):
 
 if __name__ == "__main__":
     main(
-        sync_mods.BASE_MODS_DIR + UPDATED_MODS_DIR_SUFFIX,
-        sync_mods.BASE_MODS_DIR + OLD_MODS_DIR_SUFFIX,
-        sync_mods.MODS_DIR,
+        BASE_MODS_NAME + UPDATED_MODS_DIR_SUFFIX,
+        BASE_MODS_NAME + OLD_MODS_DIR_SUFFIX,
+        MODS_NAME,
     )
