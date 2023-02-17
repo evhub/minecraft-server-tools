@@ -113,6 +113,34 @@ def get_binary_search_location_table(binary_search):
 
     new_mods = dict(mods_a[:num_a] + mods_b[num_a:])
     assert len(new_mods) == len(mods_a), f"{len(new_mods)} != {len(mods_a)}"
+
+    force_include = binary_search.get("force_include", [])
+    if force_include:
+        for force_mod in force_include:
+            force_path = kill_name = None
+
+            if force_mod in dict(mods_a):
+                pos_a = list(name for name, path in mods_a).index(force_mod)
+                if pos_a + 1 > num_a:
+                    kill_name, path_b = mods_b[pos_a]
+                    name_a, force_path = mods_a[pos_a]
+                    assert name_a == force_mod, f"{name_a} != {force_mod}"
+
+            else:
+                pos_b = list(name for name, path in mods_b).index(force_mod)
+                if pos_b + 1 <= num_a:
+                    kill_name, path_a = mods_a[pos_b]
+                    name_b, force_path = mods_b[pos_b]
+                    assert name_b == force_mod, f"{name_b} != {force_mod}"
+
+            if force_path is None:
+                assert force_mod in new_mods, f"{force_mod} not in {new_mods.keys()}"
+            else:
+                assert kill_name in new_mods, f"{kill_name} not in {new_mods.keys()}"
+                print(f"(forcing {force_path} instead of {new_mods[kill_name]})")
+                del new_mods[kill_name]
+                new_mods[force_mod] = force_path
+
     return new_mods
 
 

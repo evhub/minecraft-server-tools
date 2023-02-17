@@ -62,7 +62,7 @@ def binary_search_step(binary_search):
     if new_num_a == prev_num_a:
         return True, binary_search
 
-    assert binary_search["num_a"] == prev_num_a, f"{binary_search['num_a']} != {num_a}"
+    assert binary_search["num_a"] is None or binary_search["num_a"] == prev_num_a, f"{binary_search['num_a']} != {num_a}"
 
     new_binary_search = binary_search.copy()
     new_binary_search["num_a"] = new_num_a
@@ -110,7 +110,13 @@ def show_search_results(binary_search):
     mods_a = sync_mods.get_sorted_location_table_items_for(binary_search["folder_a"])
     mods_b = sync_mods.get_sorted_location_table_items_for(binary_search["folder_b"])
 
-    culprits = list(zip(mods_a, mods_b))[window_min : window_max+1]
+    zipped_mods = list(zip(mods_a, mods_b))
+    clean_mods = zipped_mods[: window_min]
+    culprits = zipped_mods[window_min : window_max]
+
+    print("Clean mods:")
+    for (name_a, path_a), (name_b, path_b) in clean_mods:
+        print(f"- {name_a} -> {name_b}")
 
     print("Culprit mods:")
     for (name_a, path_a), (name_b, path_b) in culprits:
@@ -118,6 +124,10 @@ def show_search_results(binary_search):
 
 
 def run_binary_search(binary_search):
+    if binary_search["num_a"] is None:
+        done, binary_search = binary_search_step(binary_search)
+        assert done is False, done
+
     fake_old_binary_search = binary_search.copy()
     fake_old_binary_search["num_a"] = 0
     show_search_delta(fake_old_binary_search, binary_search)
@@ -125,11 +135,12 @@ def run_binary_search(binary_search):
     done = False
     while not done:
         done, new_binary_search = binary_search_step(add_result(binary_search, get_bool_input("Enter binary search result (did it work?):")))
+
+        show_search_results(new_binary_search)
         if not done:
             show_search_delta(binary_search, new_binary_search)
-        binary_search = new_binary_search
 
-    show_search_results(binary_search)
+        binary_search = new_binary_search
 
 
 def disable_binary_search(binary_search):
