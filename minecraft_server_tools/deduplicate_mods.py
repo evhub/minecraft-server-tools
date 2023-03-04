@@ -54,14 +54,18 @@ def deduplicate_mods(new_mods_dir, all_mod_names):
                 sync_mods.rm_mod(from_path)
 
 
-def main():
-    sync_mods.main()
-
+def fix_deduplicate_mods():
     print("\nFixing to deduplicate mods...")
     sync_mods.remove_mods_in_from(
         sync_mods.get_location_table_for(DEDUPLICATE_MODS_DIR),
         sync_mods.get_location_table_for(DEDUPLICATE_CLIENT_MODS_DIR),
     )
+
+
+def main():
+    sync_mods.main()
+
+    fix_deduplicate_mods()
 
     all_mod_names = get_all_mod_names([
         sync_mods.MODS_DIR,

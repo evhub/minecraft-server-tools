@@ -555,6 +555,12 @@ def move_old_files(updated_mod_names_to_files, mod_names_to_jar_names, mods_dir,
         os.rename(current_jar_path, new_jar_path)
 
 
+def make_dirs(*dirs):
+    for d in dirs:
+        if not os.path.exists(d):
+            os.mkdir(d)
+
+
 def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interact=None):
     if interact is None and not DEBUG:
         interact = False
@@ -566,10 +572,7 @@ def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interac
             mod_names_to_latest_versions, missing_files_mods = get_mod_names_to_latest_versions(mod_names_to_curseforge_ids, mod_names_to_jar_names)
             updated_mod_names_to_files = get_updated_mod_names_to_files(mod_names_to_jar_names, mod_names_to_latest_versions)
             if updated_mod_names_to_files:
-                if not os.path.exists(updated_mods_dir):
-                    os.mkdir(updated_mods_dir)
-                if not os.path.exists(old_mods_dir):
-                    os.mkdir(old_mods_dir)
+                make_dirs(updated_mods_dir, old_mods_dir)
                 update_files(updated_mod_names_to_files, updated_mods_dir)
                 move_old_files(updated_mod_names_to_files, mod_names_to_jar_names, mods_dir, old_mods_dir)
         else:

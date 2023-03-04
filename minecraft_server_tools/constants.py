@@ -80,6 +80,8 @@ else:
 ALWAYS_USE_LATEST_VERSION_FOR_MODS = [
     "jei",
     "toofast",
+    "moonlight",
+    "Oh The Biomes You'll Go",
 ]
 
 EXTRA_INSTALL_FOLDERS = [
@@ -191,7 +193,7 @@ COMPONENT_SEPS = [
 
 NON_NAME_COMPONENT_REGEX = full_regex(
     r"[0-9].*|"
-    r"(?!cave|a$|ae2|rare)((forge|fabric|quilt|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+"
+    r"(?!cave|a$|ae2|rare|da)((forge|fabric|quilt|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+"
 )
 
 NAME_REGEXES_TO_SPACE = [
@@ -252,7 +254,7 @@ CURSEFORGE_NAME_ELEMS_TO_STRIP = [
     "...",
 ]
 
-AVOID_FILES_PUBLISHED_WITHIN = timedelta(days=2)
+AVOID_FILES_PUBLISHED_WITHIN = timedelta(days=7)
 
 SEARCH_URL_TEMPLATE = "https://www.googleapis.com/customsearch/v1/siterestrict?key={google_api_key}&cx={search_engine_id}&q={query}&nfpr=1&nirf={query}"
 
