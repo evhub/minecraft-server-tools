@@ -80,8 +80,6 @@ else:
 ALWAYS_USE_LATEST_VERSION_FOR_MODS = [
     "jei",
     "toofast",
-    "moonlight",
-    "Oh The Biomes You'll Go",
     "supplementaries",
 ]
 
