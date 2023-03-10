@@ -18,6 +18,7 @@ def update_mods_from(update_from_dir, mods_dir):
     updated_mods_dir = mods_dir + UPDATED_MODS_DIR_SUFFIX
     old_mods_dir = mods_dir + OLD_MODS_DIR_SUFFIX
 
+    print(f"\nUpdating {mods_dir!r}...")
     made_dirs = False
     for name, mods_jar in names_to_jars_mods.items():
         update_jar = names_to_jars_update_from.get(name)
@@ -26,7 +27,7 @@ def update_mods_from(update_from_dir, mods_dir):
                 update_mods.make_dirs(updated_mods_dir, old_mods_dir)
                 made_dirs = True
 
-            print(f"{mods_jar} -> {update_jar}")
+            print(f"\t{mods_jar} -> {update_jar}")
             current_jar_path = os.path.join(mods_dir, mods_jar)
             old_jar_path = os.path.join(old_mods_dir, mods_jar)
             os.rename(current_jar_path, old_jar_path)

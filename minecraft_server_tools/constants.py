@@ -64,7 +64,7 @@ IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 MC_VERSION = (1, 19, 2)
 
 if IS_MOD_SERVER:
-    FORGE_VERSION = (43, 2, 3)
+    FORGE_VERSION = (43, 2, 6)
 else:
     FORGE_VERSION = (43, 1, 1)
 
@@ -82,6 +82,7 @@ ALWAYS_USE_LATEST_VERSION_FOR_MODS = [
     "toofast",
     "moonlight",
     "Oh The Biomes You'll Go",
+    "supplementaries",
 ]
 
 EXTRA_INSTALL_FOLDERS = [
