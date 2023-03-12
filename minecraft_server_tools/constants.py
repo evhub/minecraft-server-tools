@@ -298,6 +298,7 @@ SERVER_GC = "Shenandoah"
 BASE_JVM_ARGS = [
     # "-d64",  # OLD
     "-server",
+    "-Xss2M",
     # "-XX:+AggressiveOpts",  # OLD
     "-XX:+UnlockExperimentalVMOptions",  # always
     "-XX:+AlwaysPreTouch",  # always

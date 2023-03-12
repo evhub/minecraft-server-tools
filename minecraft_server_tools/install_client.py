@@ -122,7 +122,7 @@ def open_readme():
 @contextmanager
 def unzipped_mods():
     with tempfile.TemporaryDirectory() as temp_dir:
-        print(f"\nUnzipping mods to temporary directory {temp_dir!r}...")
+        print(f"\nUnzipping mods from {MOD_ZIP_PATH!r} to temporary directory {temp_dir!r}...")
         shutil.unpack_archive(MOD_ZIP_PATH, temp_dir)
         yield temp_dir
 
