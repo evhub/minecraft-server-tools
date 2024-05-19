@@ -1,7 +1,9 @@
 import os
 import sys
+import shutil
 import subprocess
 from urllib.request import urlretrieve
+from urllib.error import HTTPError
 
 from minecraft_server_tools.constants import (
     WINDOWS,
@@ -20,11 +22,13 @@ from minecraft_server_tools.constants import (
     CLIENT_RAM,
     SERVER_GC,
     CLIENT_GC,
+    DOWNLOADS_PATH,
     get_jvm_args_for_gc,
 )
 
 FORGE_JAR_PATH = os.path.join(SERVER_DIR, FORGE_JAR)
 FORGE_INSTALLER_JAR_PATH = os.path.join(SERVER_DIR, FORGE_INSTALLER_JAR)
+DOWNLOADED_INSTALLER_PATH = os.path.join(DOWNLOADS_PATH, FORGE_INSTALLER_JAR)
 
 
 def run_cmd(cmd, check=True, shell=False):
@@ -48,10 +52,23 @@ def install_forge_server():
     run_java(["-jar", FORGE_INSTALLER_JAR_PATH, "--installServer"])
 
 
+def copy_forge_installer():
+    if not os.path.exists(DOWNLOADED_INSTALLER_PATH):
+        return False
+    shutil.copy(DOWNLOADED_INSTALLER_PATH, FORGE_INSTALLER_JAR_PATH)
+    return True
+
+
 def ensure_forge_server():
     if not os.path.exists(FORGE_INSTALLER_JAR_PATH):
         print(f"Downloading forge installer {FORGE_INSTALLER_JAR_PATH}...")
-        urlretrieve(FORGE_INSTALLER_URL, FORGE_INSTALLER_JAR_PATH)
+        if not copy_forge_installer():
+            try:
+                urlretrieve(FORGE_INSTALLER_URL, FORGE_INSTALLER_JAR_PATH)
+            except HTTPError:
+                print(f"Automatic download failed; please download from: {FORGE_INSTALLER_URL}")
+                input("Press Enter to continue.")
+                assert copy_forge_installer()
         install_forge_server()
 
 

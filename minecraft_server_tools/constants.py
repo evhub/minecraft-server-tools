@@ -49,8 +49,8 @@ WINDOWS = os.name == "nt"
 
 SERVER_DIR = first_that_exists([
     os.getenv("MINECRAFT_SERVER_DIR"),
-    "~/1_19_mod_server",
-    "~/OneDrive/Minecraft/1.19 Mod Server",
+    "~/1_20_ctm_server",
+    "~/OneDrive/Minecraft/1.20 CTM Server",
 ])
 
 MOD_ZIP_PATH = first_that_exists([
@@ -59,14 +59,15 @@ MOD_ZIP_PATH = first_that_exists([
     "~/OneDrive/Minecraft Mods/Minecraft Mods.zip",
 ])
 
+DOWNLOADS_PATH = first_that_exists([
+    "~/Downloads",
+])
+
 IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 
-MC_VERSION = (1, 19, 2)
+MC_VERSION = (1, 20, 6)
 
-if IS_MOD_SERVER:
-    FORGE_VERSION = (43, 2, 7)
-else:
-    FORGE_VERSION = (43, 1, 1)
+FORGE_VERSION = (50, 0, 22)
 
 if IS_MOD_SERVER:
     CLIENT_RAM = "22G"
@@ -365,7 +366,7 @@ if WINDOWS:
 else:
     FORGE_LAUNCH_CMD = ["sh", os.path.join(SERVER_DIR, "run.sh")]
 
-FORGE_INSTALLER_URL = format_vers("https://files.minecraftforge.net/maven/net/minecraftforge/forge/{mc_version}-{forge_version}/forge-{mc_version}-{forge_version}-installer.jar")
+FORGE_INSTALLER_URL = format_vers("https://maven.minecraftforge.net/net/minecraftforge/forge/{mc_version}-{forge_version}/forge-{mc_version}-{forge_version}-installer.jar")
 
 FORGE_INSTALLER_JAR = format_vers("forge-{mc_version}-{forge_version}-installer.jar")
 FORGE_JAR = format_vers("forge-{mc_version}-{forge_version}.jar")

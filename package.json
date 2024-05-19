@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "node-curseforge": "^1.2.2"
+    "node-curseforge": "^1.3.3"
   }
 }

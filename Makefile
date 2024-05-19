@@ -2,7 +2,7 @@
 local-install:
 	npm install --global yarn
 	yarn add node-curseforge
-	python3 -m pip install -Ue .
+	python -m pip install -Ue .
 
 .PHONY: aws-install
 aws-install: update-repo fix-spark
