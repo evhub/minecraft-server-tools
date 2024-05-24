@@ -256,8 +256,6 @@ CURSEFORGE_NAME_ELEMS_TO_STRIP = [
 
 AVOID_FILES_PUBLISHED_WITHIN = timedelta(days=7)
 
-SEARCH_URL_TEMPLATE = "https://www.googleapis.com/customsearch/v1/siterestrict?key={google_api_key}&cx={search_engine_id}&q={query}&nfpr=1&nirf={query}"
-
 MOD_PAGE_NAME_SUFFIX = " - Mods - Minecraft - Curseforge"
 
 GOOGLE_QUERY_TEMPLATE = '{mod_name} {modloader} {mc_version_2} "{mod_page_name_suffix}"'

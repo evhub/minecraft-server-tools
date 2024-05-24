@@ -1,0 +1,42 @@
+import json
+from urllib.parse import quote_plus
+
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+
+from minecraft_server_tools.constants import (
+    SECRETS,
+    SERVER_DIR,
+)
+
+
+CREDENTIALS = [None]
+
+def get_credentials():
+    if CREDENTIALS[0] is None:
+        with open(os.path.join(SERVER_DIR, SECRETS["oauth_id_file"])) as oauth_id_file:
+            oauth_id_data = json.load(oauth_id_file)
+        flow = InstalledAppFlow.from_client_config(
+            oauth_id_data,
+            scopes=['https://www.googleapis.com/auth/cse']
+        )
+        CREDENTIALS[0] = flow.run_local_server(port=8080)
+    return CREDENTIALS[0]
+
+
+def google(query):
+    print(f"Sending google search query {query!r}...")
+    quoted_query = quote_plus(query)
+    return (
+        build("customsearch", "v1", credentials=get_credentials())
+        |> .cse()
+        # |> .siterestrict()
+        |> .list(
+            key=SECRETS["google_api_key"],
+            cx=SECRETS["search_engine_id"],
+            q=quoted_query,
+            # nfpr=1,
+            # nirf=quoted_query,
+        )
+        |> .execute()
+    )

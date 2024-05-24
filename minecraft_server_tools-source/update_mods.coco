@@ -5,20 +5,17 @@ import subprocess
 import traceback
 import datetime
 import time
-from urllib.parse import quote_plus
 from pprint import pprint
 
 import requests
 
-from minecraft_server_tools import sync_mods
+from minecraft_server_tools import sync_mods, google_api
 from minecraft_server_tools.constants import (
     COMMENT_JSON,
     MC_VERSION,
     COMPONENT_SEPS,
     NON_NAME_COMPONENT_REGEX,
     NAME_REGEXES_TO_SPACE,
-    SEARCH_URL_TEMPLATE,
-    SECRETS,
     GOOGLE_QUERY_TEMPLATE,
     NON_CURSEFORGE_MODS,
     MODLOADER,
@@ -43,19 +40,6 @@ from minecraft_server_tools.constants import (
 
 
 BEGINNING_OF_TIME = datetime.datetime(1, 1, 1)
-
-
-def google(query):
-    print(f"Sending google search query {query!r}...")
-    return (
-        SEARCH_URL_TEMPLATE.format(
-            google_api_key=SECRETS["google_api_key"],
-            search_engine_id=SECRETS["search_engine_id"],
-            query=quote_plus(query),
-        )
-        |> requests.get
-        |> .json()
-    )
 
 
 def get_mod_name(jar_name, silent=None):
@@ -103,7 +87,7 @@ def get_curseforge_name(mod_name, jar_name):
     )
     try:
         while True:
-            search_json = google(query)
+            search_json = google_api.google(query)
             if "items" in search_json:
                 break
             print(f"Got no results for query {query!r}.")

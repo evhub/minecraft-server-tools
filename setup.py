@@ -14,5 +14,8 @@ setuptools.setup(
         "jsoncomment",
         "tqdm",
         "psutil",
+        "google-auth",
+        "google-auth-oauthlib",
+        "google-api-python-client",
     ],
-)
+)""

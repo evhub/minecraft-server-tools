@@ -2,7 +2,6 @@
 local-install:
 	npm install --global yarn
 	yarn add node-curseforge
-	pip install -U setuptools pip coconut-develop
 	coconut minecraft_server_tools-source minecraft_server_tools --strict
 	python -m pip install -Ue .
 
@@ -22,3 +21,7 @@ update-repo:
 fix-spark:
 	sudo sysctl kernel.perf_event_paranoid=1
 	sudo sysctl kernel.kptr_restrict=0
+
+.PHONY: watch
+watch:
+	coconut minecraft_server_tools-source minecraft_server_tools --strict --watch
