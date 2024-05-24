@@ -2,6 +2,8 @@
 local-install:
 	npm install --global yarn
 	yarn add node-curseforge
+	pip install -U setuptools pip coconut-develop
+	coconut minecraft_server_tools-source minecraft_server_tools --strict
 	python -m pip install -Ue .
 
 .PHONY: aws-install

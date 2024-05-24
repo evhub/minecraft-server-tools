@@ -1,0 +1,38 @@
+import os
+import shutil
+
+from minecraft_server_tools import sync_mods
+from minecraft_server_tools.constants import (
+    SERVER_DIR,
+    SEARCHABLE_MODS_NAME,
+    SEARCHABLE_CLIENT_MODS_NAME,
+)
+
+SEARCHABLE_MODS_DIR = os.path.join(SERVER_DIR, SEARCHABLE_MODS_NAME)
+SEARCHABLE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, SEARCHABLE_CLIENT_MODS_NAME)
+
+shutil.register_unpack_format("jar", [".jar"], shutil._unpack_zipfile)
+
+
+def unzip_mods_in_to(from_mods, to_dir):
+    print("\nUnzipping...")
+    for mod_name, mod_path in from_mods.items():
+        unpack_dir = os.path.join(to_dir, mod_name)
+        if not os.path.exists(unpack_dir):
+            mod_dir = os.path.basename(os.path.dirname(mod_path))
+            print(f"\t{os.path.join(mod_dir, mod_name)}...")
+            shutil.unpack_archive(mod_path, unpack_dir)
+
+
+def main():
+    sync_mods.main()
+
+    mods = sync_mods.get_location_table_for(sync_mods.MODS_DIR)
+    client_mods = sync_mods.get_location_table_for(sync_mods.CLIENT_MODS_DIR)
+
+    unzip_mods_in_to(mods, SEARCHABLE_MODS_DIR)
+    unzip_mods_in_to(client_mods, SEARCHABLE_CLIENT_MODS_DIR)
+
+
+if __name__ == "__main__":
+    main()

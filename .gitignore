@@ -238,3 +238,6 @@ secrets.json
 
 # Logs
 installer.log
+
+# Coconut
+__coconut_cache__/
