@@ -49,8 +49,6 @@ WINDOWS = os.name == "nt"
 
 SERVER_DIR = first_that_exists([
     os.getenv("MINECRAFT_SERVER_DIR"),
-    "~/1_20_mod_server",
-    "~/OneDrive/Minecraft/1.20 Mod Server",
 ])
 
 MOD_ZIP_PATH = first_that_exists([
@@ -66,7 +64,6 @@ DOWNLOADS_PATH = first_that_exists([
 IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 
 MC_VERSION = (1, 20, 1)
-
 FORGE_VERSION = (47, 2, 20)
 
 if IS_MOD_SERVER:

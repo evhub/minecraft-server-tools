@@ -1,9 +1,8 @@
 .PHONY: local-install
-local-install:
+local-install: build
+	python -m pip install -Ue .
 	npm install --global yarn
 	yarn add node-curseforge
-	coconut minecraft_server_tools-source minecraft_server_tools --strict
-	python -m pip install -Ue .
 
 .PHONY: aws-install
 aws-install: update-repo fix-spark
@@ -22,6 +21,27 @@ fix-spark:
 	sudo sysctl kernel.perf_event_paranoid=1
 	sudo sysctl kernel.kptr_restrict=0
 
+.PHONY: build
+build:
+	coconut minecraft_server_tools-source minecraft_server_tools --strict
+
 .PHONY: watch
 watch:
 	coconut minecraft_server_tools-source minecraft_server_tools --strict --watch
+
+.PHONY: clean
+clean:
+	rm -rf ./minecraft_server_tools-source/__coconut_cache__
+
+.PHONY: time
+time:
+	coconut minecraft_server_tools-source/update_mods.coco minecraft_server_tools --strict --package --force --verbose
+
+.PHONY: time-no-cache
+time-no-cache:
+	coconut minecraft_server_tools-source/update_mods.coco minecraft_server_tools --strict --package --force --verbose --no-cache
+
+.PHONY: profile
+profile: export COCONUT_USE_COLOR=TRUE
+profile:
+	coconut minecraft_server_tools-source/update_mods.coco minecraft_server_tools --strict --package --force --verbose --profile 2>&1 | tee ./profile.log

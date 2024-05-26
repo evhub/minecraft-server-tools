@@ -241,3 +241,6 @@ installer.log
 
 # Coconut
 __coconut_cache__/
+
+# Profiling
+*.log

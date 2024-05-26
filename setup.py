@@ -18,4 +18,4 @@ setuptools.setup(
         "google-auth-oauthlib",
         "google-api-python-client",
     ],
-)""
+)
