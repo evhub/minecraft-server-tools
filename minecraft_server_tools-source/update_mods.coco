@@ -6,6 +6,7 @@ import traceback
 import datetime
 import time
 from pprint import pprint
+from urllib.parse import unquote
 
 import requests
 
@@ -20,7 +21,7 @@ from minecraft_server_tools.constants import (
     NON_CURSEFORGE_MODS,
     MODLOADER,
     WRONG_MODLOADERS,
-    MOD_PAGE_NAME_SUFFIX,
+    MOD_PAGE_NAME_SUFFICES,
     CURSEFORGE_NAMES_FILE,
     CURSEFORGE_API_FILE,
     TIMESTAMP_FORMAT_REGEX,
@@ -83,7 +84,7 @@ def get_curseforge_name(mod_name, jar_name):
         modloader=MODLOADER,
         mc_version=ver_join(MC_VERSION),
         mc_version_2=ver_join(MC_VERSION[:2]),
-        mod_page_name_suffix=MOD_PAGE_NAME_SUFFIX,
+        mod_page_name_suffix=MOD_PAGE_NAME_SUFFICES[0],
     )
     try:
         while True:
@@ -91,15 +92,18 @@ def get_curseforge_name(mod_name, jar_name):
             if "items" in search_json:
                 break
             print(f"Got no results for query {query!r}.")
-            if search_json["error"]["errors"][0]["reason"] == "rateLimitExceeded":
+            if "error" in search_json and search_json["error"]["errors"][0]["reason"] == "rateLimitExceeded":
                 raise Exception("Google API rate limit exceeded; try waiting or switching API keys.")
-            query = search_json["spelling"]["correctedQuery"]
+            query = unquote(search_json["spelling"]["correctedQuery"]).replace("+", " ")
         items = search_json["items"]
         curseforge_name = None
         for result in items:
             mod_page = result["title"]
-            if mod_page.lower().endswith(MOD_PAGE_NAME_SUFFIX.lower()):
-                curseforge_name = clean_curseforge_name(mod_page[:-len(MOD_PAGE_NAME_SUFFIX)])
+            for suffix in MOD_PAGE_NAME_SUFFICES:
+                if mod_page.lower().endswith(suffix.lower()):
+                    curseforge_name = clean_curseforge_name(mod_page[:-len(suffix)])
+                    break
+            if curseforge_name is not None:
                 break
             else:
                 print(f"Skipping search result {mod_page!r}.")
@@ -594,9 +598,9 @@ def main():
 
     update_all(
         [
-            sync_mods.EXTRA_CLIENT_MODS_DIR,
+            # sync_mods.EXTRA_CLIENT_MODS_DIR,
             sync_mods.EXTRA_MODS_DIR,
-            sync_mods.BASE_CLIENT_MODS_DIR,
+            # sync_mods.BASE_CLIENT_MODS_DIR,
             sync_mods.BASE_MODS_DIR,
         ],
         dry_run="--dry-run" in sys.argv,

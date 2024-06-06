@@ -3,7 +3,7 @@ import os
 from minecraft_server_tools import install_client
 from minecraft_server_tools.constants import (
     WINDOWS,
-    ROOT_DIR,  # NOQA
+    ROOT_DIR,
     LAUNCHER_FILE,
     NEW_LAUNCHER_PATH,
 )

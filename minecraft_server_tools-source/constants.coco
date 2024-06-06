@@ -147,6 +147,7 @@ if JsonComment is None:
 else:
     COMMENT_JSON = JsonComment()
     SECRETS = load_json(SECRETS_FILE, {})
+    os.environ["CURSEFORGE_API_KEY"] = SECRETS["curseforge_api_key"]
 
 
 # Mod sync constants
@@ -253,9 +254,11 @@ CURSEFORGE_NAME_ELEMS_TO_STRIP = [
 
 AVOID_FILES_PUBLISHED_WITHIN = timedelta(days=7)
 
-MOD_PAGE_NAME_SUFFIX = " - Mods - Minecraft - Curseforge"
+MOD_PAGE_NAME_SUFFICES = (
+    " - Files - Minecraft Mods - Curseforge",
+)
 
-GOOGLE_QUERY_TEMPLATE = '{mod_name} {modloader} {mc_version_2} "{mod_page_name_suffix}"'
+GOOGLE_QUERY_TEMPLATE = '{mod_name} {modloader} {mc_version_2} "Minecraft Mods" -Modpacks'
 
 CURSEFORGE_NAMES_FILE = os.path.join(ROOT_DIR, "curseforge_names.json")
 

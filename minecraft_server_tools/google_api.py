@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x9e3829fa
+# __coconut_hash__ = 0x2a308d2d
 
-# Compiled with Coconut version 3.1.0-post_dev12
+# Compiled with Coconut version 3.1.0-post_dev15
 
 # Coconut Header: -------------------------------------------------------------
 
 from __future__ import print_function, absolute_import, unicode_literals, division
 import sys as _coconut_sys
 import os as _coconut_os
-_coconut_header_info = ('3.1.0-post_dev12', '', True)
+_coconut_header_info = ('3.1.0-post_dev15', '', True)
 _coconut_cached__coconut__ = _coconut_sys.modules.get(str('__coconut__'))
 _coconut_file_dir = _coconut_os.path.dirname(_coconut_os.path.abspath(__file__))
 _coconut_pop_path = False
@@ -55,40 +55,41 @@ else:
 
 # Compiled Coconut: -----------------------------------------------------------
 
-import json  #1 (line in Coconut source)
-try:  #2 (line in Coconut source)
-    _coconut_sys_0 = sys  # type: ignore  #2 (line in Coconut source)
-except _coconut.NameError:  #2 (line in Coconut source)
-    _coconut_sys_0 = _coconut_sentinel  #2 (line in Coconut source)
-sys = _coconut_sys  #2 (line in Coconut source)
-if sys.version_info >= (3,):  #2 (line in Coconut source)
-    from urllib.parse import quote_plus  #2 (line in Coconut source)
-else:  #2 (line in Coconut source)
-    from urllib import quote_plus  #2 (line in Coconut source)
-if _coconut_sys_0 is not _coconut_sentinel:  #2 (line in Coconut source)
-    sys = _coconut_sys_0  #2 (line in Coconut source)
+import os  #1 (line in Coconut source)
+import json  #2 (line in Coconut source)
+try:  #3 (line in Coconut source)
+    _coconut_sys_0 = sys  # type: ignore  #3 (line in Coconut source)
+except _coconut.NameError:  #3 (line in Coconut source)
+    _coconut_sys_0 = _coconut_sentinel  #3 (line in Coconut source)
+sys = _coconut_sys  #3 (line in Coconut source)
+if sys.version_info >= (3,):  #3 (line in Coconut source)
+    from urllib.parse import quote_plus  #3 (line in Coconut source)
+else:  #3 (line in Coconut source)
+    from urllib import quote_plus  #3 (line in Coconut source)
+if _coconut_sys_0 is not _coconut_sentinel:  #3 (line in Coconut source)
+    sys = _coconut_sys_0  #3 (line in Coconut source)
 
-from google_auth_oauthlib.flow import InstalledAppFlow  #4 (line in Coconut source)
-from googleapiclient.discovery import build  #5 (line in Coconut source)
+from google_auth_oauthlib.flow import InstalledAppFlow  #5 (line in Coconut source)
+from googleapiclient.discovery import build  #6 (line in Coconut source)
 
-from minecraft_server_tools.constants import SECRETS  #7 (line in Coconut source)
-from minecraft_server_tools.constants import SERVER_DIR  #7 (line in Coconut source)
-
-
-CREDENTIALS = [None,]  #13 (line in Coconut source)
-
-def get_credentials():  #15 (line in Coconut source)
-    if CREDENTIALS[0] is None:  #16 (line in Coconut source)
-        with open(os.path.join(SERVER_DIR, SECRETS["oauth_id_file"])) as oauth_id_file:  #17 (line in Coconut source)
-            oauth_id_data = json.load(oauth_id_file)  #18 (line in Coconut source)
-        flow = InstalledAppFlow.from_client_config(oauth_id_data, scopes=['https://www.googleapis.com/auth/cse',])  #19 (line in Coconut source)
-        CREDENTIALS[0] = flow.run_local_server(port=8080)  #23 (line in Coconut source)
-    return CREDENTIALS[0]  #24 (line in Coconut source)
+from minecraft_server_tools.constants import SECRETS  #8 (line in Coconut source)
+from minecraft_server_tools.constants import SERVER_DIR  #8 (line in Coconut source)
 
 
+CREDENTIALS = [None,]  #14 (line in Coconut source)
 
-@_coconut_tco  #27 (line in Coconut source)
-def google(query):  #27 (line in Coconut source)
-    print("Sending google search query {_coconut_format_0!r}...".format(_coconut_format_0=(query)))  #28 (line in Coconut source)
-    quoted_query = quote_plus(query)  #29 (line in Coconut source)
-    return _coconut_tail_call((((build("customsearch", "v1", credentials=get_credentials())).cse()).list(key=SECRETS["google_api_key"], cx=SECRETS["search_engine_id"], q=quoted_query)).execute)  #30 (line in Coconut source)
+def get_credentials():  #16 (line in Coconut source)
+    if CREDENTIALS[0] is None:  #17 (line in Coconut source)
+        with open(os.path.join(SERVER_DIR, SECRETS["oauth_id_file"])) as oauth_id_file:  #18 (line in Coconut source)
+            oauth_id_data = json.load(oauth_id_file)  #19 (line in Coconut source)
+        flow = InstalledAppFlow.from_client_config(oauth_id_data, scopes=['https://www.googleapis.com/auth/cse',])  #20 (line in Coconut source)
+        CREDENTIALS[0] = flow.run_local_server(port=8080)  #24 (line in Coconut source)
+    return CREDENTIALS[0]  #25 (line in Coconut source)
+
+
+
+@_coconut_tco  #28 (line in Coconut source)
+def google(query):  #28 (line in Coconut source)
+    print("Sending google search query {_coconut_format_0!r}...".format(_coconut_format_0=(query)))  #29 (line in Coconut source)
+    quoted_query = quote_plus(query)  #30 (line in Coconut source)
+    return _coconut_tail_call((((build("customsearch", "v1", credentials=get_credentials())).cse()).list(key=SECRETS["google_api_key"], cx=SECRETS["search_engine_id"], q=quoted_query)).execute)  #31 (line in Coconut source)

@@ -29,6 +29,10 @@ build:
 watch:
 	coconut minecraft_server_tools-source minecraft_server_tools --strict --watch
 
+.PHONY: watch-verbose
+watch-verbose:
+	coconut minecraft_server_tools-source minecraft_server_tools --strict --watch --verbose
+
 .PHONY: clean
 clean:
 	rm -rf ./minecraft_server_tools-source/__coconut_cache__

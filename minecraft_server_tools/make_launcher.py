@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf0aca4ab
+# __coconut_hash__ = 0xefeccb8
 
-# Compiled with Coconut version 3.1.0-post_dev12
+# Compiled with Coconut version 3.1.0-post_dev15
 
 # Coconut Header: -------------------------------------------------------------
 
 from __future__ import print_function, absolute_import, unicode_literals, division
 import sys as _coconut_sys
 import os as _coconut_os
-_coconut_header_info = ('3.1.0-post_dev12', '', True)
+_coconut_header_info = ('3.1.0-post_dev15', '', True)
 _coconut_cached__coconut__ = _coconut_sys.modules.get(str('__coconut__'))
 _coconut_file_dir = _coconut_os.path.dirname(_coconut_os.path.abspath(__file__))
 _coconut_pop_path = False
@@ -58,10 +58,10 @@ else:
 import os  #1 (line in Coconut source)
 
 from minecraft_server_tools import install_client  #3 (line in Coconut source)
-from minecraft_server_tools.constants import WINDOWS  # NOQA  #4 (line in Coconut source)
-from minecraft_server_tools.constants import ROOT_DIR  # NOQA  #4 (line in Coconut source)
-from minecraft_server_tools.constants import LAUNCHER_FILE  # NOQA  #4 (line in Coconut source)
-from minecraft_server_tools.constants import NEW_LAUNCHER_PATH  # NOQA  #4 (line in Coconut source)
+from minecraft_server_tools.constants import WINDOWS  #4 (line in Coconut source)
+from minecraft_server_tools.constants import ROOT_DIR  #4 (line in Coconut source)
+from minecraft_server_tools.constants import LAUNCHER_FILE  #4 (line in Coconut source)
+from minecraft_server_tools.constants import NEW_LAUNCHER_PATH  #4 (line in Coconut source)
 
 OPEN_CMD = "" if WINDOWS else "open "  #11 (line in Coconut source)
 
@@ -73,12 +73,12 @@ def get_launcher_file_contents(install_client_args=""):  #14 (line in Coconut so
         raise OSError("Could not find Minecraft Launcher file!\n\nMod files have still been installed, but custom launcher creation failed. You'll need to keep running this script every time before you launch Minecraft.")  #17 (line in Coconut source)
     print("\tIdentified Minecraft Launcher location as: {_coconut_format_0!r}".format(_coconut_format_0=(LAUNCHER_FILE)))  #18 (line in Coconut source)
     return _coconut_tail_call("""
-cd "{ROOT_DIR}"
+cd "{_coconut_format_0}"
 git pull
 py -3 -m pip install -Ue .
-py -3 -m minecraft_server_tools.install_client{_coconut_format_0}
-{_coconut_format_1}"{LAUNCHER_FILE}"
-    """.format(_coconut_format_0=(install_client_args), _coconut_format_1=(OPEN_CMD)).strip)  #25 (line in Coconut source)
+py -3 -m minecraft_server_tools.install_client{_coconut_format_1}
+{_coconut_format_2}"{_coconut_format_3}"
+    """.format(_coconut_format_0=(ROOT_DIR), _coconut_format_1=(install_client_args), _coconut_format_2=(OPEN_CMD), _coconut_format_3=(LAUNCHER_FILE)).strip)  #25 (line in Coconut source)
 
 
 
