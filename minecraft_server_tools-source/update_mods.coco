@@ -598,9 +598,9 @@ def main():
 
     update_all(
         [
-            # sync_mods.EXTRA_CLIENT_MODS_DIR,
+            sync_mods.EXTRA_CLIENT_MODS_DIR,
             sync_mods.EXTRA_MODS_DIR,
-            # sync_mods.BASE_CLIENT_MODS_DIR,
+            sync_mods.BASE_CLIENT_MODS_DIR,
             sync_mods.BASE_MODS_DIR,
         ],
         dry_run="--dry-run" in sys.argv,

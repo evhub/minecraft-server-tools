@@ -201,6 +201,8 @@ NAME_REGEXES_TO_SPACE = [
         r"_",
         r"\(",
         r"\)",
+        r"%20",
+        r"%5[bd]",
         r"(neo)?forge\b",
         r"(NEO)?FORGE",
         r"(Neo)?Forge\b",
@@ -256,6 +258,8 @@ AVOID_FILES_PUBLISHED_WITHIN = timedelta(days=7)
 
 MOD_PAGE_NAME_SUFFICES = (
     " - Files - Minecraft Mods - Curseforge",
+    " - Comments - Minecraft Mods - Curseforge",
+    " - Minecraft Mods - CurseForge",
 )
 
 GOOGLE_QUERY_TEMPLATE = '{mod_name} {modloader} {mc_version_2} "Minecraft Mods" -Modpacks'

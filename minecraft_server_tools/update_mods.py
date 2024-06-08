@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa642f0f8
+# __coconut_hash__ = 0x4077f8c4
 
-# Compiled with Coconut version 3.1.0-post_dev15
+# Compiled with Coconut version 3.1.1
 
 # Coconut Header: -------------------------------------------------------------
 
 from __future__ import print_function, absolute_import, unicode_literals, division
 import sys as _coconut_sys
 import os as _coconut_os
-_coconut_header_info = ('3.1.0-post_dev15', '', True)
+_coconut_header_info = ('3.1.1', '', True)
 _coconut_cached__coconut__ = _coconut_sys.modules.get(str('__coconut__'))
 _coconut_file_dir = _coconut_os.path.dirname(_coconut_os.path.abspath(__file__))
 _coconut_pop_path = False
@@ -668,7 +668,7 @@ def update_all(mods_dirs, dry_run=False, interact=None):  #586 (line in Coconut 
 def main():  #596 (line in Coconut source)
     sync_mods.main()  #597 (line in Coconut source)
 
-    update_all([sync_mods.EXTRA_MODS_DIR, sync_mods.BASE_MODS_DIR], dry_run="--dry-run" in sys.argv)  #599 (line in Coconut source)
+    update_all([sync_mods.EXTRA_CLIENT_MODS_DIR, sync_mods.EXTRA_MODS_DIR, sync_mods.BASE_CLIENT_MODS_DIR, sync_mods.BASE_MODS_DIR], dry_run="--dry-run" in sys.argv)  #599 (line in Coconut source)
 
 # from coconut import embed
 # embed()
