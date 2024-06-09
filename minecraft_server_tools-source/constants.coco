@@ -64,7 +64,7 @@ DOWNLOADS_PATH = first_that_exists([
 IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 
 MC_VERSION = (1, 20, 1)
-FORGE_VERSION = (47, 2, 20)
+FORGE_VERSION = (47, 3, 0)
 
 if IS_MOD_SERVER:
     CLIENT_RAM = "22G"
@@ -362,6 +362,7 @@ FML_ARGS = [
     "-Dfml.queryResult=confirm",
     "-Dfml.readTimeout=900",
     "-Dfml.ignoreInvalidMinecraftCertificates=true",
+    "-Dfml.ignorePatchDiscrepancies=true",
 ]
 
 FORGE_ARGS = ["nogui"]
