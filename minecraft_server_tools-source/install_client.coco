@@ -77,7 +77,11 @@ def get_paths_to_zip():
         EXTRA_INSTALL_FILES
         + OPTIONAL_INSTALL_FILES
     ):
-        yield os.path.join(MINECRAFT_DIR, install_fname)
+        fpath = os.path.join(MINECRAFT_DIR, install_fname)
+        if os.path.exists(fpath):
+            yield fpath
+        else:
+            print(f"\tSkipped {fpath!r}...")
     for install_dirname in (
         EXTRA_INSTALL_FOLDERS
         + OPTIONAL_INSTALL_FOLDERS
