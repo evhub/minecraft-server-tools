@@ -11,6 +11,15 @@ from minecraft_server_tools.constants import (
 DEDUPLICATE_MODS_DIR = os.path.join(SERVER_DIR, DEDUPLICATE_MODS_NAME)
 DEDUPLICATE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, DEDUPLICATE_CLIENT_MODS_NAME)
 
+ALL_MODS_DIRS = (
+    sync_mods.BASE_MODS_DIR,
+    sync_mods.EXTRA_MODS_DIR,
+    sync_mods.REMOVED_MODS_DIR,
+    sync_mods.BASE_CLIENT_MODS_DIR,
+    sync_mods.EXTRA_CLIENT_MODS_DIR,
+    sync_mods.REMOVED_CLIENT_MODS_DIR,
+)
+
 
 def get_all_mod_names(mods_dirs):
     all_mod_names = {}
@@ -45,13 +54,16 @@ def add_new_mods(new_mods_dir, to_mods_dir, all_mod_names):
     return made_changes
 
 
-def deduplicate_mods(new_mods_dir, all_mod_names):
+def deduplicate_mods(new_mods_dir, all_mod_names, warn_only=False):
     if os.path.exists(new_mods_dir):
         print(f"\nDeduplicating mods in: {new_mods_dir}")
         for mod_name, jar_name in update_mods.get_mod_names_to_jar_names(new_mods_dir).items():
             from_path = os.path.join(new_mods_dir, jar_name)
             if mod_name in all_mod_names:
-                sync_mods.rm_mod(from_path)
+                if warn_only:
+                    print(f"\tFound duplicate mod: {from_path}")
+                else:
+                    sync_mods.rm_mod(from_path)
 
 
 def fix_deduplicate_mods():
@@ -60,6 +72,12 @@ def fix_deduplicate_mods():
         sync_mods.get_location_table_for(DEDUPLICATE_MODS_DIR),
         sync_mods.get_location_table_for(DEDUPLICATE_CLIENT_MODS_DIR),
     )
+
+
+def warn_duplicate_mods():
+    for i, mods_dir in enumerate(ALL_MODS_DIRS):
+        other_mod_names = get_all_mod_names(ALL_MODS_DIRS[:i] + ALL_MODS_DIRS[i+1:])
+        deduplicate_mods(mods_dir, other_mod_names, warn_only=True)
 
 
 def main():

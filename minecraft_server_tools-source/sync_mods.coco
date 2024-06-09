@@ -161,7 +161,7 @@ def main():
     remove_mods_in_from(base_server_mods, base_client_only_mods)
 
 
-    print("\nFixing main mods...")
+    print("\nFixing base/extra mods...")
     all_base_mods = get_location_table_for(BASE_MODS_DIR)
     all_base_mods.update(get_location_table_for(BASE_CLIENT_MODS_DIR))
 

@@ -154,13 +154,13 @@ else:
 
 MODS_NAME = "mods"
 BASE_MODS_NAME = MODS_NAME + "-base"
-EXTRA_MODS_NAME = MODS_NAME + "-main"
+EXTRA_MODS_NAME = MODS_NAME + "-extra"
 REMOVED_MODS_NAME = MODS_NAME + "-removed"
 DEDUPLICATE_MODS_NAME = MODS_NAME + "-deduplicate"
 
 CLIENT_MODS_NAME = "client_mods"
 BASE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-base"
-EXTRA_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-main"
+EXTRA_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-extra"
 REMOVED_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-removed"
 DEDUPLICATE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-deduplicate"
 
@@ -171,6 +171,7 @@ ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 
 MODLOADER = "Forge"
 WRONG_MODLOADERS = ["Fabric", "Quilt"]
+MAYBE_WRONG_MODLOADERS = ["NeoForge"]
 
 NON_CURSEFORGE_MODS = [
     "OptiFine",
@@ -325,7 +326,7 @@ BASE_JVM_ARGS = [
     # "-XX:TargetSurvivorRatio=90",  # atm: 32; default: 50
     "-XX:SurvivorRatio=32",  # atm: 32; default: 8
     "-XX:+UseNUMA",  # hilltty-flags
-    "-XX:-UseBiasedLocking",  # hilltty-flags
+    # "-XX:-UseBiasedLocking",  # hilltty-flags, deprecated by java
 ] + ([
     "-XX:LargePageSizeInBytes=2M",  # hilltty-flags
 ] if USE_LARGE_PAGES else [])

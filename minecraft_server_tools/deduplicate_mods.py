@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x366294d6
+# __coconut_hash__ = 0x4101244b
 
 # Compiled with Coconut version 3.1.1
 
@@ -67,68 +67,80 @@ from minecraft_server_tools.constants import DEDUPLICATE_CLIENT_MODS_NAME  #4 (l
 DEDUPLICATE_MODS_DIR = os.path.join(SERVER_DIR, DEDUPLICATE_MODS_NAME)  #11 (line in Coconut source)
 DEDUPLICATE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, DEDUPLICATE_CLIENT_MODS_NAME)  #12 (line in Coconut source)
 
-
-def get_all_mod_names(mods_dirs):  #15 (line in Coconut source)
-    all_mod_names = _coconut.dict()  #16 (line in Coconut source)
-    for dirname in mods_dirs:  #17 (line in Coconut source)
-        if os.path.exists(dirname):  #18 (line in Coconut source)
-            for mod_name, jar_name in update_mods.get_mod_names_to_jar_names(dirname, silent=True).items():  #19 (line in Coconut source)
-                assert mod_name not in all_mod_names, "found multiple jars with same mod name {_coconut_format_0!r}: {_coconut_format_1!r}, {_coconut_format_2!r}".format(_coconut_format_0=(mod_name), _coconut_format_1=(all_mod_names[mod_name]), _coconut_format_2=(jar_name))  #20 (line in Coconut source)
-                all_mod_names[mod_name] = jar_name  #21 (line in Coconut source)
-    return all_mod_names  #22 (line in Coconut source)
+ALL_MODS_DIRS = (sync_mods.BASE_MODS_DIR, sync_mods.EXTRA_MODS_DIR, sync_mods.REMOVED_MODS_DIR, sync_mods.BASE_CLIENT_MODS_DIR, sync_mods.EXTRA_CLIENT_MODS_DIR, sync_mods.REMOVED_CLIENT_MODS_DIR)  #14 (line in Coconut source)
 
 
-
-def add_new_mods(new_mods_dir, to_mods_dir, all_mod_names):  #25 (line in Coconut source)
-    to_mods_dir_mod_names = update_mods.get_mod_names_to_jar_names(to_mods_dir, silent=True)  #26 (line in Coconut source)
-    made_changes = False  #27 (line in Coconut source)
-    if os.path.exists(new_mods_dir):  #28 (line in Coconut source)
-        print("\nLooking for new mods in: {_coconut_format_0}".format(_coconut_format_0=(new_mods_dir)))  #29 (line in Coconut source)
-        for mod_name, jar_name in update_mods.get_mod_names_to_jar_names(new_mods_dir).items():  #30 (line in Coconut source)
-            from_path = os.path.join(new_mods_dir, jar_name)  #31 (line in Coconut source)
-            if mod_name not in all_mod_names:  #32 (line in Coconut source)
-                to_path = os.path.join(to_mods_dir, jar_name)  #33 (line in Coconut source)
-                print("Adding new mod: {_coconut_format_0} (from {_coconut_format_1!r})".format(_coconut_format_0=(mod_name), _coconut_format_1=(jar_name)))  #34 (line in Coconut source)
-                os.rename(from_path, to_path)  #35 (line in Coconut source)
-                made_changes = True  #36 (line in Coconut source)
-            elif mod_name in to_mods_dir_mod_names:  #37 (line in Coconut source)
-                sync_mods.rm_mod(from_path)  #38 (line in Coconut source)
-        if made_changes:  #39 (line in Coconut source)
-            sync_mods.main()  #40 (line in Coconut source)
-        else:  #41 (line in Coconut source)
-            print("Found no new mods in: {_coconut_format_0}\n".format(_coconut_format_0=(new_mods_dir)))  #42 (line in Coconut source)
-    else:  #43 (line in Coconut source)
-        print("\nSkipping adding new mods from: {_coconut_format_0}\n".format(_coconut_format_0=(new_mods_dir)))  #44 (line in Coconut source)
-    return made_changes  #45 (line in Coconut source)
+def get_all_mod_names(mods_dirs):  #24 (line in Coconut source)
+    all_mod_names = _coconut.dict()  #25 (line in Coconut source)
+    for dirname in mods_dirs:  #26 (line in Coconut source)
+        if os.path.exists(dirname):  #27 (line in Coconut source)
+            for mod_name, jar_name in update_mods.get_mod_names_to_jar_names(dirname, silent=True).items():  #28 (line in Coconut source)
+                assert mod_name not in all_mod_names, "found multiple jars with same mod name {_coconut_format_0!r}: {_coconut_format_1!r}, {_coconut_format_2!r}".format(_coconut_format_0=(mod_name), _coconut_format_1=(all_mod_names[mod_name]), _coconut_format_2=(jar_name))  #29 (line in Coconut source)
+                all_mod_names[mod_name] = jar_name  #30 (line in Coconut source)
+    return all_mod_names  #31 (line in Coconut source)
 
 
 
-def deduplicate_mods(new_mods_dir, all_mod_names):  #48 (line in Coconut source)
-    if os.path.exists(new_mods_dir):  #49 (line in Coconut source)
-        print("\nDeduplicating mods in: {_coconut_format_0}".format(_coconut_format_0=(new_mods_dir)))  #50 (line in Coconut source)
-        for mod_name, jar_name in update_mods.get_mod_names_to_jar_names(new_mods_dir).items():  #51 (line in Coconut source)
-            from_path = os.path.join(new_mods_dir, jar_name)  #52 (line in Coconut source)
-            if mod_name in all_mod_names:  #53 (line in Coconut source)
-                sync_mods.rm_mod(from_path)  #54 (line in Coconut source)
+def add_new_mods(new_mods_dir, to_mods_dir, all_mod_names):  #34 (line in Coconut source)
+    to_mods_dir_mod_names = update_mods.get_mod_names_to_jar_names(to_mods_dir, silent=True)  #35 (line in Coconut source)
+    made_changes = False  #36 (line in Coconut source)
+    if os.path.exists(new_mods_dir):  #37 (line in Coconut source)
+        print("\nLooking for new mods in: {_coconut_format_0}".format(_coconut_format_0=(new_mods_dir)))  #38 (line in Coconut source)
+        for mod_name, jar_name in update_mods.get_mod_names_to_jar_names(new_mods_dir).items():  #39 (line in Coconut source)
+            from_path = os.path.join(new_mods_dir, jar_name)  #40 (line in Coconut source)
+            if mod_name not in all_mod_names:  #41 (line in Coconut source)
+                to_path = os.path.join(to_mods_dir, jar_name)  #42 (line in Coconut source)
+                print("Adding new mod: {_coconut_format_0} (from {_coconut_format_1!r})".format(_coconut_format_0=(mod_name), _coconut_format_1=(jar_name)))  #43 (line in Coconut source)
+                os.rename(from_path, to_path)  #44 (line in Coconut source)
+                made_changes = True  #45 (line in Coconut source)
+            elif mod_name in to_mods_dir_mod_names:  #46 (line in Coconut source)
+                sync_mods.rm_mod(from_path)  #47 (line in Coconut source)
+        if made_changes:  #48 (line in Coconut source)
+            sync_mods.main()  #49 (line in Coconut source)
+        else:  #50 (line in Coconut source)
+            print("Found no new mods in: {_coconut_format_0}\n".format(_coconut_format_0=(new_mods_dir)))  #51 (line in Coconut source)
+    else:  #52 (line in Coconut source)
+        print("\nSkipping adding new mods from: {_coconut_format_0}\n".format(_coconut_format_0=(new_mods_dir)))  #53 (line in Coconut source)
+    return made_changes  #54 (line in Coconut source)
 
 
 
-def fix_deduplicate_mods():  #57 (line in Coconut source)
-    print("\nFixing to deduplicate mods...")  #58 (line in Coconut source)
-    sync_mods.remove_mods_in_from(sync_mods.get_location_table_for(DEDUPLICATE_MODS_DIR), sync_mods.get_location_table_for(DEDUPLICATE_CLIENT_MODS_DIR))  #59 (line in Coconut source)
+def deduplicate_mods(new_mods_dir, all_mod_names, warn_only=False):  #57 (line in Coconut source)
+    if os.path.exists(new_mods_dir):  #58 (line in Coconut source)
+        print("\nDeduplicating mods in: {_coconut_format_0}".format(_coconut_format_0=(new_mods_dir)))  #59 (line in Coconut source)
+        for mod_name, jar_name in update_mods.get_mod_names_to_jar_names(new_mods_dir).items():  #60 (line in Coconut source)
+            from_path = os.path.join(new_mods_dir, jar_name)  #61 (line in Coconut source)
+            if mod_name in all_mod_names:  #62 (line in Coconut source)
+                if warn_only:  #63 (line in Coconut source)
+                    print("\tFound duplicate mod: {_coconut_format_0}".format(_coconut_format_0=(from_path)))  #64 (line in Coconut source)
+                else:  #65 (line in Coconut source)
+                    sync_mods.rm_mod(from_path)  #66 (line in Coconut source)
 
 
 
-def main():  #65 (line in Coconut source)
-    sync_mods.main()  #66 (line in Coconut source)
-
-    fix_deduplicate_mods()  #68 (line in Coconut source)
-
-    all_mod_names = get_all_mod_names([sync_mods.MODS_DIR, sync_mods.CLIENT_MODS_DIR, sync_mods.REMOVED_MODS_DIR, sync_mods.REMOVED_CLIENT_MODS_DIR])  #70 (line in Coconut source)
-    deduplicate_mods(DEDUPLICATE_CLIENT_MODS_DIR, all_mod_names)  #76 (line in Coconut source)
-    deduplicate_mods(DEDUPLICATE_MODS_DIR, all_mod_names)  #77 (line in Coconut source)
+def fix_deduplicate_mods():  #69 (line in Coconut source)
+    print("\nFixing to deduplicate mods...")  #70 (line in Coconut source)
+    sync_mods.remove_mods_in_from(sync_mods.get_location_table_for(DEDUPLICATE_MODS_DIR), sync_mods.get_location_table_for(DEDUPLICATE_CLIENT_MODS_DIR))  #71 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #80 (line in Coconut source)
-    main()  #81 (line in Coconut source)
+def warn_duplicate_mods():  #77 (line in Coconut source)
+    for i, mods_dir in enumerate(ALL_MODS_DIRS):  #78 (line in Coconut source)
+        other_mod_names = get_all_mod_names(ALL_MODS_DIRS[:i] + ALL_MODS_DIRS[i + 1:])  #79 (line in Coconut source)
+        deduplicate_mods(mods_dir, other_mod_names, warn_only=True)  #80 (line in Coconut source)
+
+
+
+def main():  #83 (line in Coconut source)
+    sync_mods.main()  #84 (line in Coconut source)
+
+    fix_deduplicate_mods()  #86 (line in Coconut source)
+
+    all_mod_names = get_all_mod_names([sync_mods.MODS_DIR, sync_mods.CLIENT_MODS_DIR, sync_mods.REMOVED_MODS_DIR, sync_mods.REMOVED_CLIENT_MODS_DIR])  #88 (line in Coconut source)
+    deduplicate_mods(DEDUPLICATE_CLIENT_MODS_DIR, all_mod_names)  #94 (line in Coconut source)
+    deduplicate_mods(DEDUPLICATE_MODS_DIR, all_mod_names)  #95 (line in Coconut source)
+
+
+
+if __name__ == "__main__":  #98 (line in Coconut source)
+    main()  #99 (line in Coconut source)

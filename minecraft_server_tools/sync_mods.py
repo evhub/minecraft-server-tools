@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x54f42bc4
+# __coconut_hash__ = 0xa4e9b7d9
 
 # Compiled with Coconut version 3.1.1
 
@@ -224,7 +224,7 @@ def main():  #149 (line in Coconut source)
     remove_mods_in_from(base_server_mods, base_client_only_mods)  #161 (line in Coconut source)
 
 
-    print("\nFixing main mods...")  #164 (line in Coconut source)
+    print("\nFixing base/extra mods...")  #164 (line in Coconut source)
     all_base_mods = get_location_table_for(BASE_MODS_DIR)  #165 (line in Coconut source)
     all_base_mods.update(get_location_table_for(BASE_CLIENT_MODS_DIR))  #166 (line in Coconut source)
 

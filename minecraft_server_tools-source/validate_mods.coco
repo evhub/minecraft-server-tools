@@ -1,0 +1,20 @@
+from minecraft_server_tools import sync_mods, deduplicate_mods, update_mods
+
+
+def check_modloaders(location_table):
+    for mod, path in location_table.items():
+        if update_mods.has_bad_modloader(mod):
+            print(f"Maybe bad modloader in {mod!r} at: {path!r}")
+
+
+def main():
+    sync_mods.main()
+    deduplicate_mods.warn_duplicate_mods()
+
+    all_mods = sync_mods.get_location_table_for(sync_mods.MODS_DIR)
+    all_mods.update(sync_mods.get_location_table_for(sync_mods.CLIENT_MODS_DIR))
+    check_modloaders(all_mods)
+
+
+if __name__ == "__main__":
+    main()

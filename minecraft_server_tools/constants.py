@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x22649740
+# __coconut_hash__ = 0xd6e25216
 
 # Compiled with Coconut version 3.1.1
 
@@ -187,13 +187,13 @@ else:  #147 (line in Coconut source)
 
 MODS_NAME = "mods"  #155 (line in Coconut source)
 BASE_MODS_NAME = MODS_NAME + "-base"  #156 (line in Coconut source)
-EXTRA_MODS_NAME = MODS_NAME + "-main"  #157 (line in Coconut source)
+EXTRA_MODS_NAME = MODS_NAME + "-extra"  #157 (line in Coconut source)
 REMOVED_MODS_NAME = MODS_NAME + "-removed"  #158 (line in Coconut source)
 DEDUPLICATE_MODS_NAME = MODS_NAME + "-deduplicate"  #159 (line in Coconut source)
 
 CLIENT_MODS_NAME = "client_mods"  #161 (line in Coconut source)
 BASE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-base"  #162 (line in Coconut source)
-EXTRA_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-main"  #163 (line in Coconut source)
+EXTRA_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-extra"  #163 (line in Coconut source)
 REMOVED_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-removed"  #164 (line in Coconut source)
 DEDUPLICATE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-deduplicate"  #165 (line in Coconut source)
 
@@ -204,121 +204,122 @@ ROOT_DIR = os.path.dirname(os.path.dirname(__file__))  #170 (line in Coconut sou
 
 MODLOADER = "Forge"  #172 (line in Coconut source)
 WRONG_MODLOADERS = ["Fabric", "Quilt"]  #173 (line in Coconut source)
+MAYBE_WRONG_MODLOADERS = ["NeoForge",]  #174 (line in Coconut source)
 
-NON_CURSEFORGE_MODS = ["OptiFine", "preview OptiFine"]  #175 (line in Coconut source)
+NON_CURSEFORGE_MODS = ["OptiFine", "preview OptiFine"]  #176 (line in Coconut source)
 
-COMPONENT_SEPS = [("-", 2), ("(", 1), ("+", 2), ("-", 1), ("_", 2), (" ", 2), ("+", 1), ("_", 1), (" ", 1)]  #180 (line in Coconut source)
+COMPONENT_SEPS = [("-", 2), ("(", 1), ("+", 2), ("-", 1), ("_", 2), (" ", 2), ("+", 1), ("_", 1), (" ", 1)]  #181 (line in Coconut source)
 
-NON_NAME_COMPONENT_REGEX = full_regex(r"[0-9].*|" + r"(?!cave|a$|ae2|rare|da)((forge|fabric|quilt|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+")  #192 (line in Coconut source)
+NON_NAME_COMPONENT_REGEX = full_regex(r"[0-9].*|" + r"(?!cave|a$|ae2|rare|da)((forge|fabric|quilt|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+")  #193 (line in Coconut source)
 
-NAME_REGEXES_TO_SPACE = [regex(r) for r in (r"-", r"\+", r"_", r"\(", r"\)", r"%20", r"%5[bd]", r"%27", r"(neo)?forge\b", r"(NEO)?FORGE", r"(Neo)?Forge\b", r"fabric\b", r"FABRIC", r"Fabric\b", r"quilt\b", r"QUILT", r"Quilt\b", r"\bdist(ro)?", r"release", r"\balpha\b", r"\bALPHA\b", r"\bAlpha\b", r"\bbeta\b", r"\bBETA\b", r"\bBeta\b", r"MC", r"\bmc\b", r"1\.\d+", r"[.vV]0", r"[.vV]1", r"[.vV]2", r"[.vV]3", r"[.vV]4", r"[.vV]5", r"[.vV]6", r"[.vV]7", r"[.vV]8", r"[.vV]9", r"\.", r" / ", r" \| ", r"   ", r"  ", r" / ", r"\[ \]", r"  ")]  #197 (line in Coconut source)
+NAME_REGEXES_TO_SPACE = [regex(r) for r in (r"-", r"\+", r"_", r"\(", r"\)", r"%20", r"%5[bd]", r"%27", r"(neo)?forge\b", r"(NEO)?FORGE", r"(Neo)?Forge\b", r"fabric\b", r"FABRIC", r"Fabric\b", r"quilt\b", r"QUILT", r"Quilt\b", r"\bdist(ro)?", r"release", r"\balpha\b", r"\bALPHA\b", r"\bAlpha\b", r"\bbeta\b", r"\bBETA\b", r"\bBeta\b", r"MC", r"\bmc\b", r"1\.\d+", r"[.vV]0", r"[.vV]1", r"[.vV]2", r"[.vV]3", r"[.vV]4", r"[.vV]5", r"[.vV]6", r"[.vV]7", r"[.vV]8", r"[.vV]9", r"\.", r" / ", r" \| ", r"   ", r"  ", r" / ", r"\[ \]", r"  ")]  #198 (line in Coconut source)
 
-CURSEFORGE_NAME_ELEMS_TO_STRIP = ["-", "Download", "Files", "Mods", "Minecraft", "Curseforge", "..."]  #248 (line in Coconut source)
+CURSEFORGE_NAME_ELEMS_TO_STRIP = ["-", "Download", "Files", "Mods", "Minecraft", "Curseforge", "..."]  #249 (line in Coconut source)
 
-AVOID_FILES_PUBLISHED_WITHIN = timedelta(days=7)  #258 (line in Coconut source)
+AVOID_FILES_PUBLISHED_WITHIN = timedelta(days=7)  #259 (line in Coconut source)
 
-MOD_PAGE_NAME_SUFFICES = (" - Files - Minecraft Mods - Curseforge", " - Comments - Minecraft Mods - Curseforge", " - Minecraft Mods - CurseForge")  #260 (line in Coconut source)
+MOD_PAGE_NAME_SUFFICES = (" - Files - Minecraft Mods - Curseforge", " - Comments - Minecraft Mods - Curseforge", " - Minecraft Mods - CurseForge")  #261 (line in Coconut source)
 
 # must start with {mod_name} {modloader}
-GOOGLE_QUERY_TEMPLATE = '{mod_name} {modloader} {mc_version_2} "Minecraft Mods" -Modpacks'  #267 (line in Coconut source)
+GOOGLE_QUERY_TEMPLATE = '{mod_name} {modloader} {mc_version_2} "Minecraft Mods" -Modpacks'  #268 (line in Coconut source)
 
-CURSEFORGE_NAMES_FILE = os.path.join(ROOT_DIR, "curseforge_names.json")  #269 (line in Coconut source)
+CURSEFORGE_NAMES_FILE = os.path.join(ROOT_DIR, "curseforge_names.json")  #270 (line in Coconut source)
 
-CURSEFORGE_API_FILE = os.path.join(ROOT_DIR, "curseforge_api.js")  #271 (line in Coconut source)
+CURSEFORGE_API_FILE = os.path.join(ROOT_DIR, "curseforge_api.js")  #272 (line in Coconut source)
 
-CURSEFORGE_QUERY_TEMPLATES = ['"{curseforge_name}"', "{core_curseforge_name}", "{mod_name}"]  #273 (line in Coconut source)
+CURSEFORGE_QUERY_TEMPLATES = ['"{curseforge_name}"', "{core_curseforge_name}", "{mod_name}"]  #274 (line in Coconut source)
 
-TIMESTAMP_FORMAT_REGEX = full_regex("(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)\.?(\d+)?Z")  #279 (line in Coconut source)
+TIMESTAMP_FORMAT_REGEX = full_regex("(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)\.?(\d+)?Z")  #280 (line in Coconut source)
 
-UPDATED_MODS_DIR_SUFFIX = "-updates"  #281 (line in Coconut source)
-OLD_MODS_DIR_SUFFIX = "-old"  #282 (line in Coconut source)
+UPDATED_MODS_DIR_SUFFIX = "-updates"  #282 (line in Coconut source)
+OLD_MODS_DIR_SUFFIX = "-old"  #283 (line in Coconut source)
 
-DEBUG = False  #284 (line in Coconut source)
-MAX_DEBUG_RESULTS = 2  #285 (line in Coconut source)
+DEBUG = False  #285 (line in Coconut source)
+MAX_DEBUG_RESULTS = 2  #286 (line in Coconut source)
 
-CURSEFORGE_API_RETRIES = 3  #287 (line in Coconut source)
-CURSEFORGE_API_RETRY_DELAY = 0.1  #288 (line in Coconut source)
+CURSEFORGE_API_RETRIES = 3  #288 (line in Coconut source)
+CURSEFORGE_API_RETRY_DELAY = 0.1  #289 (line in Coconut source)
 
 
 # Large page setup constants
 
-USE_LARGE_PAGES = False  #293 (line in Coconut source)
+USE_LARGE_PAGES = False  #294 (line in Coconut source)
 
 
 # Server start constants
 
-JAVA_EXECUTABLE = "java"  #298 (line in Coconut source)
+JAVA_EXECUTABLE = "java"  #299 (line in Coconut source)
 
-CLIENT_GC = "G1"  #300 (line in Coconut source)
-SERVER_GC = "Shenandoah"  #301 (line in Coconut source)
+CLIENT_GC = "G1"  #301 (line in Coconut source)
+SERVER_GC = "Shenandoah"  #302 (line in Coconut source)
 
-BASE_JVM_ARGS = ["-server", "-Xss2M", "-XX:+UnlockExperimentalVMOptions", "-XX:+AlwaysPreTouch", "-XX:+DisableExplicitGC", "-XX:+OptimizeStringConcat", "-XX:+UseCompressedOops", "-XX:+ScavengeBeforeFullGC", "-XX:+ParallelRefProcEnabled", "-XX:+PerfDisableSharedMem", "-XX:+UseStringDeduplication", "-XX:+UseLargePages", "-XX:MaxMetaspaceExpansion=64M", "-XX:MaxGCPauseMillis=40", "-XX:InitiatingHeapOccupancyPercent=20", "-XX:MaxTenuringThreshold=1", "-XX:SurvivorRatio=32", "-XX:+UseNUMA", "-XX:-UseBiasedLocking"] + (["-XX:LargePageSizeInBytes=2M",] if USE_LARGE_PAGES else [])  # always  # always  # aikar-flags  # always  # atm: 1; default: 15  # atm: 15; aikar: 20; default: 45  # aikar-flags  # default: True  # default: True  # default: True  # hilltty-flags  # atm: 200; default: 200  # hilltty-flags  # atm: 32; default: 8  # default: 5M  # hilltty-flags  # hilltty-flags  #303 (line in Coconut source)
+BASE_JVM_ARGS = ["-server", "-Xss2M", "-XX:+UnlockExperimentalVMOptions", "-XX:+AlwaysPreTouch", "-XX:+DisableExplicitGC", "-XX:+OptimizeStringConcat", "-XX:+UseCompressedOops", "-XX:+ScavengeBeforeFullGC", "-XX:+ParallelRefProcEnabled", "-XX:+PerfDisableSharedMem", "-XX:+UseStringDeduplication", "-XX:+UseLargePages", "-XX:MaxMetaspaceExpansion=64M", "-XX:MaxGCPauseMillis=40", "-XX:InitiatingHeapOccupancyPercent=20", "-XX:MaxTenuringThreshold=1", "-XX:SurvivorRatio=32", "-XX:+UseNUMA"] + (["-XX:LargePageSizeInBytes=2M",] if USE_LARGE_PAGES else [])  # atm: 32; default: 8  # atm: 1; default: 15  # aikar-flags  # aikar-flags  # default: True  # default: True  # hilltty-flags  # always  # always  # always  # hilltty-flags  # default: True  # atm: 15; aikar: 20; default: 45  # hilltty-flags  # atm: 200; default: 200  # default: 5M  #304 (line in Coconut source)
 
-def get_jvm_args_for_gc(gc):  #333 (line in Coconut source)
-    if gc == "G1":  #334 (line in Coconut source)
-        return ["-XX:+UseG1GC", "-XX:G1ReservePercent=20", "-XX:G1NewSizePercent=30", "-XX:G1HeapRegionSize=32M", "-XX:G1MixedGCCountTarget=4", "-XX:G1RSetUpdatingPauseTimePercent=5"]  # atm: 20; aikar: 15  # atm: 5; default: 10  # atm: 4; default: 8  # atm: 30; aikar: 40  # atm: 8M; aikar: 16M  #335 (line in Coconut source)
-    elif gc == "Shenandoah":  #346 (line in Coconut source)
-        return ["-XX:+UseShenandoahGC", "-XX:ShenandoahGCMode=iu"]  # hilltty-flags  #347 (line in Coconut source)
-    elif gc == "Z":  #351 (line in Coconut source)
-        return ["-XX:+UseZGC",]  #352 (line in Coconut source)
-    else:  #355 (line in Coconut source)
-        raise ValueError("unknown GC {_coconut_format_0!r}".format(_coconut_format_0=(gc)))  #356 (line in Coconut source)
+def get_jvm_args_for_gc(gc):  #334 (line in Coconut source)
+    if gc == "G1":  #335 (line in Coconut source)
+        return ["-XX:+UseG1GC", "-XX:G1ReservePercent=20", "-XX:G1NewSizePercent=30", "-XX:G1HeapRegionSize=32M", "-XX:G1MixedGCCountTarget=4", "-XX:G1RSetUpdatingPauseTimePercent=5"]  # atm: 8M; aikar: 16M  # atm: 20; aikar: 15  # atm: 4; default: 8  # atm: 5; default: 10  # atm: 30; aikar: 40  #336 (line in Coconut source)
+    elif gc == "Shenandoah":  #347 (line in Coconut source)
+        return ["-XX:+UseShenandoahGC", "-XX:ShenandoahGCMode=iu"]  # hilltty-flags  #348 (line in Coconut source)
+    elif gc == "Z":  #352 (line in Coconut source)
+        return ["-XX:+UseZGC",]  #353 (line in Coconut source)
+    else:  #356 (line in Coconut source)
+        raise ValueError("unknown GC {_coconut_format_0!r}".format(_coconut_format_0=(gc)))  #357 (line in Coconut source)
 
 
-FML_ARGS = ["-Dfml.queryResult=confirm", "-Dfml.readTimeout=900", "-Dfml.ignoreInvalidMinecraftCertificates=true"]  #358 (line in Coconut source)
+FML_ARGS = ["-Dfml.queryResult=confirm", "-Dfml.readTimeout=900", "-Dfml.ignoreInvalidMinecraftCertificates=true"]  #359 (line in Coconut source)
 
-FORGE_ARGS = ["nogui",]  #364 (line in Coconut source)
+FORGE_ARGS = ["nogui",]  #365 (line in Coconut source)
 
-JVM_ARGS_FILE = os.path.join(SERVER_DIR, "user_jvm_args.txt")  #366 (line in Coconut source)
+JVM_ARGS_FILE = os.path.join(SERVER_DIR, "user_jvm_args.txt")  #367 (line in Coconut source)
 
-if WINDOWS:  #368 (line in Coconut source)
-    FORGE_LAUNCH_CMD = [os.path.join(SERVER_DIR, "run.bat"),]  #369 (line in Coconut source)
-else:  #370 (line in Coconut source)
-    FORGE_LAUNCH_CMD = ["sh", os.path.join(SERVER_DIR, "run.sh")]  #371 (line in Coconut source)
+if WINDOWS:  #369 (line in Coconut source)
+    FORGE_LAUNCH_CMD = [os.path.join(SERVER_DIR, "run.bat"),]  #370 (line in Coconut source)
+else:  #371 (line in Coconut source)
+    FORGE_LAUNCH_CMD = ["sh", os.path.join(SERVER_DIR, "run.sh")]  #372 (line in Coconut source)
 
-FORGE_INSTALLER_URL = format_vers("https://maven.minecraftforge.net/net/minecraftforge/forge/{mc_version}-{forge_version}/forge-{mc_version}-{forge_version}-installer.jar")  #373 (line in Coconut source)
+FORGE_INSTALLER_URL = format_vers("https://maven.minecraftforge.net/net/minecraftforge/forge/{mc_version}-{forge_version}/forge-{mc_version}-{forge_version}-installer.jar")  #374 (line in Coconut source)
 
-FORGE_INSTALLER_JAR = format_vers("forge-{mc_version}-{forge_version}-installer.jar")  #375 (line in Coconut source)
-FORGE_JAR = format_vers("forge-{mc_version}-{forge_version}.jar")  #376 (line in Coconut source)
+FORGE_INSTALLER_JAR = format_vers("forge-{mc_version}-{forge_version}-installer.jar")  #376 (line in Coconut source)
+FORGE_JAR = format_vers("forge-{mc_version}-{forge_version}.jar")  #377 (line in Coconut source)
 
-OLD_JARS_REGEX = full_regex(format_vers(r"(forge-(?!{mc_version}-{forge_version})[0-9.]+-[0-9.]+(-installer)?|minecraft_server\.(?!{mc_version})[0-9.]+)\.jar"))  #378 (line in Coconut source)
+OLD_JARS_REGEX = full_regex(format_vers(r"(forge-(?!{mc_version}-{forge_version})[0-9.]+-[0-9.]+(-installer)?|minecraft_server\.(?!{mc_version})[0-9.]+)\.jar"))  #379 (line in Coconut source)
 
 
 # Client install constants
 
-if sys.platform.startswith("win"):  #383 (line in Coconut source)
-    MINECRAFT_DIR = fixpath("~/AppData/Roaming/.minecraft")  #384 (line in Coconut source)
-elif sys.platform.startswith("darwin"):  #385 (line in Coconut source)
-    MINECRAFT_DIR = fixpath("~/Library/Application Support/minecraft")  #386 (line in Coconut source)
-else:  #387 (line in Coconut source)
-    MINECRAFT_DIR = fixpath("~/.minecraft")  #388 (line in Coconut source)
+if sys.platform.startswith("win"):  #384 (line in Coconut source)
+    MINECRAFT_DIR = fixpath("~/AppData/Roaming/.minecraft")  #385 (line in Coconut source)
+elif sys.platform.startswith("darwin"):  #386 (line in Coconut source)
+    MINECRAFT_DIR = fixpath("~/Library/Application Support/minecraft")  #387 (line in Coconut source)
+else:  #388 (line in Coconut source)
+    MINECRAFT_DIR = fixpath("~/.minecraft")  #389 (line in Coconut source)
 
-PROFILES_FILE = os.path.join(MINECRAFT_DIR, "launcher_profiles.json")  #390 (line in Coconut source)
+PROFILES_FILE = os.path.join(MINECRAFT_DIR, "launcher_profiles.json")  #391 (line in Coconut source)
 
-README_FILE = "README.txt"  #392 (line in Coconut source)
+README_FILE = "README.txt"  #393 (line in Coconut source)
 
-EXTRA_INSTALL_FILES += [README_FILE, FORGE_INSTALLER_JAR]  #394 (line in Coconut source)
+EXTRA_INSTALL_FILES += [README_FILE, FORGE_INSTALLER_JAR]  #395 (line in Coconut source)
 
-YES_STRS = ["y", "yes", "t", "true", "1"]  #399 (line in Coconut source)
+YES_STRS = ["y", "yes", "t", "true", "1"]  #400 (line in Coconut source)
 
-NO_STRS = ["n", "no", "f", "false", "0"]  #407 (line in Coconut source)
+NO_STRS = ["n", "no", "f", "false", "0"]  #408 (line in Coconut source)
 
 
 # Make launcher constants
 
-LAUNCHER_FILE = first_that_exists(["~/Applications/Minecraft.app", "/Applications/Minecraft.app", r"C:\Program Files (x86)\Minecraft Launcher\MinecraftLauncher.exe", r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Minecraft Launcher\Minecraft Launcher.ink", r"C:\Users\Public\Desktop\Minecraft Launcher.ink"])  #418 (line in Coconut source)
+LAUNCHER_FILE = first_that_exists(["~/Applications/Minecraft.app", "/Applications/Minecraft.app", r"C:\Program Files (x86)\Minecraft Launcher\MinecraftLauncher.exe", r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Minecraft Launcher\Minecraft Launcher.ink", r"C:\Users\Public\Desktop\Minecraft Launcher.ink"])  #419 (line in Coconut source)
 
-DESKTOP_DIR = first_that_exists(["~/Desktop", "~/OneDrive/Desktop"])  #426 (line in Coconut source)
+DESKTOP_DIR = first_that_exists(["~/Desktop", "~/OneDrive/Desktop"])  #427 (line in Coconut source)
 
-NEW_LAUNCHER_PATH = fixpath(os.path.join(DESKTOP_DIR, "Evan's Modded Minecraft" + (".bat" if WINDOWS else ".sh")))  #431 (line in Coconut source)
+NEW_LAUNCHER_PATH = fixpath(os.path.join(DESKTOP_DIR, "Evan's Modded Minecraft" + (".bat" if WINDOWS else ".sh")))  #432 (line in Coconut source)
 
 
 # Searchable mods constants
 
-SEARCHABLE_MODS_NAME = MODS_NAME + "-searchable"  #439 (line in Coconut source)
-SEARCHABLE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-searchable"  #440 (line in Coconut source)
+SEARCHABLE_MODS_NAME = MODS_NAME + "-searchable"  #440 (line in Coconut source)
+SEARCHABLE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-searchable"  #441 (line in Coconut source)
 
 
 # Binary search constants
 
-BINARY_SEARCH_FILE = os.path.join(SERVER_DIR, "binary_search.json")  #445 (line in Coconut source)
+BINARY_SEARCH_FILE = os.path.join(SERVER_DIR, "binary_search.json")  #446 (line in Coconut source)
