@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa4e9b7d9
+# __coconut_hash__ = 0x8fbff7ef
 
-# Compiled with Coconut version 3.1.1
+# Compiled with Coconut version 3.1.1-post_dev1
 
 # Coconut Header: -------------------------------------------------------------
 
 from __future__ import print_function, absolute_import, unicode_literals, division
 import sys as _coconut_sys
 import os as _coconut_os
-_coconut_header_info = ('3.1.1', '', True)
+_coconut_header_info = ('3.1.1-post_dev1', '', True)
 _coconut_cached__coconut__ = _coconut_sys.modules.get(str('__coconut__'))
 _coconut_file_dir = _coconut_os.path.dirname(_coconut_os.path.abspath(__file__))
 _coconut_pop_path = False
@@ -67,217 +67,223 @@ from minecraft_server_tools.constants import CLIENT_MODS_NAME  #4 (line in Cocon
 from minecraft_server_tools.constants import BASE_CLIENT_MODS_NAME  #4 (line in Coconut source)
 from minecraft_server_tools.constants import EXTRA_CLIENT_MODS_NAME  #4 (line in Coconut source)
 from minecraft_server_tools.constants import REMOVED_CLIENT_MODS_NAME  #4 (line in Coconut source)
+from minecraft_server_tools.constants import STAGING_MODS_NAME  #4 (line in Coconut source)
+from minecraft_server_tools.constants import STAGING_CLIENT_MODS_NAME  #4 (line in Coconut source)
 from minecraft_server_tools.constants import BINARY_SEARCH_FILE  #4 (line in Coconut source)
 from minecraft_server_tools.constants import load_json  #4 (line in Coconut source)
 
-MODS_DIR = os.path.join(SERVER_DIR, MODS_NAME)  #18 (line in Coconut source)
-BASE_MODS_DIR = os.path.join(SERVER_DIR, BASE_MODS_NAME)  #19 (line in Coconut source)
-EXTRA_MODS_DIR = os.path.join(SERVER_DIR, EXTRA_MODS_NAME)  #20 (line in Coconut source)
-REMOVED_MODS_DIR = os.path.join(SERVER_DIR, REMOVED_MODS_NAME)  #21 (line in Coconut source)
-CLIENT_MODS_DIR = os.path.join(SERVER_DIR, CLIENT_MODS_NAME)  #22 (line in Coconut source)
-BASE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, BASE_CLIENT_MODS_NAME)  #23 (line in Coconut source)
-EXTRA_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, EXTRA_CLIENT_MODS_NAME)  #24 (line in Coconut source)
-REMOVED_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, REMOVED_CLIENT_MODS_NAME)  #25 (line in Coconut source)
+MODS_DIR = os.path.join(SERVER_DIR, MODS_NAME)  #20 (line in Coconut source)
+BASE_MODS_DIR = os.path.join(SERVER_DIR, BASE_MODS_NAME)  #21 (line in Coconut source)
+EXTRA_MODS_DIR = os.path.join(SERVER_DIR, EXTRA_MODS_NAME)  #22 (line in Coconut source)
+REMOVED_MODS_DIR = os.path.join(SERVER_DIR, REMOVED_MODS_NAME)  #23 (line in Coconut source)
+STAGING_MODS_DIR = os.path.join(SERVER_DIR, STAGING_MODS_NAME)  #24 (line in Coconut source)
 
+CLIENT_MODS_DIR = os.path.join(SERVER_DIR, CLIENT_MODS_NAME)  #26 (line in Coconut source)
+BASE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, BASE_CLIENT_MODS_NAME)  #27 (line in Coconut source)
+EXTRA_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, EXTRA_CLIENT_MODS_NAME)  #28 (line in Coconut source)
+REMOVED_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, REMOVED_CLIENT_MODS_NAME)  #29 (line in Coconut source)
+STAGING_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, STAGING_CLIENT_MODS_NAME)  #30 (line in Coconut source)
 
-def ensure_dirs():  #28 (line in Coconut source)
-    for dirpath in [MODS_DIR, EXTRA_MODS_DIR, CLIENT_MODS_DIR, EXTRA_CLIENT_MODS_DIR]:  #29 (line in Coconut source)
-        if not os.path.exists(dirpath):  #35 (line in Coconut source)
-            os.mkdir(dirpath)  #36 (line in Coconut source)
 
+def ensure_dirs():  #33 (line in Coconut source)
+    for dirpath in [MODS_DIR, EXTRA_MODS_DIR, CLIENT_MODS_DIR, EXTRA_CLIENT_MODS_DIR]:  #34 (line in Coconut source)
+        if not os.path.exists(dirpath):  #40 (line in Coconut source)
+            os.mkdir(dirpath)  #41 (line in Coconut source)
 
 
-def get_location_table_for(mods_dir):  #39 (line in Coconut source)
-    mod_location_table = _coconut.dict()  #40 (line in Coconut source)
-    if os.path.exists(mods_dir):  #41 (line in Coconut source)
-        for name in os.listdir(mods_dir):  #42 (line in Coconut source)
-            path = os.path.join(mods_dir, name)  #43 (line in Coconut source)
-            if os.path.isfile(path):  #44 (line in Coconut source)
-                assert name not in mod_location_table, "found duplicate mod file at both {_coconut_format_0!r} and {_coconut_format_1!r}".format(_coconut_format_0=(mod_location_table[name]), _coconut_format_1=(path))  #45 (line in Coconut source)
-                mod_location_table[name] = path  #46 (line in Coconut source)
-    return mod_location_table  #47 (line in Coconut source)
 
+def get_location_table_for(mods_dir):  #44 (line in Coconut source)
+    mod_location_table = _coconut.dict()  #45 (line in Coconut source)
+    if os.path.exists(mods_dir):  #46 (line in Coconut source)
+        for name in os.listdir(mods_dir):  #47 (line in Coconut source)
+            path = os.path.join(mods_dir, name)  #48 (line in Coconut source)
+            if os.path.isfile(path):  #49 (line in Coconut source)
+                assert name not in mod_location_table, "found duplicate mod file at both {_coconut_format_0!r} and {_coconut_format_1!r}".format(_coconut_format_0=(mod_location_table[name]), _coconut_format_1=(path))  #50 (line in Coconut source)
+                mod_location_table[name] = path  #51 (line in Coconut source)
+    return mod_location_table  #52 (line in Coconut source)
 
 
-@_coconut_tco  #50 (line in Coconut source)
-def display_mod_path(mod_path):  #50 (line in Coconut source)
-    mod_dir, mod_name = os.path.split(mod_path)  #51 (line in Coconut source)
-    _, mod_dir_name = os.path.split(mod_dir)  #52 (line in Coconut source)
-    return _coconut_tail_call(os.path.join, mod_dir_name, mod_name)  #53 (line in Coconut source)
 
+@_coconut_tco  #55 (line in Coconut source)
+def display_mod_path(mod_path):  #55 (line in Coconut source)
+    mod_dir, mod_name = os.path.split(mod_path)  #56 (line in Coconut source)
+    _, mod_dir_name = os.path.split(mod_dir)  #57 (line in Coconut source)
+    return _coconut_tail_call(os.path.join, mod_dir_name, mod_name)  #58 (line in Coconut source)
 
 
-def rm_mod(path):  #56 (line in Coconut source)
-    print("Removing {mod}...".format(mod=display_mod_path(path)))  #57 (line in Coconut source)
-    os.remove(path)  #58 (line in Coconut source)
 
+def rm_mod(path):  #61 (line in Coconut source)
+    print("Removing {mod}...".format(mod=display_mod_path(path)))  #62 (line in Coconut source)
+    os.remove(path)  #63 (line in Coconut source)
 
 
-def remove_mods_in_from(remove_mod_location_table, current_mod_location_table):  #61 (line in Coconut source)
-    for mod, cur_path in current_mod_location_table.items():  #62 (line in Coconut source)
-        if mod in remove_mod_location_table and os.path.exists(cur_path):  #63 (line in Coconut source)
-            rm_mod(cur_path)  #64 (line in Coconut source)
 
+def remove_mods_in_from(remove_mod_location_table, current_mod_location_table):  #66 (line in Coconut source)
+    for mod, cur_path in current_mod_location_table.items():  #67 (line in Coconut source)
+        if mod in remove_mod_location_table and os.path.exists(cur_path):  #68 (line in Coconut source)
+            rm_mod(cur_path)  #69 (line in Coconut source)
 
 
-def add_mod(from_path, to_path):  #67 (line in Coconut source)
-    print("Adding {mod} from {src}...".format(mod=display_mod_path(to_path), src=display_mod_path(from_path)))  #68 (line in Coconut source)
-    os.makedirs(os.path.dirname(to_path), exist_ok=True)  #69 (line in Coconut source)
-    shutil.copy(from_path, to_path)  #70 (line in Coconut source)
 
+def add_mod(from_path, to_path):  #72 (line in Coconut source)
+    print("Adding {mod} from {src}...".format(mod=display_mod_path(to_path), src=display_mod_path(from_path)))  #73 (line in Coconut source)
+    os.makedirs(os.path.dirname(to_path), exist_ok=True)  #74 (line in Coconut source)
+    shutil.copy(from_path, to_path)  #75 (line in Coconut source)
 
 
-def set_mods_from_to(target_mod_location_table, current_mod_location_table, set_mods_dir):  #73 (line in Coconut source)
-    for mod, cur_path in current_mod_location_table.items():  #74 (line in Coconut source)
-        if mod not in target_mod_location_table and os.path.exists(cur_path):  #75 (line in Coconut source)
-            print("Removing {mod}...".format(mod=display_mod_path(cur_path)))  #76 (line in Coconut source)
-            os.remove(cur_path)  #77 (line in Coconut source)
-    add_mods_from_to(target_mod_location_table, current_mod_location_table, set_mods_dir)  #78 (line in Coconut source)
 
+def set_mods_from_to(target_mod_location_table, current_mod_location_table, set_mods_dir):  #78 (line in Coconut source)
+    for mod, cur_path in current_mod_location_table.items():  #79 (line in Coconut source)
+        if mod not in target_mod_location_table and os.path.exists(cur_path):  #80 (line in Coconut source)
+            print("Removing {mod}...".format(mod=display_mod_path(cur_path)))  #81 (line in Coconut source)
+            os.remove(cur_path)  #82 (line in Coconut source)
+    add_mods_from_to(target_mod_location_table, current_mod_location_table, set_mods_dir)  #83 (line in Coconut source)
 
 
-def add_mods_from_to(target_mod_location_table, current_mod_location_table, set_mods_dir):  #81 (line in Coconut source)
-    for mod, tar_path in target_mod_location_table.items():  #82 (line in Coconut source)
-        if mod not in current_mod_location_table:  #83 (line in Coconut source)
-            new_path = os.path.join(set_mods_dir, mod)  #84 (line in Coconut source)
-            add_mod(tar_path, new_path)  #85 (line in Coconut source)
 
+def add_mods_from_to(target_mod_location_table, current_mod_location_table, set_mods_dir):  #86 (line in Coconut source)
+    for mod, tar_path in target_mod_location_table.items():  #87 (line in Coconut source)
+        if mod not in current_mod_location_table:  #88 (line in Coconut source)
+            new_path = os.path.join(set_mods_dir, mod)  #89 (line in Coconut source)
+            add_mod(tar_path, new_path)  #90 (line in Coconut source)
 
 
-@_coconut_tco  #88 (line in Coconut source)
-def get_binary_search_folder(binary_search, folder_name):  #88 (line in Coconut source)
-    return _coconut_tail_call(os.path.join, SERVER_DIR, binary_search[folder_name])  #89 (line in Coconut source)
 
+@_coconut_tco  #93 (line in Coconut source)
+def get_binary_search_folder(binary_search, folder_name):  #93 (line in Coconut source)
+    return _coconut_tail_call(os.path.join, SERVER_DIR, binary_search[folder_name])  #94 (line in Coconut source)
 
 
-def load_binary_search_file():  #92 (line in Coconut source)
-    binary_search = load_json(BINARY_SEARCH_FILE, _coconut.dict((("searching", False),)))  #93 (line in Coconut source)
-    if binary_search.get("num_a") == "all":  #96 (line in Coconut source)
-        binary_search["num_a"] = len(get_location_table_for(get_binary_search_folder(binary_search, "folder_a")))  #97 (line in Coconut source)
-    return binary_search  #98 (line in Coconut source)
 
+def load_binary_search_file():  #97 (line in Coconut source)
+    binary_search = load_json(BINARY_SEARCH_FILE, _coconut.dict((("searching", False),)))  #98 (line in Coconut source)
+    if binary_search.get("num_a") == "all":  #101 (line in Coconut source)
+        binary_search["num_a"] = len(get_location_table_for(get_binary_search_folder(binary_search, "folder_a")))  #102 (line in Coconut source)
+    return binary_search  #103 (line in Coconut source)
 
 
-@_coconut_tco  #101 (line in Coconut source)
-def get_sorted_location_table_items_for(folder):  #101 (line in Coconut source)
-    return _coconut_tail_call(list, sorted(get_location_table_for(folder).items()))  #102 (line in Coconut source)
 
+@_coconut_tco  #106 (line in Coconut source)
+def get_sorted_location_table_items_for(folder):  #106 (line in Coconut source)
+    return _coconut_tail_call(list, sorted(get_location_table_for(folder).items()))  #107 (line in Coconut source)
 
 
-def get_binary_search_location_table(binary_search):  #105 (line in Coconut source)
-    folder_a = get_binary_search_folder(binary_search, "folder_a")  #106 (line in Coconut source)
-    folder_b = get_binary_search_folder(binary_search, "folder_b")  #107 (line in Coconut source)
 
-    mods_a = get_sorted_location_table_items_for(folder_a)  #109 (line in Coconut source)
-    mods_b = get_sorted_location_table_items_for(folder_b)  #110 (line in Coconut source)
-    assert len(mods_a) == len(mods_b), "{_coconut_format_0} != {_coconut_format_1} ({_coconut_format_2}, {_coconut_format_3})".format(_coconut_format_0=(len(mods_a)), _coconut_format_1=(len(mods_b)), _coconut_format_2=(folder_a), _coconut_format_3=(folder_b))  #111 (line in Coconut source)
+def get_binary_search_location_table(binary_search):  #110 (line in Coconut source)
+    folder_a = get_binary_search_folder(binary_search, "folder_a")  #111 (line in Coconut source)
+    folder_b = get_binary_search_folder(binary_search, "folder_b")  #112 (line in Coconut source)
 
-    num_a = binary_search["num_a"]  #113 (line in Coconut source)
-    assert 0 <= num_a <= len(mods_a), "invalid num_a: {_coconut_format_0} (must be in [0, {_coconut_format_1}])".format(_coconut_format_0=(num_a), _coconut_format_1=(len(mods_a)))  #114 (line in Coconut source)
+    mods_a = get_sorted_location_table_items_for(folder_a)  #114 (line in Coconut source)
+    mods_b = get_sorted_location_table_items_for(folder_b)  #115 (line in Coconut source)
+    assert len(mods_a) == len(mods_b), "{_coconut_format_0} != {_coconut_format_1} ({_coconut_format_2}, {_coconut_format_3})".format(_coconut_format_0=(len(mods_a)), _coconut_format_1=(len(mods_b)), _coconut_format_2=(folder_a), _coconut_format_3=(folder_b))  #116 (line in Coconut source)
 
-    new_mods = dict(mods_a[:num_a] + mods_b[num_a:])  #116 (line in Coconut source)
-    assert len(new_mods) == len(mods_a), "{_coconut_format_0} != {_coconut_format_1}".format(_coconut_format_0=(len(new_mods)), _coconut_format_1=(len(mods_a)))  #117 (line in Coconut source)
+    num_a = binary_search["num_a"]  #118 (line in Coconut source)
+    assert 0 <= num_a <= len(mods_a), "invalid num_a: {_coconut_format_0} (must be in [0, {_coconut_format_1}])".format(_coconut_format_0=(num_a), _coconut_format_1=(len(mods_a)))  #119 (line in Coconut source)
 
-    force_include = binary_search.get("force_include", [])  #119 (line in Coconut source)
-    if force_include:  #120 (line in Coconut source)
-        for force_mod in force_include:  #121 (line in Coconut source)
-            force_path = kill_name = None  #122 (line in Coconut source)
+    new_mods = dict(mods_a[:num_a] + mods_b[num_a:])  #121 (line in Coconut source)
+    assert len(new_mods) == len(mods_a), "{_coconut_format_0} != {_coconut_format_1}".format(_coconut_format_0=(len(new_mods)), _coconut_format_1=(len(mods_a)))  #122 (line in Coconut source)
 
-            if force_mod in dict(mods_a):  #124 (line in Coconut source)
-                pos_a = list((name for name, path in mods_a)).index(force_mod)  #125 (line in Coconut source)
-                if pos_a + 1 > num_a:  #126 (line in Coconut source)
-                    kill_name, path_b = mods_b[pos_a]  #127 (line in Coconut source)
-                    name_a, force_path = mods_a[pos_a]  #128 (line in Coconut source)
-                    assert name_a == force_mod, "{_coconut_format_0} != {_coconut_format_1}".format(_coconut_format_0=(name_a), _coconut_format_1=(force_mod))  #129 (line in Coconut source)
+    force_include = binary_search.get("force_include", [])  #124 (line in Coconut source)
+    if force_include:  #125 (line in Coconut source)
+        for force_mod in force_include:  #126 (line in Coconut source)
+            force_path = kill_name = None  #127 (line in Coconut source)
 
-            else:  #131 (line in Coconut source)
-                pos_b = list((name for name, path in mods_b)).index(force_mod)  #132 (line in Coconut source)
-                if pos_b + 1 <= num_a:  #133 (line in Coconut source)
-                    kill_name, path_a = mods_a[pos_b]  #134 (line in Coconut source)
-                    name_b, force_path = mods_b[pos_b]  #135 (line in Coconut source)
-                    assert name_b == force_mod, "{_coconut_format_0} != {_coconut_format_1}".format(_coconut_format_0=(name_b), _coconut_format_1=(force_mod))  #136 (line in Coconut source)
+            if force_mod in dict(mods_a):  #129 (line in Coconut source)
+                pos_a = list((name for name, path in mods_a)).index(force_mod)  #130 (line in Coconut source)
+                if pos_a + 1 > num_a:  #131 (line in Coconut source)
+                    kill_name, path_b = mods_b[pos_a]  #132 (line in Coconut source)
+                    name_a, force_path = mods_a[pos_a]  #133 (line in Coconut source)
+                    assert name_a == force_mod, "{_coconut_format_0} != {_coconut_format_1}".format(_coconut_format_0=(name_a), _coconut_format_1=(force_mod))  #134 (line in Coconut source)
 
-            if force_path is None:  #138 (line in Coconut source)
-                assert force_mod in new_mods, "{_coconut_format_0} not in {_coconut_format_1}".format(_coconut_format_0=(force_mod), _coconut_format_1=(new_mods.keys()))  #139 (line in Coconut source)
-            else:  #140 (line in Coconut source)
-                assert kill_name in new_mods, "{_coconut_format_0} not in {_coconut_format_1}".format(_coconut_format_0=(kill_name), _coconut_format_1=(new_mods.keys()))  #141 (line in Coconut source)
-                print("(forcing {_coconut_format_0} instead of {_coconut_format_1})".format(_coconut_format_0=(force_path), _coconut_format_1=(new_mods[kill_name])))  #142 (line in Coconut source)
-                del new_mods[kill_name]  #143 (line in Coconut source)
-                new_mods[force_mod] = force_path  #144 (line in Coconut source)
+            else:  #136 (line in Coconut source)
+                pos_b = list((name for name, path in mods_b)).index(force_mod)  #137 (line in Coconut source)
+                if pos_b + 1 <= num_a:  #138 (line in Coconut source)
+                    kill_name, path_a = mods_a[pos_b]  #139 (line in Coconut source)
+                    name_b, force_path = mods_b[pos_b]  #140 (line in Coconut source)
+                    assert name_b == force_mod, "{_coconut_format_0} != {_coconut_format_1}".format(_coconut_format_0=(name_b), _coconut_format_1=(force_mod))  #141 (line in Coconut source)
 
-    return new_mods  #146 (line in Coconut source)
+            if force_path is None:  #143 (line in Coconut source)
+                assert force_mod in new_mods, "{_coconut_format_0} not in {_coconut_format_1}".format(_coconut_format_0=(force_mod), _coconut_format_1=(new_mods.keys()))  #144 (line in Coconut source)
+            else:  #145 (line in Coconut source)
+                assert kill_name in new_mods, "{_coconut_format_0} not in {_coconut_format_1}".format(_coconut_format_0=(kill_name), _coconut_format_1=(new_mods.keys()))  #146 (line in Coconut source)
+                print("(forcing {_coconut_format_0} instead of {_coconut_format_1})".format(_coconut_format_0=(force_path), _coconut_format_1=(new_mods[kill_name])))  #147 (line in Coconut source)
+                del new_mods[kill_name]  #148 (line in Coconut source)
+                new_mods[force_mod] = force_path  #149 (line in Coconut source)
 
+    return new_mods  #151 (line in Coconut source)
 
 
-def main():  #149 (line in Coconut source)
-    ensure_dirs()  #150 (line in Coconut source)
 
-    print("\nFixing client only mods...")  #152 (line in Coconut source)
-    extra_server_mods = get_location_table_for(EXTRA_MODS_DIR)  #153 (line in Coconut source)
-    extra_client_only_mods = get_location_table_for(EXTRA_CLIENT_MODS_DIR)  #154 (line in Coconut source)
+def main():  #154 (line in Coconut source)
+    ensure_dirs()  #155 (line in Coconut source)
 
-    remove_mods_in_from(extra_server_mods, extra_client_only_mods)  #156 (line in Coconut source)
+    print("\nFixing client only mods...")  #157 (line in Coconut source)
+    extra_server_mods = get_location_table_for(EXTRA_MODS_DIR)  #158 (line in Coconut source)
+    extra_client_only_mods = get_location_table_for(EXTRA_CLIENT_MODS_DIR)  #159 (line in Coconut source)
 
-    base_server_mods = get_location_table_for(BASE_MODS_DIR)  #158 (line in Coconut source)
-    base_client_only_mods = get_location_table_for(BASE_CLIENT_MODS_DIR)  #159 (line in Coconut source)
+    remove_mods_in_from(extra_server_mods, extra_client_only_mods)  #161 (line in Coconut source)
 
-    remove_mods_in_from(base_server_mods, base_client_only_mods)  #161 (line in Coconut source)
+    base_server_mods = get_location_table_for(BASE_MODS_DIR)  #163 (line in Coconut source)
+    base_client_only_mods = get_location_table_for(BASE_CLIENT_MODS_DIR)  #164 (line in Coconut source)
 
+    remove_mods_in_from(base_server_mods, base_client_only_mods)  #166 (line in Coconut source)
 
-    print("\nFixing base/extra mods...")  #164 (line in Coconut source)
-    all_base_mods = get_location_table_for(BASE_MODS_DIR)  #165 (line in Coconut source)
-    all_base_mods.update(get_location_table_for(BASE_CLIENT_MODS_DIR))  #166 (line in Coconut source)
 
-    extra_server_mods = get_location_table_for(EXTRA_MODS_DIR)  #168 (line in Coconut source)
-    extra_client_only_mods = get_location_table_for(EXTRA_CLIENT_MODS_DIR)  #169 (line in Coconut source)
+    print("\nFixing base/extra mods...")  #169 (line in Coconut source)
+    all_base_mods = get_location_table_for(BASE_MODS_DIR)  #170 (line in Coconut source)
+    all_base_mods.update(get_location_table_for(BASE_CLIENT_MODS_DIR))  #171 (line in Coconut source)
 
-    remove_mods_in_from(all_base_mods, extra_server_mods)  #171 (line in Coconut source)
-    remove_mods_in_from(all_base_mods, extra_client_only_mods)  #172 (line in Coconut source)
+    extra_server_mods = get_location_table_for(EXTRA_MODS_DIR)  #173 (line in Coconut source)
+    extra_client_only_mods = get_location_table_for(EXTRA_CLIENT_MODS_DIR)  #174 (line in Coconut source)
 
-    remove_mods_in_from(extra_server_mods, extra_client_only_mods)  #174 (line in Coconut source)
+    remove_mods_in_from(all_base_mods, extra_server_mods)  #176 (line in Coconut source)
+    remove_mods_in_from(all_base_mods, extra_client_only_mods)  #177 (line in Coconut source)
 
+    remove_mods_in_from(extra_server_mods, extra_client_only_mods)  #179 (line in Coconut source)
 
-    print("\nMerging server mods...")  #177 (line in Coconut source)
-    all_server_mods = get_location_table_for(BASE_MODS_DIR)  #178 (line in Coconut source)
-    all_server_mods.update(get_location_table_for(EXTRA_MODS_DIR))  #179 (line in Coconut source)
 
-    current_server_mods = get_location_table_for(MODS_DIR)  #181 (line in Coconut source)
+    print("\nMerging server mods...")  #182 (line in Coconut source)
+    all_server_mods = get_location_table_for(BASE_MODS_DIR)  #183 (line in Coconut source)
+    all_server_mods.update(get_location_table_for(EXTRA_MODS_DIR))  #184 (line in Coconut source)
 
-    set_mods_from_to(all_server_mods, current_server_mods, MODS_DIR)  #183 (line in Coconut source)
+    current_server_mods = get_location_table_for(MODS_DIR)  #186 (line in Coconut source)
 
+    set_mods_from_to(all_server_mods, current_server_mods, MODS_DIR)  #188 (line in Coconut source)
 
-    print("\nMerging client only mods...")  #186 (line in Coconut source)
-    all_client_only_mods = get_location_table_for(BASE_CLIENT_MODS_DIR)  #187 (line in Coconut source)
-    all_client_only_mods.update(get_location_table_for(EXTRA_CLIENT_MODS_DIR))  #188 (line in Coconut source)
 
-    current_client_only_mods = get_location_table_for(CLIENT_MODS_DIR)  #190 (line in Coconut source)
+    print("\nMerging client only mods...")  #191 (line in Coconut source)
+    all_client_only_mods = get_location_table_for(BASE_CLIENT_MODS_DIR)  #192 (line in Coconut source)
+    all_client_only_mods.update(get_location_table_for(EXTRA_CLIENT_MODS_DIR))  #193 (line in Coconut source)
 
-    set_mods_from_to(all_client_only_mods, current_client_only_mods, CLIENT_MODS_DIR)  #192 (line in Coconut source)
+    current_client_only_mods = get_location_table_for(CLIENT_MODS_DIR)  #195 (line in Coconut source)
 
+    set_mods_from_to(all_client_only_mods, current_client_only_mods, CLIENT_MODS_DIR)  #197 (line in Coconut source)
 
-    print("\nFixing removed mods...")  #195 (line in Coconut source)
-    removed_server_mods = get_location_table_for(REMOVED_MODS_DIR)  #196 (line in Coconut source)
-    remove_mods_in_from(all_server_mods, removed_server_mods)  #197 (line in Coconut source)
 
-    removed_client_mods = get_location_table_for(REMOVED_CLIENT_MODS_DIR)  #199 (line in Coconut source)
-    remove_mods_in_from(removed_server_mods, removed_client_mods)  #200 (line in Coconut source)
-    remove_mods_in_from(all_server_mods, removed_client_mods)  #201 (line in Coconut source)
-    remove_mods_in_from(all_client_only_mods, removed_client_mods)  #202 (line in Coconut source)
+    print("\nFixing removed mods...")  #200 (line in Coconut source)
+    for removed_mods_dir, removed_client_mods_dir in ((REMOVED_MODS_DIR, REMOVED_CLIENT_MODS_DIR), (STAGING_MODS_DIR, STAGING_CLIENT_MODS_DIR)):  #201 (line in Coconut source)
+        removed_server_mods = get_location_table_for(removed_mods_dir)  #205 (line in Coconut source)
+        remove_mods_in_from(all_server_mods, removed_server_mods)  #206 (line in Coconut source)
 
+        removed_client_mods = get_location_table_for(removed_client_mods_dir)  #208 (line in Coconut source)
+        remove_mods_in_from(removed_server_mods, removed_client_mods)  #209 (line in Coconut source)
+        remove_mods_in_from(all_server_mods, removed_client_mods)  #210 (line in Coconut source)
+        remove_mods_in_from(all_client_only_mods, removed_client_mods)  #211 (line in Coconut source)
 
-    binary_search = load_binary_search_file()  #205 (line in Coconut source)
-    if binary_search["searching"]:  #206 (line in Coconut source)
 
-        print("\nAdding mods from binary search...")  #208 (line in Coconut source)
-        binary_search_mods = get_binary_search_location_table(binary_search)  #209 (line in Coconut source)
+    binary_search = load_binary_search_file()  #214 (line in Coconut source)
+    if binary_search["searching"]:  #215 (line in Coconut source)
 
-        destination_dir = binary_search["destination"]  #211 (line in Coconut source)
-        destination_mods = get_location_table_for(destination_dir)  #212 (line in Coconut source)
+        print("\nAdding mods from binary search...")  #217 (line in Coconut source)
+        binary_search_mods = get_binary_search_location_table(binary_search)  #218 (line in Coconut source)
 
-        add_mods_from_to(binary_search_mods, destination_mods, destination_dir)  #214 (line in Coconut source)
+        destination_dir = binary_search["destination"]  #220 (line in Coconut source)
+        destination_mods = get_location_table_for(destination_dir)  #221 (line in Coconut source)
 
+        add_mods_from_to(binary_search_mods, destination_mods, destination_dir)  #223 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #218 (line in Coconut source)
-    main()  #219 (line in Coconut source)
+
+if __name__ == "__main__":  #227 (line in Coconut source)
+    main()  #228 (line in Coconut source)

@@ -11,6 +11,8 @@ from minecraft_server_tools.constants import (
     BASE_CLIENT_MODS_NAME,
     EXTRA_CLIENT_MODS_NAME,
     REMOVED_CLIENT_MODS_NAME,
+    STAGING_MODS_NAME,
+    STAGING_CLIENT_MODS_NAME,
     BINARY_SEARCH_FILE,
     load_json,
 )
@@ -19,10 +21,13 @@ MODS_DIR = os.path.join(SERVER_DIR, MODS_NAME)
 BASE_MODS_DIR = os.path.join(SERVER_DIR, BASE_MODS_NAME)
 EXTRA_MODS_DIR = os.path.join(SERVER_DIR, EXTRA_MODS_NAME)
 REMOVED_MODS_DIR = os.path.join(SERVER_DIR, REMOVED_MODS_NAME)
+STAGING_MODS_DIR = os.path.join(SERVER_DIR, STAGING_MODS_NAME)
+
 CLIENT_MODS_DIR = os.path.join(SERVER_DIR, CLIENT_MODS_NAME)
 BASE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, BASE_CLIENT_MODS_NAME)
 EXTRA_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, EXTRA_CLIENT_MODS_NAME)
 REMOVED_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, REMOVED_CLIENT_MODS_NAME)
+STAGING_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, STAGING_CLIENT_MODS_NAME)
 
 
 def ensure_dirs():
@@ -193,13 +198,17 @@ def main():
 
 
     print("\nFixing removed mods...")
-    removed_server_mods = get_location_table_for(REMOVED_MODS_DIR)
-    remove_mods_in_from(all_server_mods, removed_server_mods)
+    for removed_mods_dir, removed_client_mods_dir in (
+        (REMOVED_MODS_DIR, REMOVED_CLIENT_MODS_DIR),
+        (STAGING_MODS_DIR, STAGING_CLIENT_MODS_DIR),
+    ):
+        removed_server_mods = get_location_table_for(removed_mods_dir)
+        remove_mods_in_from(all_server_mods, removed_server_mods)
 
-    removed_client_mods = get_location_table_for(REMOVED_CLIENT_MODS_DIR)
-    remove_mods_in_from(removed_server_mods, removed_client_mods)
-    remove_mods_in_from(all_server_mods, removed_client_mods)
-    remove_mods_in_from(all_client_only_mods, removed_client_mods)
+        removed_client_mods = get_location_table_for(removed_client_mods_dir)
+        remove_mods_in_from(removed_server_mods, removed_client_mods)
+        remove_mods_in_from(all_server_mods, removed_client_mods)
+        remove_mods_in_from(all_client_only_mods, removed_client_mods)
 
 
     binary_search = load_binary_search_file()

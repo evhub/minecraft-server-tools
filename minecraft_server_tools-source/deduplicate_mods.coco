@@ -15,9 +15,11 @@ ALL_MODS_DIRS = (
     sync_mods.BASE_MODS_DIR,
     sync_mods.EXTRA_MODS_DIR,
     sync_mods.REMOVED_MODS_DIR,
+    sync_mods.STAGING_MODS_DIR,
     sync_mods.BASE_CLIENT_MODS_DIR,
     sync_mods.EXTRA_CLIENT_MODS_DIR,
     sync_mods.REMOVED_CLIENT_MODS_DIR,
+    sync_mods.STAGING_CLIENT_MODS_DIR,
 )
 
 
@@ -90,6 +92,8 @@ def main():
         sync_mods.CLIENT_MODS_DIR,
         sync_mods.REMOVED_MODS_DIR,
         sync_mods.REMOVED_CLIENT_MODS_DIR,
+        sync_mods.STAGING_MODS_DIR,
+        sync_mods.STAGING_CLIENT_MODS_DIR,
     ])
     deduplicate_mods(DEDUPLICATE_CLIENT_MODS_DIR, all_mod_names)
     deduplicate_mods(DEDUPLICATE_MODS_DIR, all_mod_names)
