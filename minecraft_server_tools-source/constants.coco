@@ -203,6 +203,7 @@ NAME_REGEXES_TO_SPACE = [
         r"\)",
         r"%20",
         r"%5[bd]",
+        r"%27",
         r"(neo)?forge\b",
         r"(NEO)?FORGE",
         r"(Neo)?Forge\b",
@@ -223,16 +224,16 @@ NAME_REGEXES_TO_SPACE = [
         r"MC",
         r"\bmc\b",
         r"1\.\d+",
-        r"\.0",
-        r"\.1",
-        r"\.2",
-        r"\.3",
-        r"\.4",
-        r"\.5",
-        r"\.6",
-        r"\.7",
-        r"\.8",
-        r"\.9",
+        r"[.vV]0",
+        r"[.vV]1",
+        r"[.vV]2",
+        r"[.vV]3",
+        r"[.vV]4",
+        r"[.vV]5",
+        r"[.vV]6",
+        r"[.vV]7",
+        r"[.vV]8",
+        r"[.vV]9",
         r"\.",
         r" / ",
         r" \| ",
@@ -262,6 +263,7 @@ MOD_PAGE_NAME_SUFFICES = (
     " - Minecraft Mods - CurseForge",
 )
 
+# must start with {mod_name} {modloader}
 GOOGLE_QUERY_TEMPLATE = '{mod_name} {modloader} {mc_version_2} "Minecraft Mods" -Modpacks'
 
 CURSEFORGE_NAMES_FILE = os.path.join(ROOT_DIR, "curseforge_names.json")

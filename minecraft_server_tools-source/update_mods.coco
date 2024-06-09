@@ -89,12 +89,19 @@ def get_curseforge_name(mod_name, jar_name):
     try:
         while True:
             search_json = google_api.google(query)
+            if search_json is None or "error" in search_json and search_json["error"]["errors"][0]["reason"] == "rateLimitExceeded":
+                print("WARNING: Google API failed (try waiting or switching API keys).")
+                search_json = {"items": []}
+                break
             if "items" in search_json:
                 break
             print(f"Got no results for query {query!r}.")
-            if "error" in search_json and search_json["error"]["errors"][0]["reason"] == "rateLimitExceeded":
-                raise Exception("Google API rate limit exceeded; try waiting or switching API keys.")
-            query = unquote(search_json["spelling"]["correctedQuery"]).replace("+", " ")
+            if "spelling" in search_json:
+                query = unquote(search_json["spelling"]["correctedQuery"]).replace("+", " ")
+                continue
+            assert search_json["searchInformation"]["totalResults"] == "0", search_json
+            search_json = {"items": []}
+            break
         items = search_json["items"]
         curseforge_name = None
         for result in items:
@@ -110,12 +117,17 @@ def get_curseforge_name(mod_name, jar_name):
         if curseforge_name is None:
             print(f"Could not find curseforge name for mod {mod_name!r} in results for query {query!r}:")
             pprint(items[:MAX_DEBUG_RESULTS])
+            curseforge_name = query.rsplit(MODLOADER, 1)[0].strip()
+        else:
+            print(f"Found curseforge name {curseforge_name!r} for mod {mod_name!r} in result {mod_page!r}.")
+        print("Verifying found curseforge name using curseforge search...")
+        mod = get_curseforge_mod(mod_name, curseforge_name)
+        if mod is None:
             raise IOError(f"Could not find curseforge name for mod {mod_name!r}.")
         else:
-            print(f"Found Curseforge name {curseforge_name!r} for mod {mod_name!r}.")
-            return curseforge_name
-    except (KeyError, IndexError):
-        print(f"ERROR: Invalid search results for query {query!r}:")
+            return mod["name"]
+    except (KeyError, IndexError, AssertionError):
+        print(f"ERROR: Invalid search results for mod {mod_name!r} and query {query!r}:")
         pprint(search_json)
         raise
 
@@ -257,7 +269,7 @@ def get_matching_mod(results, curseforge_name, mod_name):
                 if core_curseforge_name in mod["name"]:
                     found_mod = mod
                     break
-    if found_mod is not None and found_mod["name"] != curseforge_name:
+    if found_mod is not None and found_mod["name"].strip() != curseforge_name:
         print(f"\tWARNING: found Curseforge mod with different name: {curseforge_name!r} -> {found_mod['name']!r}")
     return found_mod
 
@@ -274,12 +286,17 @@ get_core_name = get_mod_name$(silent=True)
 
 def get_curseforge_mod(curseforge_name, mod_name):
     core_curseforge_name = get_core_name(curseforge_name)
+
+    seen_queries = set()
     for query_template in CURSEFORGE_QUERY_TEMPLATES:
         query = query_template.format(
             curseforge_name=curseforge_name,
             core_curseforge_name=core_curseforge_name,
             mod_name=mod_name,
         )
+        if query in seen_queries:
+            continue
+        seen_queries.add(query)
 
         modloader_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION), MODLOADER])
         mod = get_matching_mod(modloader_version_results, curseforge_name, mod_name)

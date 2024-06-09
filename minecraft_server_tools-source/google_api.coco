@@ -1,9 +1,11 @@
 import os
 import json
+import traceback
 from urllib.parse import quote_plus
 
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 from minecraft_server_tools.constants import (
     SECRETS,
@@ -28,16 +30,20 @@ def get_credentials():
 def google(query):
     print(f"Sending google search query {query!r}...")
     quoted_query = quote_plus(query)
-    return (
-        build("customsearch", "v1", credentials=get_credentials())
-        |> .cse()
-        # |> .siterestrict()
-        |> .list(
-            key=SECRETS["google_api_key"],
-            cx=SECRETS["search_engine_id"],
-            q=quoted_query,
-            # nfpr=1,
-            # nirf=quoted_query,
+    try:
+        return (
+            build("customsearch", "v1", credentials=get_credentials())
+            |> .cse()
+            # |> .siterestrict()
+            |> .list(
+                key=SECRETS["google_api_key"],
+                cx=SECRETS["search_engine_id"],
+                q=quoted_query,
+                # nfpr=1,
+                # nirf=quoted_query,
+            )
+            |> .execute()
         )
-        |> .execute()
-    )
+    except HttpError:
+        traceback.print_exc()
+        return None

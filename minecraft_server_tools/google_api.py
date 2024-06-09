@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x16951c51
+# __coconut_hash__ = 0xa36d9643
 
 # Compiled with Coconut version 3.1.1
 
@@ -57,39 +57,44 @@ else:
 
 import os  #1 (line in Coconut source)
 import json  #2 (line in Coconut source)
-try:  #3 (line in Coconut source)
-    _coconut_sys_0 = sys  # type: ignore  #3 (line in Coconut source)
-except _coconut.NameError:  #3 (line in Coconut source)
-    _coconut_sys_0 = _coconut_sentinel  #3 (line in Coconut source)
-sys = _coconut_sys  #3 (line in Coconut source)
-if sys.version_info >= (3,):  #3 (line in Coconut source)
-    from urllib.parse import quote_plus  #3 (line in Coconut source)
-else:  #3 (line in Coconut source)
-    from urllib import quote_plus  #3 (line in Coconut source)
-if _coconut_sys_0 is not _coconut_sentinel:  #3 (line in Coconut source)
-    sys = _coconut_sys_0  #3 (line in Coconut source)
+import traceback  #3 (line in Coconut source)
+try:  #4 (line in Coconut source)
+    _coconut_sys_0 = sys  # type: ignore  #4 (line in Coconut source)
+except _coconut.NameError:  #4 (line in Coconut source)
+    _coconut_sys_0 = _coconut_sentinel  #4 (line in Coconut source)
+sys = _coconut_sys  #4 (line in Coconut source)
+if sys.version_info >= (3,):  #4 (line in Coconut source)
+    from urllib.parse import quote_plus  #4 (line in Coconut source)
+else:  #4 (line in Coconut source)
+    from urllib import quote_plus  #4 (line in Coconut source)
+if _coconut_sys_0 is not _coconut_sentinel:  #4 (line in Coconut source)
+    sys = _coconut_sys_0  #4 (line in Coconut source)
 
-from google_auth_oauthlib.flow import InstalledAppFlow  #5 (line in Coconut source)
-from googleapiclient.discovery import build  #6 (line in Coconut source)
+from google_auth_oauthlib.flow import InstalledAppFlow  #6 (line in Coconut source)
+from googleapiclient.discovery import build  #7 (line in Coconut source)
+from googleapiclient.errors import HttpError  #8 (line in Coconut source)
 
-from minecraft_server_tools.constants import SECRETS  #8 (line in Coconut source)
-from minecraft_server_tools.constants import SERVER_DIR  #8 (line in Coconut source)
-
-
-CREDENTIALS = [None,]  #14 (line in Coconut source)
-
-def get_credentials():  #16 (line in Coconut source)
-    if CREDENTIALS[0] is None:  #17 (line in Coconut source)
-        with open(os.path.join(SERVER_DIR, SECRETS["oauth_id_file"])) as oauth_id_file:  #18 (line in Coconut source)
-            oauth_id_data = json.load(oauth_id_file)  #19 (line in Coconut source)
-        flow = InstalledAppFlow.from_client_config(oauth_id_data, scopes=['https://www.googleapis.com/auth/cse',])  #20 (line in Coconut source)
-        CREDENTIALS[0] = flow.run_local_server(port=8080)  #24 (line in Coconut source)
-    return CREDENTIALS[0]  #25 (line in Coconut source)
+from minecraft_server_tools.constants import SECRETS  #10 (line in Coconut source)
+from minecraft_server_tools.constants import SERVER_DIR  #10 (line in Coconut source)
 
 
+CREDENTIALS = [None,]  #16 (line in Coconut source)
 
-@_coconut_tco  #28 (line in Coconut source)
-def google(query):  #28 (line in Coconut source)
-    print("Sending google search query {_coconut_format_0!r}...".format(_coconut_format_0=(query)))  #29 (line in Coconut source)
-    quoted_query = quote_plus(query)  #30 (line in Coconut source)
-    return _coconut_tail_call((((build("customsearch", "v1", credentials=get_credentials())).cse()).list(key=SECRETS["google_api_key"], cx=SECRETS["search_engine_id"], q=quoted_query)).execute)  #31 (line in Coconut source)
+def get_credentials():  #18 (line in Coconut source)
+    if CREDENTIALS[0] is None:  #19 (line in Coconut source)
+        with open(os.path.join(SERVER_DIR, SECRETS["oauth_id_file"])) as oauth_id_file:  #20 (line in Coconut source)
+            oauth_id_data = json.load(oauth_id_file)  #21 (line in Coconut source)
+        flow = InstalledAppFlow.from_client_config(oauth_id_data, scopes=['https://www.googleapis.com/auth/cse',])  #22 (line in Coconut source)
+        CREDENTIALS[0] = flow.run_local_server(port=8080)  #26 (line in Coconut source)
+    return CREDENTIALS[0]  #27 (line in Coconut source)
+
+
+
+def google(query):  #30 (line in Coconut source)
+    print("Sending google search query {_coconut_format_0!r}...".format(_coconut_format_0=(query)))  #31 (line in Coconut source)
+    quoted_query = quote_plus(query)  #32 (line in Coconut source)
+    try:  #33 (line in Coconut source)
+        return ((((build("customsearch", "v1", credentials=get_credentials())).cse()).list(key=SECRETS["google_api_key"], cx=SECRETS["search_engine_id"], q=quoted_query)).execute())  #34 (line in Coconut source)
+    except HttpError:  #47 (line in Coconut source)
+        traceback.print_exc()  #48 (line in Coconut source)
+        return None  #49 (line in Coconut source)
