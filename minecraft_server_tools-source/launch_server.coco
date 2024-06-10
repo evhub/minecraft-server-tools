@@ -84,14 +84,12 @@ def get_java_args(client=False):
     else:
         ram = SERVER_RAM
         gc = SERVER_GC
-    args = (
+    return (
         ["-Xmx" + ram, "-Xms" + ram]
         + BASE_JVM_ARGS
         + get_jvm_args_for_gc(gc)
+        + FML_ARGS
     )
-    if not client:
-        args += FML_ARGS
-    return args
 
 
 def fix_run_bat():

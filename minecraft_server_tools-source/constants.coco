@@ -365,6 +365,12 @@ FML_ARGS = [
     "-Dfml.ignorePatchDiscrepancies=true",
 ]
 
+LOG4J_CONFIG_FILE = os.path.join(SERVER_DIR, "log4jconfig.xml")
+if DEBUG and os.path.exists(LOG4J_CONFIG_FILE):
+    FML_ARGS += [
+        '-Dlog4j.configurationFile="' + LOG4J_CONFIG_FILE + '"',
+    ]
+
 FORGE_ARGS = ["nogui"]
 
 JVM_ARGS_FILE = os.path.join(SERVER_DIR, "user_jvm_args.txt")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3042934
+# __coconut_hash__ = 0x88402210
 
 # Compiled with Coconut version 3.1.1-post_dev1
 
@@ -170,45 +170,42 @@ def get_java_args(client=False):  #80 (line in Coconut source)
     else:  #84 (line in Coconut source)
         ram = SERVER_RAM  #85 (line in Coconut source)
         gc = SERVER_GC  #86 (line in Coconut source)
-    args = (["-Xmx" + ram, "-Xms" + ram] + BASE_JVM_ARGS + get_jvm_args_for_gc(gc))  #87 (line in Coconut source)
-    if not client:  #92 (line in Coconut source)
-        args += FML_ARGS  #93 (line in Coconut source)
-    return args  #94 (line in Coconut source)
+    return (["-Xmx" + ram, "-Xms" + ram] + BASE_JVM_ARGS + get_jvm_args_for_gc(gc) + FML_ARGS)  #87 (line in Coconut source)
 
 
 
-def fix_run_bat():  #97 (line in Coconut source)
-    with open(os.path.join(SERVER_DIR, "run.bat"), "r+") as run_bat:  #98 (line in Coconut source)
-        content = run_bat.read()  #99 (line in Coconut source)
-        run_bat.seek(0)  #100 (line in Coconut source)
-        run_bat.truncate()  #101 (line in Coconut source)
-        run_bat.write(content.replace("pause", "exit"))  #102 (line in Coconut source)
+def fix_run_bat():  #95 (line in Coconut source)
+    with open(os.path.join(SERVER_DIR, "run.bat"), "r+") as run_bat:  #96 (line in Coconut source)
+        content = run_bat.read()  #97 (line in Coconut source)
+        run_bat.seek(0)  #98 (line in Coconut source)
+        run_bat.truncate()  #99 (line in Coconut source)
+        run_bat.write(content.replace("pause", "exit"))  #100 (line in Coconut source)
 
 
 
-def write_jvm_args():  #105 (line in Coconut source)
-    with open(JVM_ARGS_FILE, "w") as jvm_args_file:  #106 (line in Coconut source)
-        jvm_args_file.write("\n".join(get_java_args()) + "\n")  #107 (line in Coconut source)
+def write_jvm_args():  #103 (line in Coconut source)
+    with open(JVM_ARGS_FILE, "w") as jvm_args_file:  #104 (line in Coconut source)
+        jvm_args_file.write("\n".join(get_java_args()) + "\n")  #105 (line in Coconut source)
 
 
 
-def start_server(dry_run=False):  #110 (line in Coconut source)
-    clean_forge_jars()  #111 (line in Coconut source)
-    ensure_forge_server()  #112 (line in Coconut source)
-    fix_run_bat()  #113 (line in Coconut source)
-    write_jvm_args()  #114 (line in Coconut source)
-    if not dry_run:  #115 (line in Coconut source)
-        if os.path.exists(FORGE_JAR_PATH):  #116 (line in Coconut source)
-            run_java(get_java_args() + [FORGE_JAR_PATH,] + FORGE_ARGS)  #117 (line in Coconut source)
-        else:  #118 (line in Coconut source)
-            run_high_priority(FORGE_LAUNCH_CMD + FORGE_ARGS)  #119 (line in Coconut source)
+def start_server(dry_run=False):  #108 (line in Coconut source)
+    clean_forge_jars()  #109 (line in Coconut source)
+    ensure_forge_server()  #110 (line in Coconut source)
+    fix_run_bat()  #111 (line in Coconut source)
+    write_jvm_args()  #112 (line in Coconut source)
+    if not dry_run:  #113 (line in Coconut source)
+        if os.path.exists(FORGE_JAR_PATH):  #114 (line in Coconut source)
+            run_java(get_java_args() + [FORGE_JAR_PATH,] + FORGE_ARGS)  #115 (line in Coconut source)
+        else:  #116 (line in Coconut source)
+            run_high_priority(FORGE_LAUNCH_CMD + FORGE_ARGS)  #117 (line in Coconut source)
 
 
 
-def main():  #122 (line in Coconut source)
-    start_server(dry_run="--dry-run" in sys.argv)  #123 (line in Coconut source)
+def main():  #120 (line in Coconut source)
+    start_server(dry_run="--dry-run" in sys.argv)  #121 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #126 (line in Coconut source)
-    main()  #127 (line in Coconut source)
+if __name__ == "__main__":  #124 (line in Coconut source)
+    main()  #125 (line in Coconut source)
