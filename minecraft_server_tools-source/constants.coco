@@ -79,6 +79,7 @@ ALWAYS_USE_LATEST_VERSION_FOR_MODS = [
     "jei",
     "toofast",
     "supplementaries",
+    "PacketFixer",
 ]
 
 EXTRA_INSTALL_FOLDERS = [
