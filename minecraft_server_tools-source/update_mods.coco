@@ -36,6 +36,7 @@ from minecraft_server_tools.constants import (
     CURSEFORGE_API_RETRIES,
     CURSEFORGE_API_RETRY_DELAY,
     AVOID_FILES_PUBLISHED_WITHIN,
+    FIX_CURSEFORGE_NAMES,
     ver_join,
     ver_split,
 )
@@ -44,9 +45,10 @@ from minecraft_server_tools.constants import (
 BEGINNING_OF_TIME = datetime.datetime(1, 1, 1)
 
 
-def get_mod_name(jar_name, silent=None, lower=False):
+def get_mod_name(jar_name, silent=None):
     if silent is None:
         silent = not DEBUG
+
     base_name = jar_name.removesuffix(".jar")
     for sep, min_count in COMPONENT_SEPS:
         components = base_name.split(sep)
@@ -56,6 +58,7 @@ def get_mod_name(jar_name, silent=None, lower=False):
         if not silent:
             print(f"Failed to find components for jar {jar_name!r}.")
         components = [base_name]
+
     name_cmpnts = []
     for cmpnt in components:
         is_name_cmpnt = NON_NAME_COMPONENT_REGEX.match(cmpnt.lower()) is None
@@ -68,13 +71,23 @@ def get_mod_name(jar_name, silent=None, lower=False):
             print(f"Failed to find name component for jar {jar_name!r}.")
         name_cmpnts = [components[0]]
     mod_name = " ".join(name_cmpnts)
+
     for to_space in NAME_REGEXES_TO_SPACE:
         mod_name = to_space.sub(" ", mod_name)
-    mod_name = mod_name.strip()
+
+    camel_case_parts = [mod_name[0]]
+    current_case = (mod_name[0].islower(), mod_name[0].isupper())
+    for c in mod_name:
+        new_case = (c.islower(), c.isupper())
+        if new_case == current_case:
+            camel_case_parts[-1] += c
+        else:
+            camel_case_parts.append(c)
+        current_case = new_case
+
+    mod_name = " ".join(camel_case_parts).strip().lower()
     if not silent:
         print(f"Determined mod name {mod_name!r} for jar {jar_name!r}.")
-    if lower:
-        mod_name = mod_name.lower()
     return mod_name
 
 
@@ -151,7 +164,10 @@ def clean_curseforge_name(curseforge_name):
 def load_curseforge_names():
     if os.path.exists(CURSEFORGE_NAMES_FILE):
         with open(CURSEFORGE_NAMES_FILE, "r") as ids_fobj:
-            return COMMENT_JSON.load(ids_fobj)
+            curseforge_names = COMMENT_JSON.load(ids_fobj)
+            if FIX_CURSEFORGE_NAMES:
+                curseforge_names = {get_mod_name(mod_name): curseforge_name for mod_name, curseforge_name in curseforge_names.items()}
+            return curseforge_names
     else:
         return {}
 

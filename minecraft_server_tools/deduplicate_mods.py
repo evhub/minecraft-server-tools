@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2b1c3359
+# __coconut_hash__ = 0x561581f5
 
 # Compiled with Coconut version 3.1.1-post_dev1
 
@@ -70,7 +70,7 @@ DEDUPLICATE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, DEDUPLICATE_CLIENT_MODS_N
 ALL_MODS_DIRS = (sync_mods.BASE_MODS_DIR, sync_mods.EXTRA_MODS_DIR, sync_mods.REMOVED_MODS_DIR, sync_mods.STAGING_MODS_DIR, sync_mods.BASE_CLIENT_MODS_DIR, sync_mods.EXTRA_CLIENT_MODS_DIR, sync_mods.REMOVED_CLIENT_MODS_DIR, sync_mods.STAGING_CLIENT_MODS_DIR)  #14 (line in Coconut source)
 
 
-lower_mod_names_to_jar_names = _coconut_partial(update_mods.get_mod_names_to_jar_names, lower=True, silent=True)  #26 (line in Coconut source)
+lower_mod_names_to_jar_names = _coconut_partial(update_mods.get_mod_names_to_jar_names, silent=True)  #26 (line in Coconut source)
 
 
 def get_all_mod_names(mods_dirs):  #29 (line in Coconut source)

@@ -79,7 +79,7 @@ ALWAYS_USE_LATEST_VERSION_FOR_MODS = [
     "jei",
     "toofast",
     "supplementaries",
-    "PacketFixer",
+    "packet fixer",
 ]
 
 EXTRA_INSTALL_FOLDERS = [
@@ -87,6 +87,7 @@ EXTRA_INSTALL_FOLDERS = [
     "defaultconfigs",
     "kubejs",
     "resourcepacks",
+    "datapacks",
     "scripts",
     "global_data_packs",
     "global_resource_packs",
@@ -177,8 +178,9 @@ WRONG_MODLOADERS = ["Fabric", "Quilt"]
 MAYBE_WRONG_MODLOADERS = ["NeoForge"]
 
 NON_CURSEFORGE_MODS = [
-    "OptiFine",
-    "preview OptiFine",
+    "opti fine",
+    "preview opti fine",
+    "create structures",
 ]
 
 COMPONENT_SEPS = [
@@ -271,6 +273,7 @@ MOD_PAGE_NAME_SUFFICES = (
 GOOGLE_QUERY_TEMPLATE = '{mod_name} {modloader} {mc_version_2} "Minecraft Mods" -Modpacks'
 
 CURSEFORGE_NAMES_FILE = os.path.join(ROOT_DIR, "curseforge_names.json")
+FIX_CURSEFORGE_NAMES = False
 
 CURSEFORGE_API_FILE = os.path.join(ROOT_DIR, "curseforge_api.js")
 

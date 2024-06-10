@@ -23,7 +23,7 @@ ALL_MODS_DIRS = (
 )
 
 
-lower_mod_names_to_jar_names = update_mods.get_mod_names_to_jar_names$(lower=True, silent=True)
+lower_mod_names_to_jar_names = update_mods.get_mod_names_to_jar_names$(silent=True)
 
 
 def get_all_mod_names(mods_dirs):
