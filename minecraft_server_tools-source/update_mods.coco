@@ -45,47 +45,58 @@ from minecraft_server_tools.constants import (
 BEGINNING_OF_TIME = datetime.datetime(1, 1, 1)
 
 
-def get_mod_name(jar_name, silent=None):
+def get_mod_name(jar_name, silent=None, do_component_splitting=True):
     if silent is None:
         silent = not DEBUG
 
     base_name = jar_name.removesuffix(".jar")
-    for sep, min_count in COMPONENT_SEPS:
-        components = base_name.split(sep)
-        if len(components) > min_count:
-            break
-    else:
-        if not silent:
-            print(f"Failed to find components for jar {jar_name!r}.")
-        components = [base_name]
 
-    name_cmpnts = []
-    for cmpnt in components:
-        is_name_cmpnt = NON_NAME_COMPONENT_REGEX.match(cmpnt.lower()) is None
-        if is_name_cmpnt:
-            name_cmpnts.append(cmpnt)
-        elif name_cmpnts:
-            break
-    if not name_cmpnts:
-        if not silent:
-            print(f"Failed to find name component for jar {jar_name!r}.")
-        name_cmpnts = [components[0]]
-    mod_name = " ".join(name_cmpnts)
+    if do_component_splitting:
+        for sep, min_count in COMPONENT_SEPS:
+            components = base_name.split(sep)
+            if len(components) > min_count:
+                break
+        else:
+            if not silent:
+                print(f"Failed to find components for jar {jar_name!r}.")
+            components = [base_name]
+
+        name_cmpnts = []
+        for cmpnt in components:
+            is_name_cmpnt = NON_NAME_COMPONENT_REGEX.match(cmpnt.lower()) is None
+            if is_name_cmpnt:
+                name_cmpnts.append(cmpnt)
+            elif name_cmpnts:
+                break
+        if not name_cmpnts:
+            if not silent:
+                print(f"Failed to find name component for jar {jar_name!r}.")
+            name_cmpnts = [components[0]]
+        mod_name = " ".join(name_cmpnts)
+    else:
+        mod_name = base_name
 
     for to_space in NAME_REGEXES_TO_SPACE:
         mod_name = to_space.sub(" ", mod_name)
 
-    camel_case_parts = [mod_name[0]]
-    current_case = (mod_name[0].islower(), mod_name[0].isupper())
-    for c in mod_name:
-        new_case = (c.islower(), c.isupper())
-        if new_case == current_case:
-            camel_case_parts[-1] += c
-        else:
-            camel_case_parts.append(c)
-        current_case = new_case
+    if not mod_name:
+        if not silent:
+            print(f"Got empty mod name for jar {jar_name!r}; falling back to no component splitting.")
+        return get_mod_name(jar_name, do_component_splitting=False)
 
-    mod_name = " ".join(camel_case_parts).strip().lower()
+    camel_case_parts = [mod_name[0]]
+    prev_is_lower = mod_name[0].islower()
+    for c in mod_name[1:]:
+        if prev_is_lower and c.isupper():
+            camel_case_parts.append("")
+        camel_case_parts[-1] += c
+        prev_is_lower = c.islower()
+
+    mod_name = " ".join(camel_case_parts)
+    while "  " in mod_name:
+        mod_name = mod_name.replace("  ", " ")
+
+    mod_name = mod_name.strip().lower()
     if not silent:
         print(f"Determined mod name {mod_name!r} for jar {jar_name!r}.")
     return mod_name
