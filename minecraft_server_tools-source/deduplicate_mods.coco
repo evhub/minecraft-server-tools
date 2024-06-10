@@ -23,22 +23,25 @@ ALL_MODS_DIRS = (
 )
 
 
+lower_mod_names_to_jar_names = update_mods.get_mod_names_to_jar_names$(lower=True, silent=True)
+
+
 def get_all_mod_names(mods_dirs):
     all_mod_names = {}
     for dirname in mods_dirs:
         if os.path.exists(dirname):
-            for mod_name, jar_name in update_mods.get_mod_names_to_jar_names(dirname, silent=True).items():
+            for mod_name, jar_name in lower_mod_names_to_jar_names(dirname).items():
                 assert mod_name not in all_mod_names, f"found multiple jars with same mod name {mod_name!r}: {all_mod_names[mod_name]!r}, {jar_name!r}"
                 all_mod_names[mod_name] = jar_name
     return all_mod_names
 
 
 def add_new_mods(new_mods_dir, to_mods_dir, all_mod_names):
-    to_mods_dir_mod_names = update_mods.get_mod_names_to_jar_names(to_mods_dir, silent=True)
+    to_mods_dir_mod_names = lower_mod_names_to_jar_names(to_mods_dir)
     made_changes = False
     if os.path.exists(new_mods_dir):
         print(f"\nLooking for new mods in: {new_mods_dir}")
-        for mod_name, jar_name in update_mods.get_mod_names_to_jar_names(new_mods_dir).items():
+        for mod_name, jar_name in lower_mod_names_to_jar_names(new_mods_dir).items():
             from_path = os.path.join(new_mods_dir, jar_name)
             if mod_name not in all_mod_names:
                 to_path = os.path.join(to_mods_dir, jar_name)
@@ -59,7 +62,7 @@ def add_new_mods(new_mods_dir, to_mods_dir, all_mod_names):
 def deduplicate_mods(new_mods_dir, all_mod_names, warn_only=False):
     if os.path.exists(new_mods_dir):
         print(f"\nDeduplicating mods in: {new_mods_dir}")
-        for mod_name, jar_name in update_mods.get_mod_names_to_jar_names(new_mods_dir).items():
+        for mod_name, jar_name in lower_mod_names_to_jar_names(new_mods_dir).items():
             from_path = os.path.join(new_mods_dir, jar_name)
             if mod_name in all_mod_names:
                 if warn_only:

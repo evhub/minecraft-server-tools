@@ -44,7 +44,7 @@ from minecraft_server_tools.constants import (
 BEGINNING_OF_TIME = datetime.datetime(1, 1, 1)
 
 
-def get_mod_name(jar_name, silent=None):
+def get_mod_name(jar_name, silent=None, lower=False):
     if silent is None:
         silent = not DEBUG
     base_name = jar_name.removesuffix(".jar")
@@ -73,6 +73,8 @@ def get_mod_name(jar_name, silent=None):
     mod_name = mod_name.strip()
     if not silent:
         print(f"Determined mod name {mod_name!r} for jar {jar_name!r}.")
+    if lower:
+        mod_name = mod_name.lower()
     return mod_name
 
 
@@ -195,10 +197,10 @@ def get_jar_names(mods_dir):
             yield fname
 
 
-def get_mod_names_to_jar_names(mods_dir, silent=None):
+def get_mod_names_to_jar_names(mods_dir, **kwargs):
     mod_names_to_jar_names = {}
     for jar_name in get_jar_names(mods_dir):
-        mod_name = get_mod_name(jar_name, silent=silent)
+        mod_name = get_mod_name(jar_name, **kwargs)
         if mod_name in mod_names_to_jar_names:
             raise ValueError(f"resolved multiple jars to name {mod_name!r}: {mod_names_to_jar_names[mod_name]} and {jar_name}")
         mod_names_to_jar_names[mod_name] = jar_name

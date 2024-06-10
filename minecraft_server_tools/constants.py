@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x508dc6bd
+# __coconut_hash__ = 0xe6e4c33f
 
 # Compiled with Coconut version 3.1.1-post_dev1
 
@@ -128,7 +128,7 @@ FORGE_VERSION = (47, 3, 0)  #67 (line in Coconut source)
 if IS_MOD_SERVER:  #69 (line in Coconut source)
     CLIENT_RAM = "22G"  #70 (line in Coconut source)
     if WINDOWS:  #71 (line in Coconut source)
-        SERVER_RAM = "10G"  #72 (line in Coconut source)
+        SERVER_RAM = "9G"  #72 (line in Coconut source)
     else:  #73 (line in Coconut source)
         SERVER_RAM = "26G"  #74 (line in Coconut source)
 else:  #75 (line in Coconut source)
@@ -255,11 +255,11 @@ JAVA_EXECUTABLE = "java"  #302 (line in Coconut source)
 CLIENT_GC = "G1"  #304 (line in Coconut source)
 SERVER_GC = "Shenandoah"  #305 (line in Coconut source)
 
-BASE_JVM_ARGS = ["-server", "-Xss2M", "-XX:+UnlockExperimentalVMOptions", "-XX:+AlwaysPreTouch", "-XX:+DisableExplicitGC", "-XX:+OptimizeStringConcat", "-XX:+UseCompressedOops", "-XX:+ScavengeBeforeFullGC", "-XX:+ParallelRefProcEnabled", "-XX:+PerfDisableSharedMem", "-XX:+UseStringDeduplication", "-XX:+UseLargePages", "-XX:MaxMetaspaceExpansion=64M", "-XX:MaxGCPauseMillis=40", "-XX:InitiatingHeapOccupancyPercent=20", "-XX:MaxTenuringThreshold=1", "-XX:SurvivorRatio=32", "-XX:+UseNUMA"] + (["-XX:LargePageSizeInBytes=2M",] if USE_LARGE_PAGES else [])  # hilltty-flags  # atm: 200; default: 200  # default: True  # atm: 15; aikar: 20; default: 45  # always  # atm: 1; default: 15  # aikar-flags  # always  # default: True  # atm: 32; default: 8  # default: 5M  # always  # aikar-flags  # hilltty-flags  # hilltty-flags  # default: True  #307 (line in Coconut source)
+BASE_JVM_ARGS = ["-server", "-Xss2M", "-XX:+UnlockExperimentalVMOptions", "-XX:+AlwaysPreTouch", "-XX:+DisableExplicitGC", "-XX:+OptimizeStringConcat", "-XX:+UseCompressedOops", "-XX:+ScavengeBeforeFullGC", "-XX:+ParallelRefProcEnabled", "-XX:+PerfDisableSharedMem", "-XX:+UseStringDeduplication", "-XX:+UseLargePages", "-XX:MaxMetaspaceExpansion=64M", "-XX:MaxGCPauseMillis=40", "-XX:InitiatingHeapOccupancyPercent=20", "-XX:MaxTenuringThreshold=1", "-XX:SurvivorRatio=32", "-XX:+UseNUMA"] + (["-XX:LargePageSizeInBytes=2M",] if USE_LARGE_PAGES else [])  # atm: 15; aikar: 20; default: 45  # aikar-flags  # atm: 200; default: 200  # default: True  # aikar-flags  # hilltty-flags  # atm: 32; default: 8  # default: True  # atm: 1; default: 15  # always  # default: True  # always  # always  # hilltty-flags  # default: 5M  # hilltty-flags  #307 (line in Coconut source)
 
 def get_jvm_args_for_gc(gc):  #337 (line in Coconut source)
     if gc == "G1":  #338 (line in Coconut source)
-        return ["-XX:+UseG1GC", "-XX:G1ReservePercent=20", "-XX:G1NewSizePercent=30", "-XX:G1HeapRegionSize=32M", "-XX:G1MixedGCCountTarget=4", "-XX:G1RSetUpdatingPauseTimePercent=5"]  # atm: 20; aikar: 15  # atm: 30; aikar: 40  # atm: 5; default: 10  # atm: 8M; aikar: 16M  # atm: 4; default: 8  #339 (line in Coconut source)
+        return ["-XX:+UseG1GC", "-XX:G1ReservePercent=20", "-XX:G1NewSizePercent=30", "-XX:G1HeapRegionSize=32M", "-XX:G1MixedGCCountTarget=4", "-XX:G1RSetUpdatingPauseTimePercent=5"]  # atm: 4; default: 8  # atm: 8M; aikar: 16M  # atm: 20; aikar: 15  # atm: 5; default: 10  # atm: 30; aikar: 40  #339 (line in Coconut source)
     elif gc == "Shenandoah":  #350 (line in Coconut source)
         return ["-XX:+UseShenandoahGC", "-XX:ShenandoahGCMode=iu"]  # hilltty-flags  #351 (line in Coconut source)
     elif gc == "Z":  #355 (line in Coconut source)
