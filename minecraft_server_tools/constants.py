@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xbcb565cb
+# __coconut_hash__ = 0xe134dd90
 
 # Compiled with Coconut version 3.1.1-post_dev1
 
@@ -226,7 +226,7 @@ MOD_PAGE_NAME_SUFFICES = (" - Files - Minecraft Mods - Curseforge", " - Comments
 GOOGLE_QUERY_TEMPLATE = '{mod_name} {modloader} {mc_version_2} "Minecraft Mods" -Modpacks'  #273 (line in Coconut source)
 
 CURSEFORGE_NAMES_FILE = os.path.join(ROOT_DIR, "curseforge_names.json")  #275 (line in Coconut source)
-FIX_CURSEFORGE_NAMES = False  #276 (line in Coconut source)
+FIX_MOD_NAMES = False  #276 (line in Coconut source)
 
 CURSEFORGE_API_FILE = os.path.join(ROOT_DIR, "curseforge_api.js")  #278 (line in Coconut source)
 
@@ -256,11 +256,11 @@ JAVA_EXECUTABLE = "java"  #305 (line in Coconut source)
 CLIENT_GC = "G1"  #307 (line in Coconut source)
 SERVER_GC = "Shenandoah"  #308 (line in Coconut source)
 
-BASE_JVM_ARGS = ["-server", "-Xss2M", "-XX:+UnlockExperimentalVMOptions", "-XX:+AlwaysPreTouch", "-XX:+DisableExplicitGC", "-XX:+OptimizeStringConcat", "-XX:+UseCompressedOops", "-XX:+ScavengeBeforeFullGC", "-XX:+ParallelRefProcEnabled", "-XX:+PerfDisableSharedMem", "-XX:+UseStringDeduplication", "-XX:+UseLargePages", "-XX:MaxMetaspaceExpansion=64M", "-XX:MaxGCPauseMillis=40", "-XX:InitiatingHeapOccupancyPercent=20", "-XX:MaxTenuringThreshold=1", "-XX:SurvivorRatio=32", "-XX:+UseNUMA"] + (["-XX:LargePageSizeInBytes=2M",] if USE_LARGE_PAGES else [])  # atm: 32; default: 8  # hilltty-flags  # atm: 15; aikar: 20; default: 45  # aikar-flags  # default: True  # always  # always  # always  # hilltty-flags  # aikar-flags  # atm: 200; default: 200  # default: 5M  # hilltty-flags  # default: True  # atm: 1; default: 15  # default: True  #310 (line in Coconut source)
+BASE_JVM_ARGS = ["-server", "-Xss2M", "-XX:+UnlockExperimentalVMOptions", "-XX:+AlwaysPreTouch", "-XX:+DisableExplicitGC", "-XX:+OptimizeStringConcat", "-XX:+UseCompressedOops", "-XX:+ScavengeBeforeFullGC", "-XX:+ParallelRefProcEnabled", "-XX:+PerfDisableSharedMem", "-XX:+UseStringDeduplication", "-XX:+UseLargePages", "-XX:MaxMetaspaceExpansion=64M", "-XX:MaxGCPauseMillis=40", "-XX:InitiatingHeapOccupancyPercent=20", "-XX:MaxTenuringThreshold=1", "-XX:SurvivorRatio=32", "-XX:+UseNUMA"] + (["-XX:LargePageSizeInBytes=2M",] if USE_LARGE_PAGES else [])  # always  # atm: 1; default: 15  # hilltty-flags  # always  # default: 5M  # hilltty-flags  # always  # aikar-flags  # default: True  # atm: 32; default: 8  # aikar-flags  # hilltty-flags  # default: True  # atm: 15; aikar: 20; default: 45  # atm: 200; default: 200  # default: True  #310 (line in Coconut source)
 
 def get_jvm_args_for_gc(gc):  #340 (line in Coconut source)
     if gc == "G1":  #341 (line in Coconut source)
-        return ["-XX:+UseG1GC", "-XX:G1ReservePercent=20", "-XX:G1NewSizePercent=30", "-XX:G1HeapRegionSize=32M", "-XX:G1MixedGCCountTarget=4", "-XX:G1RSetUpdatingPauseTimePercent=5"]  # atm: 5; default: 10  # atm: 8M; aikar: 16M  # atm: 30; aikar: 40  # atm: 4; default: 8  # atm: 20; aikar: 15  #342 (line in Coconut source)
+        return ["-XX:+UseG1GC", "-XX:G1ReservePercent=20", "-XX:G1NewSizePercent=30", "-XX:G1HeapRegionSize=32M", "-XX:G1MixedGCCountTarget=4", "-XX:G1RSetUpdatingPauseTimePercent=5"]  # atm: 4; default: 8  # atm: 20; aikar: 15  # atm: 30; aikar: 40  # atm: 5; default: 10  # atm: 8M; aikar: 16M  #342 (line in Coconut source)
     elif gc == "Shenandoah":  #353 (line in Coconut source)
         return ["-XX:+UseShenandoahGC", "-XX:ShenandoahGCMode=iu"]  # hilltty-flags  #354 (line in Coconut source)
     elif gc == "Z":  #358 (line in Coconut source)

@@ -36,7 +36,7 @@ from minecraft_server_tools.constants import (
     CURSEFORGE_API_RETRIES,
     CURSEFORGE_API_RETRY_DELAY,
     AVOID_FILES_PUBLISHED_WITHIN,
-    FIX_CURSEFORGE_NAMES,
+    FIX_MOD_NAMES,
     ver_join,
     ver_split,
 )
@@ -176,7 +176,7 @@ def load_curseforge_names():
     if os.path.exists(CURSEFORGE_NAMES_FILE):
         with open(CURSEFORGE_NAMES_FILE, "r") as ids_fobj:
             curseforge_names = COMMENT_JSON.load(ids_fobj)
-            if FIX_CURSEFORGE_NAMES:
+            if FIX_MOD_NAMES:
                 curseforge_names = {get_mod_name(mod_name): curseforge_name for mod_name, curseforge_name in curseforge_names.items()}
             return curseforge_names
     else:

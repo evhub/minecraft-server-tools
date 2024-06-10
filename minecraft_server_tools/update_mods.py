@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x67165abb
+# __coconut_hash__ = 0x358160d4
 
 # Compiled with Coconut version 3.1.1-post_dev1
 
@@ -103,7 +103,7 @@ from minecraft_server_tools.constants import ALWAYS_USE_LATEST_VERSION_FOR_MODS 
 from minecraft_server_tools.constants import CURSEFORGE_API_RETRIES  #14 (line in Coconut source)
 from minecraft_server_tools.constants import CURSEFORGE_API_RETRY_DELAY  #14 (line in Coconut source)
 from minecraft_server_tools.constants import AVOID_FILES_PUBLISHED_WITHIN  #14 (line in Coconut source)
-from minecraft_server_tools.constants import FIX_CURSEFORGE_NAMES  #14 (line in Coconut source)
+from minecraft_server_tools.constants import FIX_MOD_NAMES  #14 (line in Coconut source)
 from minecraft_server_tools.constants import ver_join  #14 (line in Coconut source)
 from minecraft_server_tools.constants import ver_split  #14 (line in Coconut source)
 
@@ -255,7 +255,7 @@ def load_curseforge_names():  #175 (line in Coconut source)
     if os.path.exists(CURSEFORGE_NAMES_FILE):  #176 (line in Coconut source)
         with open(CURSEFORGE_NAMES_FILE, "r") as ids_fobj:  #177 (line in Coconut source)
             curseforge_names = COMMENT_JSON.load(ids_fobj)  #178 (line in Coconut source)
-            if FIX_CURSEFORGE_NAMES:  #179 (line in Coconut source)
+            if FIX_MOD_NAMES:  #179 (line in Coconut source)
                 curseforge_names = _coconut.dict(((get_mod_name(mod_name)), (curseforge_name)) for mod_name, curseforge_name in curseforge_names.items())  #180 (line in Coconut source)
             return curseforge_names  #181 (line in Coconut source)
     else:  #182 (line in Coconut source)
