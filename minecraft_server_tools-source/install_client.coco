@@ -4,6 +4,7 @@ import shutil
 import zipfile
 import tempfile
 import json
+import subprocess
 from contextlib import contextmanager
 
 from tqdm import tqdm
@@ -24,6 +25,7 @@ from minecraft_server_tools.constants import (
     CLIENT_MODS_NAME,
     YES_STRS,
     PROFILES_FILE,
+    MODPACK_NAME,
 )
 
 MINECRAFT_MODS_DIR = os.path.join(MINECRAFT_DIR, MODS_NAME)
@@ -101,12 +103,40 @@ def zip_mods():
             zf.write(install_path, os.path.relpath(install_path, MINECRAFT_DIR))
 
 
+def get_javaw_path():
+    for where_cmd in ("which", "where"):
+        try:
+            paths = subprocess.check_output([where_cmd, "javaw"])
+        except FileNotFoundError:
+            pass
+        else:
+            break
+    else:
+        return None
+    return (
+        paths
+        |> .decode("utf-8")
+        |> .strip()
+        |> .splitlines()
+        |> .$[0]
+        |> .strip()
+    )
+
+
 def set_jvm_args():
     print("\nSetting JVM arguments...")
     java_args = " ".join(launch_server.get_java_args(client=True))
     with open(PROFILES_FILE, "r+") as profiles_file:
         top_level_json = json.load(profiles_file)
-        top_level_json["profiles"]["forge"]["javaArgs"] = java_args
+        forge_profile = top_level_json["profiles"]["forge"]
+        forge_profile["name"] = MODPACK_NAME
+        forge_profile["javaArgs"] = java_args
+        java_path = get_javaw_path()
+        if java_path:
+            print(f"\t(using java at: {java_path!r})")
+            forge_profile["javaDir"] = java_path
+        else:
+            print("\t(failed to locate java)")
 
         profiles_file.seek(0)
         profiles_file.truncate()
