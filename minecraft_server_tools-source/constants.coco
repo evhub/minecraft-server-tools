@@ -330,11 +330,9 @@ BASE_JVM_ARGS = [
     # "-XX:+OmitStackTraceInFastThrow",
     # "-XX:+UseLargePagesInMetaspace",  # OLD
     "-XX:+UseLargePages",  # hilltty-flags
-    "-XX:+UseNUMA",  # hilltty-flags, brucethemoose
     # "-XX:-UseBiasedLocking",  # hilltty-flags, deprecated by java
     "-XX:+AlwaysActAsServerClassMachine",  # brucethemoose
     "-XX:-DontCompileHugeMethods",  # brucethemoose
-    "-XX:+UseVectorCmov",  # brucethemoose
     "-XX:+UseFastUnorderedTimeStamps",  # brucethemoose
     "-XX:+UseCriticalJavaThreadPriority",  # brucethemoose
 
@@ -345,17 +343,32 @@ BASE_JVM_ARGS = [
     "-XX:NonNMethodCodeHeapSize=12M",  # brucethemoose: 12M
     "-XX:ProfiledCodeHeapSize=194M",  # brucethemoose: 194M
     "-XX:NonProfiledCodeHeapSize=194M",  # brucethemoose: 194M
-    "-XX:MaxNodeLimit=240000",  # brucethemoose: 240000
-    "-XX:NodeLimitFudgeFactor=8000",  # brucethemoose: 8000
     "-XX:ThreadPriorityPolicy=1",  # brucethemoose: 1
     f"-XX:ConcGCThreads={psutil.cpu_count(logical=False)*3//4}",  # brucethemoose: real cores - 2
 ] + ([
     "-XX:LargePageSizeInBytes=2M",  # hilltty-flags
 ] if USE_LARGE_PAGES else [])
 
-def get_jvm_args_for_gc(gc):
+def get_jvm_args(gc, vm):
+    args = BASE_JVM_ARGS
+
+    if vm == "java":
+        args += [
+            "-XX:+UseNUMA",  # hilltty-flags, brucethemoose
+            "-XX:+UseVectorCmov",  # brucethemoose
+            "-XX:MaxNodeLimit=240000",  # brucethemoose: 240000
+            "-XX:NodeLimitFudgeFactor=8000",  # brucethemoose: 8000
+        ]
+    elif vm == "graal":
+        args += [
+            "-XX:+EagerJVMCI",  # brucethemoose
+            "-Dgraal.TuneInlinerExploration=1",  # brucethemoose: 1
+        ]
+    else:
+        raise ValueError(f"unknown java VM {vm!r}")
+
     if gc == "G1":
-        return [
+        args += [
             "-XX:+UseG1GC",
             "-XX:AllocatePrefetchStyle=3",  # brucethemoose: 3
             # "-XX:TargetSurvivorRatio=90",  # atm: 32; default: 50
@@ -377,21 +390,23 @@ def get_jvm_args_for_gc(gc):
             "-XX:G1ConcRefinementServiceIntervalMillis=150",  # brucethemoose: 150
         ]
     elif gc == "Shenandoah":
-        return [
+        args += [
             "-XX:+UseShenandoahGC",
             "-XX:AllocatePrefetchStyle=1",  # brucethemoose: 1
             "-XX:ShenandoahGCMode=iu",  # hilltty-flags
             "-XX:ShenandoahGuaranteedGCInterval=1000000",  # brucethemoose: 1000000
         ]
     elif gc == "Z":
-        return [
+        args += [
             "-XX:+UseZGC",
             "-XX:AllocatePrefetchStyle=1",  # brucethemoose: 1
             # "-XX:-ZProactive",  # brucethemoose (incompatible with +ZGenerational)
             "-XX:+ZGenerational",  # brucethemoose (incompatible with -ZProactive; Java 21+)
         ]
     else:
-        raise ValueError(f"unknown GC {gc!r}")
+        raise ValueError(f"unknown java GC {gc!r}")
+
+    return args
 
 LOG4J_CONFIG_FILE = os.path.join(SERVER_DIR, "log4jconfig.xml")
 FML_ARGS = [

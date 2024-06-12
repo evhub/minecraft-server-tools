@@ -8,7 +8,6 @@ from minecraft_server_tools.constants import (
     WINDOWS,
     JAVA_EXECUTABLE,
     SERVER_RAM,
-    BASE_JVM_ARGS,
     FORGE_ARGS,
     FORGE_INSTALLER_URL,
     OLD_JARS_REGEX,
@@ -22,7 +21,7 @@ from minecraft_server_tools.constants import (
     SERVER_GC,
     CLIENT_GC,
     DOWNLOADS_PATH,
-    get_jvm_args_for_gc,
+    get_jvm_args,
 )
 
 FORGE_JAR_PATH = os.path.join(SERVER_DIR, FORGE_JAR)
@@ -77,6 +76,14 @@ def clean_forge_jars(dir_to_clean=SERVER_DIR):
             os.remove(os.path.join(dir_to_clean, fname))
 
 
+def check_if_graal(java="java"):
+    print("Checking java version...")
+    try:
+        return b"GraalVM" in subprocess.check_output([java, "-version"])
+    except FileNotFoundError:
+        return None
+
+
 def get_java_args(client=False):
     if client:
         ram = CLIENT_RAM
@@ -86,8 +93,7 @@ def get_java_args(client=False):
         gc = SERVER_GC
     return (
         ["-Xmx" + ram, "-Xms" + ram]
-        + BASE_JVM_ARGS
-        + get_jvm_args_for_gc(gc)
+        + get_jvm_args(gc=gc, vm="graal" if check_if_graal() else "java")
         + FML_ARGS
     )
 
