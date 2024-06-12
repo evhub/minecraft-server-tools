@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4a19f9cd
+# __coconut_hash__ = 0xd58ef6ba
 
 # Compiled with Coconut version 3.1.1-post_dev1
 
@@ -218,55 +218,56 @@ def install_from_dir(source_dir, do_optional=False):  #164 (line in Coconut sour
 
     ensure_forge_client(source_dir)  #167 (line in Coconut source)
     sync_client_mods(source_dir)  #168 (line in Coconut source)
-    install_extras(source_dir, do_optional)  #169 (line in Coconut source)
+    if "--only-mods" not in sys.argv:  #169 (line in Coconut source)
+        install_extras(source_dir, do_optional)  #170 (line in Coconut source)
 
-    set_jvm_args()  #171 (line in Coconut source)
-
-
-
-def install_from_server():  #174 (line in Coconut source)
-    """Install from server and return whether or not to install optional files."""  #175 (line in Coconut source)
-    sync_mods.main()  #176 (line in Coconut source)
-    launch_server.start_server(dry_run=True)  #177 (line in Coconut source)
-
-    install_from_dir(SERVER_DIR, do_optional=True)  #179 (line in Coconut source)
-
-    if "--no-zip" not in sys.argv:  #181 (line in Coconut source)
-        zip_mods()  #182 (line in Coconut source)
-    return True  #183 (line in Coconut source)
+    set_jvm_args()  #172 (line in Coconut source)
 
 
 
-def install_from_zip():  #186 (line in Coconut source)
-    """Install from zip and return whether or not to install optional files."""  #187 (line in Coconut source)
-    if "--yes-optional" in sys.argv:  #188 (line in Coconut source)
-        do_optional = True  #189 (line in Coconut source)
-    elif "--no-optional" in sys.argv:  #190 (line in Coconut source)
-        do_optional = False  #191 (line in Coconut source)
-    else:  #192 (line in Coconut source)
-        do_optional = input("\nInstall optional files {_coconut_format_0}? [y/N] ".format(_coconut_format_0=(OPTIONAL_INSTALL_FILES + OPTIONAL_INSTALL_FOLDERS))).lower() in YES_STRS  #193 (line in Coconut source)
-    if do_optional:  #194 (line in Coconut source)
-        print("Will install optional files.")  #195 (line in Coconut source)
-    else:  #196 (line in Coconut source)
-        print("Will NOT install optional files.")  #197 (line in Coconut source)
-    with unzipped_mods() as temp_dir:  #198 (line in Coconut source)
-        install_from_dir(temp_dir, do_optional)  #199 (line in Coconut source)
-    return do_optional  #200 (line in Coconut source)
+def install_from_server():  #175 (line in Coconut source)
+    """Install from server and return whether or not to install optional files."""  #176 (line in Coconut source)
+    sync_mods.main()  #177 (line in Coconut source)
+    launch_server.start_server(dry_run=True)  #178 (line in Coconut source)
+
+    install_from_dir(SERVER_DIR, do_optional=True)  #180 (line in Coconut source)
+
+    if "--only-mods" not in sys.argv:  #182 (line in Coconut source)
+        zip_mods()  #183 (line in Coconut source)
+    return True  #184 (line in Coconut source)
 
 
 
-@_coconut_tco  #203 (line in Coconut source)
-def main():  #203 (line in Coconut source)
-    if os.path.exists(SERVER_DIR):  #204 (line in Coconut source)
-        print("\nInstalling from server...")  #205 (line in Coconut source)
-        return _coconut_tail_call(install_from_server)  #206 (line in Coconut source)
-    elif os.path.exists(MOD_ZIP_PATH):  #207 (line in Coconut source)
-        print("\nInstalling from zipfile...")  #208 (line in Coconut source)
-        return _coconut_tail_call(install_from_zip)  #209 (line in Coconut source)
-    else:  #210 (line in Coconut source)
-        raise IOError("Could not find files for install.")  #211 (line in Coconut source)
+def install_from_zip():  #187 (line in Coconut source)
+    """Install from zip and return whether or not to install optional files."""  #188 (line in Coconut source)
+    if "--yes-optional" in sys.argv:  #189 (line in Coconut source)
+        do_optional = True  #190 (line in Coconut source)
+    elif "--no-optional" in sys.argv:  #191 (line in Coconut source)
+        do_optional = False  #192 (line in Coconut source)
+    else:  #193 (line in Coconut source)
+        do_optional = input("\nInstall optional files {_coconut_format_0}? [y/N] ".format(_coconut_format_0=(OPTIONAL_INSTALL_FILES + OPTIONAL_INSTALL_FOLDERS))).lower() in YES_STRS  #194 (line in Coconut source)
+    if do_optional:  #195 (line in Coconut source)
+        print("Will install optional files.")  #196 (line in Coconut source)
+    else:  #197 (line in Coconut source)
+        print("Will NOT install optional files.")  #198 (line in Coconut source)
+    with unzipped_mods() as temp_dir:  #199 (line in Coconut source)
+        install_from_dir(temp_dir, do_optional)  #200 (line in Coconut source)
+    return do_optional  #201 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #214 (line in Coconut source)
-    main()  #215 (line in Coconut source)
+@_coconut_tco  #204 (line in Coconut source)
+def main():  #204 (line in Coconut source)
+    if os.path.exists(SERVER_DIR):  #205 (line in Coconut source)
+        print("\nInstalling from server...")  #206 (line in Coconut source)
+        return _coconut_tail_call(install_from_server)  #207 (line in Coconut source)
+    elif os.path.exists(MOD_ZIP_PATH):  #208 (line in Coconut source)
+        print("\nInstalling from zipfile...")  #209 (line in Coconut source)
+        return _coconut_tail_call(install_from_zip)  #210 (line in Coconut source)
+    else:  #211 (line in Coconut source)
+        raise IOError("Could not find files for install.")  #212 (line in Coconut source)
+
+
+
+if __name__ == "__main__":  #215 (line in Coconut source)
+    main()  #216 (line in Coconut source)

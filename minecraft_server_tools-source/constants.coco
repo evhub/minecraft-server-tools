@@ -68,7 +68,7 @@ DOWNLOADS_PATH = first_that_exists([
 IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 
 if IS_MOD_SERVER:
-    CLIENT_RAM = "19G"
+    CLIENT_RAM = "18G"
     SERVER_RAM = "10G"
 else:
     CLIENT_RAM = SERVER_RAM = "5G"
@@ -306,8 +306,9 @@ USE_LARGE_PAGES = False
 
 JAVA_EXECUTABLE = "java"
 
-CLIENT_GC = "Shenandoah"  # brucethemoose: G1, Shenandoah, or ZGenerational
-SERVER_GC = "Z"  # brucethemoose: G1 or Z
+# in my testing, G1 performs the best
+CLIENT_GC = "G1"  # brucethemoose: G1, Shenandoah, or ZGenerational
+SERVER_GC = "G1"  # brucethemoose: G1 or Z
 
 BASE_JVM_ARGS = [
     # "-d64",  # OLD
@@ -392,18 +393,15 @@ def get_jvm_args_for_gc(gc):
     else:
         raise ValueError(f"unknown GC {gc!r}")
 
+LOG4J_CONFIG_FILE = os.path.join(SERVER_DIR, "log4jconfig.xml")
 FML_ARGS = [
     "-Dfml.queryResult=confirm",
     "-Dfml.readTimeout=900",
     "-Dfml.ignoreInvalidMinecraftCertificates=true",
     # "-Dfml.ignorePatchDiscrepancies=true",
-]
-
-LOG4J_CONFIG_FILE = os.path.join(SERVER_DIR, "log4jconfig.xml")
-if LOG4J_DEBUG and os.path.exists(LOG4J_CONFIG_FILE):
-    FML_ARGS += [
-        '-Dlog4j.configurationFile="' + LOG4J_CONFIG_FILE + '"',
-    ]
+] + ([
+    '-Dlog4j.configurationFile="' + LOG4J_CONFIG_FILE + '"',
+] if LOG4J_DEBUG and os.path.exists(LOG4J_CONFIG_FILE) else [])
 
 FORGE_ARGS = ["nogui"]
 

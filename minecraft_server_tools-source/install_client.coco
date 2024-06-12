@@ -166,7 +166,8 @@ def install_from_dir(source_dir, do_optional=False):
 
     ensure_forge_client(source_dir)
     sync_client_mods(source_dir)
-    install_extras(source_dir, do_optional)
+    if "--only-mods" not in sys.argv:
+        install_extras(source_dir, do_optional)
 
     set_jvm_args()
 
@@ -178,7 +179,7 @@ def install_from_server():
 
     install_from_dir(SERVER_DIR, do_optional=True)
 
-    if "--no-zip" not in sys.argv:
+    if "--only-mods" not in sys.argv:
         zip_mods()
     return True
 
