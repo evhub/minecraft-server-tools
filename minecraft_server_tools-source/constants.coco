@@ -347,7 +347,7 @@ BASE_JVM_ARGS = [
     "-XX:MaxNodeLimit=240000",  # brucethemoose: 240000
     "-XX:NodeLimitFudgeFactor=8000",  # brucethemoose: 8000
     "-XX:ThreadPriorityPolicy=1",  # brucethemoose: 1
-    f"-XX:ConcGCThreads={psutil.cpu_count(logical=False) - 2}",  # brucethemoose: real cores - 2
+    f"-XX:ConcGCThreads={psutil.cpu_count(logical=False)*3//4}",  # brucethemoose: real cores - 2
 ] + ([
     "-XX:LargePageSizeInBytes=2M",  # hilltty-flags
 ] if USE_LARGE_PAGES else [])
