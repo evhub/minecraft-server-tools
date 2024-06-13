@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2d3d5cce
+# __coconut_hash__ = 0x7832c083
 
 # Compiled with Coconut version 3.1.1-post_dev1
 
@@ -105,115 +105,125 @@ DOWNLOADED_INSTALLER_PATH = os.path.join(DOWNLOADS_PATH, FORGE_INSTALLER_JAR)  #
 
 
 @_coconut_tco  #32 (line in Coconut source)
-def run_cmd(cmd, check=True, shell=False):  #32 (line in Coconut source)
-    print("> " + " ".join((str(x) for x in cmd)))  #33 (line in Coconut source)
-    return _coconut_tail_call(subprocess.run, cmd, check=check, shell=shell)  #34 (line in Coconut source)
+def run_cmd(cmd, check=True, shell=False, get_output=False, quiet=False):  #32 (line in Coconut source)
+    if not quiet:  #33 (line in Coconut source)
+        print("> " + " ".join((str(x) for x in cmd)))  #34 (line in Coconut source)
+    kwargs = _coconut.dict()  #35 (line in Coconut source)
+    if get_output:  #36 (line in Coconut source)
+        kwargs["stdout"] = kwargs["stderr"] = subprocess.PIPE  #37 (line in Coconut source)
+    return _coconut_tail_call(subprocess.run, cmd, check=check, shell=shell, **kwargs)  #38 (line in Coconut source)
 
 
 
-@_coconut_tco  #37 (line in Coconut source)
-def run_high_priority(cmd, name="Minecraft Server"):  #37 (line in Coconut source)
-    if WINDOWS:  #38 (line in Coconut source)
-        return _coconut_tail_call(run_cmd, ["START", name, "/B", "/I", "/WAIT", "/HIGH"] + cmd, shell=True)  #39 (line in Coconut source)
-    else:  #40 (line in Coconut source)
-        return _coconut_tail_call(run_cmd, cmd)  #41 (line in Coconut source)
+@_coconut_tco  #41 (line in Coconut source)
+def run_high_priority(cmd, name="Minecraft Server"):  #41 (line in Coconut source)
+    if WINDOWS:  #42 (line in Coconut source)
+        return _coconut_tail_call(run_cmd, ["START", name, "/B", "/I", "/WAIT", "/HIGH"] + cmd, shell=True)  #43 (line in Coconut source)
+    else:  #44 (line in Coconut source)
+        return _coconut_tail_call(run_cmd, cmd)  #45 (line in Coconut source)
 
 
 
-@_coconut_tco  #44 (line in Coconut source)
-def run_java(cmd):  #44 (line in Coconut source)
-    return _coconut_tail_call(run_high_priority, [JAVA_EXECUTABLE,] + cmd)  #44 (line in Coconut source)
+@_coconut_tco  #48 (line in Coconut source)
+def run_java(cmd):  #48 (line in Coconut source)
+    return _coconut_tail_call(run_high_priority, [JAVA_EXECUTABLE,] + cmd)  #48 (line in Coconut source)
 
 
 
-def install_forge_server():  #47 (line in Coconut source)
-    print("Installing forge from installer {_coconut_format_0}...".format(_coconut_format_0=(FORGE_INSTALLER_JAR_PATH)))  #48 (line in Coconut source)
-    run_java(["-jar", FORGE_INSTALLER_JAR_PATH, "--installServer"])  #49 (line in Coconut source)
+@_coconut_tco  #51 (line in Coconut source)
+def get_cmd_output(cmd, quiet=True):  #51 (line in Coconut source)
+    out = run_cmd(cmd, get_output=True, quiet=quiet)  #52 (line in Coconut source)
+    return _coconut_tail_call((out.stdout.decode("utf-8") + "\n" + out.stderr.decode("utf-8")).strip)  #53 (line in Coconut source)
 
 
 
-def move_forge_installer():  #52 (line in Coconut source)
-    if not os.path.exists(DOWNLOADED_INSTALLER_PATH):  #53 (line in Coconut source)
-        return False  #54 (line in Coconut source)
-    os.rename(DOWNLOADED_INSTALLER_PATH, FORGE_INSTALLER_JAR_PATH)  #55 (line in Coconut source)
-    return True  #56 (line in Coconut source)
+def install_forge_server():  #56 (line in Coconut source)
+    print("Installing forge from installer {_coconut_format_0}...".format(_coconut_format_0=(FORGE_INSTALLER_JAR_PATH)))  #57 (line in Coconut source)
+    run_java(["-jar", FORGE_INSTALLER_JAR_PATH, "--installServer"])  #58 (line in Coconut source)
 
 
 
-def ensure_forge_server():  #59 (line in Coconut source)
-    if not os.path.exists(FORGE_INSTALLER_JAR_PATH):  #60 (line in Coconut source)
-        print("Downloading forge installer {_coconut_format_0}...".format(_coconut_format_0=(FORGE_INSTALLER_JAR_PATH)))  #61 (line in Coconut source)
-        if not move_forge_installer():  #62 (line in Coconut source)
-            try:  #63 (line in Coconut source)
-                urlretrieve(FORGE_INSTALLER_URL, FORGE_INSTALLER_JAR_PATH)  #64 (line in Coconut source)
-            except HTTPError:  #65 (line in Coconut source)
-                print("Automatic download failed; please download from: {_coconut_format_0}".format(_coconut_format_0=(FORGE_INSTALLER_URL)))  #66 (line in Coconut source)
-                input("Press Enter to continue.")  #67 (line in Coconut source)
-                assert move_forge_installer()  #68 (line in Coconut source)
-        install_forge_server()  #69 (line in Coconut source)
+def move_forge_installer():  #61 (line in Coconut source)
+    if not os.path.exists(DOWNLOADED_INSTALLER_PATH):  #62 (line in Coconut source)
+        return False  #63 (line in Coconut source)
+    os.rename(DOWNLOADED_INSTALLER_PATH, FORGE_INSTALLER_JAR_PATH)  #64 (line in Coconut source)
+    return True  #65 (line in Coconut source)
 
 
 
-def clean_forge_jars(dir_to_clean=SERVER_DIR):  #72 (line in Coconut source)
-    for fname in os.listdir(dir_to_clean):  #73 (line in Coconut source)
-        if OLD_JARS_REGEX.match(fname) is not None:  #74 (line in Coconut source)
-            print("Removing old jar {_coconut_format_0}...".format(_coconut_format_0=(fname)))  #75 (line in Coconut source)
-            os.remove(os.path.join(dir_to_clean, fname))  #76 (line in Coconut source)
+def ensure_forge_server():  #68 (line in Coconut source)
+    if not os.path.exists(FORGE_INSTALLER_JAR_PATH):  #69 (line in Coconut source)
+        print("Downloading forge installer {_coconut_format_0}...".format(_coconut_format_0=(FORGE_INSTALLER_JAR_PATH)))  #70 (line in Coconut source)
+        if not move_forge_installer():  #71 (line in Coconut source)
+            try:  #72 (line in Coconut source)
+                urlretrieve(FORGE_INSTALLER_URL, FORGE_INSTALLER_JAR_PATH)  #73 (line in Coconut source)
+            except HTTPError:  #74 (line in Coconut source)
+                print("Automatic download failed; please download from: {_coconut_format_0}".format(_coconut_format_0=(FORGE_INSTALLER_URL)))  #75 (line in Coconut source)
+                input("Press Enter to continue.")  #76 (line in Coconut source)
+                assert move_forge_installer()  #77 (line in Coconut source)
+        install_forge_server()  #78 (line in Coconut source)
 
 
 
-def check_if_graal(java="java"):  #79 (line in Coconut source)
-    print("Checking java version...")  #80 (line in Coconut source)
-    try:  #81 (line in Coconut source)
-        return b"GraalVM" in subprocess.check_output([java, "-version"])  #82 (line in Coconut source)
-    except FileNotFoundError:  #83 (line in Coconut source)
-        return None  #84 (line in Coconut source)
+def clean_forge_jars(dir_to_clean=SERVER_DIR):  #81 (line in Coconut source)
+    for fname in os.listdir(dir_to_clean):  #82 (line in Coconut source)
+        if OLD_JARS_REGEX.match(fname) is not None:  #83 (line in Coconut source)
+            print("Removing old jar {_coconut_format_0}...".format(_coconut_format_0=(fname)))  #84 (line in Coconut source)
+            os.remove(os.path.join(dir_to_clean, fname))  #85 (line in Coconut source)
 
 
 
-def get_java_args(client=False):  #87 (line in Coconut source)
-    if client:  #88 (line in Coconut source)
-        ram = CLIENT_RAM  #89 (line in Coconut source)
-        gc = CLIENT_GC  #90 (line in Coconut source)
-    else:  #91 (line in Coconut source)
-        ram = SERVER_RAM  #92 (line in Coconut source)
-        gc = SERVER_GC  #93 (line in Coconut source)
-    return (["-Xmx" + ram, "-Xms" + ram] + get_jvm_args(gc=gc, vm="graal" if check_if_graal() else "java") + FML_ARGS)  #94 (line in Coconut source)
+def check_if_graal(java="java"):  #88 (line in Coconut source)
+    try:  #89 (line in Coconut source)
+        return "GraalVM" in get_cmd_output([java, "-version"])  #90 (line in Coconut source)
+    except FileNotFoundError:  #91 (line in Coconut source)
+        return None  #92 (line in Coconut source)
 
 
 
-def fix_run_bat():  #101 (line in Coconut source)
-    with open(os.path.join(SERVER_DIR, "run.bat"), "r+") as run_bat:  #102 (line in Coconut source)
-        content = run_bat.read()  #103 (line in Coconut source)
-        run_bat.seek(0)  #104 (line in Coconut source)
-        run_bat.truncate()  #105 (line in Coconut source)
-        run_bat.write(content.replace("pause", "exit"))  #106 (line in Coconut source)
+def get_java_args(client=False):  #95 (line in Coconut source)
+    if client:  #96 (line in Coconut source)
+        ram = CLIENT_RAM  #97 (line in Coconut source)
+        gc = CLIENT_GC  #98 (line in Coconut source)
+    else:  #99 (line in Coconut source)
+        ram = SERVER_RAM  #100 (line in Coconut source)
+        gc = SERVER_GC  #101 (line in Coconut source)
+    return (["-Xmx" + ram, "-Xms" + ram] + get_jvm_args(gc=gc, vm="graal" if check_if_graal() else "java") + FML_ARGS)  #102 (line in Coconut source)
 
 
 
-def write_jvm_args():  #109 (line in Coconut source)
-    with open(JVM_ARGS_FILE, "w") as jvm_args_file:  #110 (line in Coconut source)
-        jvm_args_file.write("\n".join(get_java_args()) + "\n")  #111 (line in Coconut source)
+def fix_run_bat():  #109 (line in Coconut source)
+    with open(os.path.join(SERVER_DIR, "run.bat"), "r+") as run_bat:  #110 (line in Coconut source)
+        content = run_bat.read()  #111 (line in Coconut source)
+        run_bat.seek(0)  #112 (line in Coconut source)
+        run_bat.truncate()  #113 (line in Coconut source)
+        run_bat.write(content.replace("pause", "exit"))  #114 (line in Coconut source)
 
 
 
-def start_server(dry_run=False):  #114 (line in Coconut source)
-    clean_forge_jars()  #115 (line in Coconut source)
-    ensure_forge_server()  #116 (line in Coconut source)
-    fix_run_bat()  #117 (line in Coconut source)
-    write_jvm_args()  #118 (line in Coconut source)
-    if not dry_run:  #119 (line in Coconut source)
-        if os.path.exists(FORGE_JAR_PATH):  #120 (line in Coconut source)
-            run_java(get_java_args() + [FORGE_JAR_PATH,] + FORGE_ARGS)  #121 (line in Coconut source)
-        else:  #122 (line in Coconut source)
-            run_high_priority(FORGE_LAUNCH_CMD + FORGE_ARGS)  #123 (line in Coconut source)
+def write_jvm_args():  #117 (line in Coconut source)
+    with open(JVM_ARGS_FILE, "w") as jvm_args_file:  #118 (line in Coconut source)
+        jvm_args_file.write("\n".join(get_java_args()) + "\n")  #119 (line in Coconut source)
 
 
 
-def main():  #126 (line in Coconut source)
-    start_server(dry_run="--dry-run" in sys.argv)  #127 (line in Coconut source)
+def start_server(dry_run=False):  #122 (line in Coconut source)
+    clean_forge_jars()  #123 (line in Coconut source)
+    ensure_forge_server()  #124 (line in Coconut source)
+    fix_run_bat()  #125 (line in Coconut source)
+    write_jvm_args()  #126 (line in Coconut source)
+    if not dry_run:  #127 (line in Coconut source)
+        if os.path.exists(FORGE_JAR_PATH):  #128 (line in Coconut source)
+            run_java(get_java_args() + [FORGE_JAR_PATH,] + FORGE_ARGS)  #129 (line in Coconut source)
+        else:  #130 (line in Coconut source)
+            run_high_priority(FORGE_LAUNCH_CMD + FORGE_ARGS)  #131 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #130 (line in Coconut source)
-    main()  #131 (line in Coconut source)
+def main():  #134 (line in Coconut source)
+    start_server(dry_run="--dry-run" in sys.argv)  #135 (line in Coconut source)
+
+
+
+if __name__ == "__main__":  #138 (line in Coconut source)
+    main()  #139 (line in Coconut source)

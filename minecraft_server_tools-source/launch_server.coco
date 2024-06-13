@@ -29,9 +29,13 @@ FORGE_INSTALLER_JAR_PATH = os.path.join(SERVER_DIR, FORGE_INSTALLER_JAR)
 DOWNLOADED_INSTALLER_PATH = os.path.join(DOWNLOADS_PATH, FORGE_INSTALLER_JAR)
 
 
-def run_cmd(cmd, check=True, shell=False):
-    print("> " + " ".join(str(x) for x in cmd))
-    return subprocess.run(cmd, check=check, shell=shell)
+def run_cmd(cmd, check=True, shell=False, get_output=False, quiet=False):
+    if not quiet:
+        print("> " + " ".join(str(x) for x in cmd))
+    kwargs = {}
+    if get_output:
+        kwargs["stdout"] = kwargs["stderr"] = subprocess.PIPE
+    return subprocess.run(cmd, check=check, shell=shell, **kwargs)
 
 
 def run_high_priority(cmd, name="Minecraft Server"):
@@ -42,6 +46,11 @@ def run_high_priority(cmd, name="Minecraft Server"):
 
 
 def run_java(cmd) = run_high_priority([JAVA_EXECUTABLE] + cmd)
+
+
+def get_cmd_output(cmd, quiet=True):
+    out = run_cmd(cmd, get_output=True, quiet=quiet)
+    return out.stdout.decode("utf-8") + "\n" + out.stderr.decode("utf-8") |> .strip()
 
 
 def install_forge_server():
@@ -77,9 +86,8 @@ def clean_forge_jars(dir_to_clean=SERVER_DIR):
 
 
 def check_if_graal(java="java"):
-    print("Checking java version...")
     try:
-        return b"GraalVM" in subprocess.check_output([java, "-version"])
+        return "GraalVM" in get_cmd_output([java, "-version"])
     except FileNotFoundError:
         return None
 
