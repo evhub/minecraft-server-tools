@@ -1,6 +1,6 @@
 # minecraft-server-tools
 
-A bunch of utilities for easily working with and managing minecraft servers, specifically aimed at managing minecraft forge servers with large numbers of manually-installed mods.
+A bunch of utilities for easily working with and managing minecraft servers, specifically aimed at managing minecraft Forge servers with large numbers of manually-installed mods.
 
 ## Installing mods with this package
 
@@ -19,15 +19,16 @@ _Alternatively, if you use the `install-client.bat`/`install-client.sh` scripts 
 
 _The guide below is Windows-only._
 
-In addition to adjusting your video settings in-game (which I can help you with), if you want to maximize your Minecraft performance, there are some additional steps you can perform:
+If you want to maximize your Minecraft performance, there are some additional steps you can perform:
 
-1. (_Not that technical and can make a massive difference depending on how your computer is configured; I recommend everyone do this._) Ensure you always use discrete graphics for Graal `javaw`.
+1. Ensure you always use discrete graphics for Graal `javaw`.
    1. Type "Graphics settings" in the Start bar and open it up.
    2. Under "Custom options for apps" and "Add an app", ensure "Desktop app" is selected, then press "Browse".
    3. In the browser, navigate to and select `<wherever you cloned this repository>/graal/graalvm-jdk-<some numbers>/bin/javaw.exe`. **Make sure you select `javaw.exe` and not `java.exe`.**
    4. "Java(TM) Platform SE binary" should be added to the list on the Graphics settings page. Select it and press "Options".
    5. Select "High performance" and press "Save".
-2. (_Extremely technical and should only make a small difference; I don't recommend anyone else try this._) Ensure Graal `javaw` has the privilege to lock pages in memory.
+2. Adjust your video settings in-game. Consult me and I will help you with this.
+<!-- 3. **(DON'T DO THIS; THIS ONE SUCKS)** Ensure Graal `javaw` has the privilege to lock pages in memory.
    1. Type "cmd" into the Start bar, right-click on "Command Prompt", and select "Run as administrator".
    2. Run the following two commands in sequence:
       1. `FOR %F IN ("%SystemRoot%\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientTools-Package~*.mum") DO (DISM /Online /NoRestart /Add-Package:"%F")`
@@ -42,4 +43,4 @@ In addition to adjusting your video settings in-game (which I can help you with)
    10. Open file explorer and navigate to `<wherever you cloned this repository>/graal/graalvm-jdk-<some numbers>/bin/`. Make sure you do not accidentally open `graalvm-jdk-<some numbers>.zip`.
    11. Right-click on `javaw.exe` (make sure it is `javaw.exe` and not `java.exe`) and select "Properties".
    12. Select "Compatibility", check "Run this program as an administrator", and press "OK".
-   13. Whenever you want to launch Minecraft, instead of launching normally, right-click and select "Run as administrator".
+   13. Whenever you want to launch Minecraft, instead of launching normally, right-click and select "Run as administrator". -->

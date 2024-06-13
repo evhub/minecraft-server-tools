@@ -300,7 +300,7 @@ CURSEFORGE_API_RETRY_DELAY = 0.1
 # Server start constants
 
 USE_GRAAL = True
-USE_LARGE_PAGES = True
+USE_LARGE_PAGES = False
 
 OS_NAME = if WINDOWS then "windows" else if sys.platform == "darwin" then "macos" else "linux"
 
