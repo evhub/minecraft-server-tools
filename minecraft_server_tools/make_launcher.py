@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xdbb09073
+# __coconut_hash__ = 0x9e477554
 
 # Compiled with Coconut version 3.1.1-post_dev1
 
@@ -58,6 +58,7 @@ else:
 import os  #1 (line in Coconut source)
 
 from minecraft_server_tools import install_client  #3 (line in Coconut source)
+from minecraft_server_tools import launch_server  #3 (line in Coconut source)
 from minecraft_server_tools.constants import WINDOWS  #4 (line in Coconut source)
 from minecraft_server_tools.constants import ROOT_DIR  #4 (line in Coconut source)
 from minecraft_server_tools.constants import LAUNCHER_FILE  #4 (line in Coconut source)
@@ -94,14 +95,16 @@ def make_launcher_file(do_optional=False):  #28 (line in Coconut source)
     contents = get_launcher_file_contents(install_client_args)  #37 (line in Coconut source)
     with open(NEW_LAUNCHER_PATH, "w") as new_launcher_file:  #38 (line in Coconut source)
         new_launcher_file.write(contents)  #39 (line in Coconut source)
+    if not WINDOWS:  #40 (line in Coconut source)
+        launch_server.run_cmd(["chmod", "+x", NEW_LAUNCHER_PATH])  #41 (line in Coconut source)
 
 
 
-def main():  #42 (line in Coconut source)
-    install_client.main()  #43 (line in Coconut source)
-    make_launcher_file()  #44 (line in Coconut source)
+def main():  #44 (line in Coconut source)
+    install_client.main()  #45 (line in Coconut source)
+    make_launcher_file()  #46 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #47 (line in Coconut source)
-    main()  #48 (line in Coconut source)
+if __name__ == "__main__":  #49 (line in Coconut source)
+    main()  #50 (line in Coconut source)

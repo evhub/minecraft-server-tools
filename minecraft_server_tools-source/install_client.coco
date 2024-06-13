@@ -122,23 +122,24 @@ def get_javaw_path():
 
 def set_jvm_args():
     print("\nSetting JVM arguments...")
-    java_args = " ".join(launch_server.get_java_args(client=True))
-    with open(PROFILES_FILE, "r+") as profiles_file:
-        top_level_json = json.load(profiles_file)
-        forge_profile = top_level_json["profiles"]["forge"]
-        forge_profile["name"] = MODPACK_NAME
-        forge_profile["javaArgs"] = java_args
+    with launch_server.using_graal_java():
+        java_args = " ".join(launch_server.get_java_args(client=True))
         java_path = get_javaw_path()
-        if java_path:
-            print(f"\t(using java at: {java_path!r})")
-            forge_profile["javaDir"] = java_path
-        else:
-            print("\t(failed to locate java)")
+        with open(PROFILES_FILE, "r+") as profiles_file:
+            top_level_json = json.load(profiles_file)
+            forge_profile = top_level_json["profiles"]["forge"]
+            forge_profile["name"] = MODPACK_NAME
+            forge_profile["javaArgs"] = java_args
+            if java_path:
+                print(f"\t(using java at: {java_path!r})")
+                forge_profile["javaDir"] = java_path
+            else:
+                print("\t(failed to locate java)")
 
-        profiles_file.seek(0)
-        profiles_file.truncate()
-        json.dump(top_level_json, profiles_file, indent=2)
-    print(f"\tto: {java_args}")
+            profiles_file.seek(0)
+            profiles_file.truncate()
+            json.dump(top_level_json, profiles_file, indent=2)
+    print(f"\tSet JVM args to: {java_args}")
 
 
 def open_readme():

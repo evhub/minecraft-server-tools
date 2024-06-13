@@ -1,6 +1,6 @@
 import os
 
-from minecraft_server_tools import install_client
+from minecraft_server_tools import install_client, launch_server
 from minecraft_server_tools.constants import (
     WINDOWS,
     ROOT_DIR,
@@ -37,6 +37,8 @@ def make_launcher_file(do_optional=False):
     contents = get_launcher_file_contents(install_client_args)
     with open(NEW_LAUNCHER_PATH, "w") as new_launcher_file:
         new_launcher_file.write(contents)
+    if not WINDOWS:
+        launch_server.run_cmd(["chmod", "+x", NEW_LAUNCHER_PATH])
 
 
 def main():

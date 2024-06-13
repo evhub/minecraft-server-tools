@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x594238b2
+# __coconut_hash__ = 0xae670647
 
 # Compiled with Coconut version 3.1.1-post_dev1
 
@@ -173,100 +173,101 @@ def get_javaw_path():  #105 (line in Coconut source)
 
 def set_jvm_args():  #123 (line in Coconut source)
     print("\nSetting JVM arguments...")  #124 (line in Coconut source)
-    java_args = " ".join(launch_server.get_java_args(client=True))  #125 (line in Coconut source)
-    with open(PROFILES_FILE, "r+") as profiles_file:  #126 (line in Coconut source)
-        top_level_json = json.load(profiles_file)  #127 (line in Coconut source)
-        forge_profile = top_level_json["profiles"]["forge"]  #128 (line in Coconut source)
-        forge_profile["name"] = MODPACK_NAME  #129 (line in Coconut source)
-        forge_profile["javaArgs"] = java_args  #130 (line in Coconut source)
-        java_path = get_javaw_path()  #131 (line in Coconut source)
-        if java_path:  #132 (line in Coconut source)
-            print("\t(using java at: {_coconut_format_0!r})".format(_coconut_format_0=(java_path)))  #133 (line in Coconut source)
-            forge_profile["javaDir"] = java_path  #134 (line in Coconut source)
-        else:  #135 (line in Coconut source)
-            print("\t(failed to locate java)")  #136 (line in Coconut source)
+    with launch_server.using_graal_java():  #125 (line in Coconut source)
+        java_args = " ".join(launch_server.get_java_args(client=True))  #126 (line in Coconut source)
+        java_path = get_javaw_path()  #127 (line in Coconut source)
+        with open(PROFILES_FILE, "r+") as profiles_file:  #128 (line in Coconut source)
+            top_level_json = json.load(profiles_file)  #129 (line in Coconut source)
+            forge_profile = top_level_json["profiles"]["forge"]  #130 (line in Coconut source)
+            forge_profile["name"] = MODPACK_NAME  #131 (line in Coconut source)
+            forge_profile["javaArgs"] = java_args  #132 (line in Coconut source)
+            if java_path:  #133 (line in Coconut source)
+                print("\t(using java at: {_coconut_format_0!r})".format(_coconut_format_0=(java_path)))  #134 (line in Coconut source)
+                forge_profile["javaDir"] = java_path  #135 (line in Coconut source)
+            else:  #136 (line in Coconut source)
+                print("\t(failed to locate java)")  #137 (line in Coconut source)
 
-        profiles_file.seek(0)  #138 (line in Coconut source)
-        profiles_file.truncate()  #139 (line in Coconut source)
-        json.dump(top_level_json, profiles_file, indent=2)  #140 (line in Coconut source)
-    print("\tto: {_coconut_format_0}".format(_coconut_format_0=(java_args)))  #141 (line in Coconut source)
-
-
-
-def open_readme():  #144 (line in Coconut source)
-    installed_readme = os.path.join(MINECRAFT_DIR, README_FILE)  #145 (line in Coconut source)
-    print("\nOpening {_coconut_format_0}...".format(_coconut_format_0=(installed_readme)))  #146 (line in Coconut source)
-    if WINDOWS:  #147 (line in Coconut source)
-        launch_server.run_cmd(["explorer", installed_readme], check=False)  #148 (line in Coconut source)
-    else:  #149 (line in Coconut source)
-        launch_server.run_cmd(["xdg-open", installed_readme], check=False)  #150 (line in Coconut source)
+            profiles_file.seek(0)  #139 (line in Coconut source)
+            profiles_file.truncate()  #140 (line in Coconut source)
+            json.dump(top_level_json, profiles_file, indent=2)  #141 (line in Coconut source)
+    print("\tSet JVM args to: {_coconut_format_0}".format(_coconut_format_0=(java_args)))  #142 (line in Coconut source)
 
 
 
-@contextmanager  #153 (line in Coconut source)
-def unzipped_mods():  #154 (line in Coconut source)
-    with tempfile.TemporaryDirectory() as temp_dir:  #155 (line in Coconut source)
-        print("\nUnzipping mods from {_coconut_format_0!r} to temporary directory {_coconut_format_1!r}...".format(_coconut_format_0=(MOD_ZIP_PATH), _coconut_format_1=(temp_dir)))  #156 (line in Coconut source)
-        shutil.unpack_archive(MOD_ZIP_PATH, temp_dir)  #157 (line in Coconut source)
-        yield temp_dir  #158 (line in Coconut source)
+def open_readme():  #145 (line in Coconut source)
+    installed_readme = os.path.join(MINECRAFT_DIR, README_FILE)  #146 (line in Coconut source)
+    print("\nOpening {_coconut_format_0}...".format(_coconut_format_0=(installed_readme)))  #147 (line in Coconut source)
+    if WINDOWS:  #148 (line in Coconut source)
+        launch_server.run_cmd(["explorer", installed_readme], check=False)  #149 (line in Coconut source)
+    else:  #150 (line in Coconut source)
+        launch_server.run_cmd(["xdg-open", installed_readme], check=False)  #151 (line in Coconut source)
 
 
 
-def install_from_dir(source_dir, do_optional=False):  #161 (line in Coconut source)
-    launch_server.clean_forge_jars(MINECRAFT_DIR)  #162 (line in Coconut source)
-
-    ensure_forge_client(source_dir)  #164 (line in Coconut source)
-    sync_client_mods(source_dir)  #165 (line in Coconut source)
-    if "--only-mods" not in sys.argv:  #166 (line in Coconut source)
-        install_extras(source_dir, do_optional)  #167 (line in Coconut source)
-
-    set_jvm_args()  #169 (line in Coconut source)
+@contextmanager  #154 (line in Coconut source)
+def unzipped_mods():  #155 (line in Coconut source)
+    with tempfile.TemporaryDirectory() as temp_dir:  #156 (line in Coconut source)
+        print("\nUnzipping mods from {_coconut_format_0!r} to temporary directory {_coconut_format_1!r}...".format(_coconut_format_0=(MOD_ZIP_PATH), _coconut_format_1=(temp_dir)))  #157 (line in Coconut source)
+        shutil.unpack_archive(MOD_ZIP_PATH, temp_dir)  #158 (line in Coconut source)
+        yield temp_dir  #159 (line in Coconut source)
 
 
 
-def install_from_server():  #172 (line in Coconut source)
-    """Install from server and return whether or not to install optional files."""  #173 (line in Coconut source)
-    sync_mods.main()  #174 (line in Coconut source)
-    launch_server.start_server(dry_run=True)  #175 (line in Coconut source)
+def install_from_dir(source_dir, do_optional=False):  #162 (line in Coconut source)
+    launch_server.clean_forge_jars(MINECRAFT_DIR)  #163 (line in Coconut source)
 
-    install_from_dir(SERVER_DIR, do_optional=True)  #177 (line in Coconut source)
+    ensure_forge_client(source_dir)  #165 (line in Coconut source)
+    sync_client_mods(source_dir)  #166 (line in Coconut source)
+    if "--only-mods" not in sys.argv:  #167 (line in Coconut source)
+        install_extras(source_dir, do_optional)  #168 (line in Coconut source)
 
-    if "--only-mods" not in sys.argv:  #179 (line in Coconut source)
-        zip_mods()  #180 (line in Coconut source)
-    return True  #181 (line in Coconut source)
-
-
-
-def install_from_zip():  #184 (line in Coconut source)
-    """Install from zip and return whether or not to install optional files."""  #185 (line in Coconut source)
-    if "--yes-optional" in sys.argv:  #186 (line in Coconut source)
-        do_optional = True  #187 (line in Coconut source)
-    elif "--no-optional" in sys.argv:  #188 (line in Coconut source)
-        do_optional = False  #189 (line in Coconut source)
-    else:  #190 (line in Coconut source)
-        do_optional = input("\nInstall optional files {_coconut_format_0}? [y/N] ".format(_coconut_format_0=(OPTIONAL_INSTALL_FILES + OPTIONAL_INSTALL_FOLDERS))).lower() in YES_STRS  #191 (line in Coconut source)
-    if do_optional:  #192 (line in Coconut source)
-        print("Will install optional files.")  #193 (line in Coconut source)
-    else:  #194 (line in Coconut source)
-        print("Will NOT install optional files.")  #195 (line in Coconut source)
-    with unzipped_mods() as temp_dir:  #196 (line in Coconut source)
-        install_from_dir(temp_dir, do_optional)  #197 (line in Coconut source)
-    return do_optional  #198 (line in Coconut source)
+    set_jvm_args()  #170 (line in Coconut source)
 
 
 
-@_coconut_tco  #201 (line in Coconut source)
-def main():  #201 (line in Coconut source)
-    if os.path.exists(SERVER_DIR):  #202 (line in Coconut source)
-        print("\nInstalling from server...")  #203 (line in Coconut source)
-        return _coconut_tail_call(install_from_server)  #204 (line in Coconut source)
-    elif os.path.exists(MOD_ZIP_PATH):  #205 (line in Coconut source)
-        print("\nInstalling from zipfile...")  #206 (line in Coconut source)
-        return _coconut_tail_call(install_from_zip)  #207 (line in Coconut source)
-    else:  #208 (line in Coconut source)
-        raise IOError("Could not find files for install.")  #209 (line in Coconut source)
+def install_from_server():  #173 (line in Coconut source)
+    """Install from server and return whether or not to install optional files."""  #174 (line in Coconut source)
+    sync_mods.main()  #175 (line in Coconut source)
+    launch_server.start_server(dry_run=True)  #176 (line in Coconut source)
+
+    install_from_dir(SERVER_DIR, do_optional=True)  #178 (line in Coconut source)
+
+    if "--only-mods" not in sys.argv:  #180 (line in Coconut source)
+        zip_mods()  #181 (line in Coconut source)
+    return True  #182 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #212 (line in Coconut source)
-    main()  #213 (line in Coconut source)
+def install_from_zip():  #185 (line in Coconut source)
+    """Install from zip and return whether or not to install optional files."""  #186 (line in Coconut source)
+    if "--yes-optional" in sys.argv:  #187 (line in Coconut source)
+        do_optional = True  #188 (line in Coconut source)
+    elif "--no-optional" in sys.argv:  #189 (line in Coconut source)
+        do_optional = False  #190 (line in Coconut source)
+    else:  #191 (line in Coconut source)
+        do_optional = input("\nInstall optional files {_coconut_format_0}? [y/N] ".format(_coconut_format_0=(OPTIONAL_INSTALL_FILES + OPTIONAL_INSTALL_FOLDERS))).lower() in YES_STRS  #192 (line in Coconut source)
+    if do_optional:  #193 (line in Coconut source)
+        print("Will install optional files.")  #194 (line in Coconut source)
+    else:  #195 (line in Coconut source)
+        print("Will NOT install optional files.")  #196 (line in Coconut source)
+    with unzipped_mods() as temp_dir:  #197 (line in Coconut source)
+        install_from_dir(temp_dir, do_optional)  #198 (line in Coconut source)
+    return do_optional  #199 (line in Coconut source)
+
+
+
+@_coconut_tco  #202 (line in Coconut source)
+def main():  #202 (line in Coconut source)
+    if os.path.exists(SERVER_DIR):  #203 (line in Coconut source)
+        print("\nInstalling from server...")  #204 (line in Coconut source)
+        return _coconut_tail_call(install_from_server)  #205 (line in Coconut source)
+    elif os.path.exists(MOD_ZIP_PATH):  #206 (line in Coconut source)
+        print("\nInstalling from zipfile...")  #207 (line in Coconut source)
+        return _coconut_tail_call(install_from_zip)  #208 (line in Coconut source)
+    else:  #209 (line in Coconut source)
+        raise IOError("Could not find files for install.")  #210 (line in Coconut source)
+
+
+
+if __name__ == "__main__":  #213 (line in Coconut source)
+    main()  #214 (line in Coconut source)

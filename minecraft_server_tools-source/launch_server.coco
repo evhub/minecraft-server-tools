@@ -1,12 +1,15 @@
 import os
 import sys
 import subprocess
+import shutil
 from urllib.request import urlretrieve
 from urllib.error import HTTPError
+from contextlib import contextmanager
+
+import requests
 
 from minecraft_server_tools.constants import (
     WINDOWS,
-    JAVA_EXECUTABLE,
     SERVER_RAM,
     FORGE_ARGS,
     FORGE_INSTALLER_URL,
@@ -21,6 +24,10 @@ from minecraft_server_tools.constants import (
     SERVER_GC,
     CLIENT_GC,
     DOWNLOADS_PATH,
+    USE_GRAAL,
+    GRAAL_URL,
+    GRAAL_ZIP_PATH,
+    GRAAL_BASE_DIR,
     get_jvm_args,
 )
 
@@ -45,7 +52,46 @@ def run_high_priority(cmd, name="Minecraft Server"):
         return run_cmd(cmd)
 
 
-def run_java(cmd) = run_high_priority([JAVA_EXECUTABLE] + cmd)
+def run_java(cmd):
+    with using_graal_java():
+        return run_high_priority(["java"] + cmd)
+
+
+def download_file(url, path):
+    dirname = os.path.dirname(path)
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
+    got = requests.get(url)
+    with open(path, "wb") as fobj:
+        fobj.write(got.content)
+
+
+@contextmanager
+def using_graal_java():
+    if USE_GRAAL:
+        if not os.path.exists(GRAAL_ZIP_PATH):
+            print("Downloading Java GraalVM...")
+            download_file(GRAAL_URL, GRAAL_ZIP_PATH)
+            shutil.unpack_archive(GRAAL_ZIP_PATH, GRAAL_BASE_DIR)
+
+        graal_bin_dir = None
+        graal_bin_dir_time = 0
+        for entry in os.scandir(GRAAL_BASE_DIR):
+            if entry.is_dir():
+                modified_time = entry.stat().st_mtime
+                if modified_time > graal_bin_dir_time:
+                    graal_bin_dir = os.path.join(entry.path, "bin")
+                    graal_bin_dir_time = modified_time
+
+        print(f"\t(using GraalVM at: {graal_bin_dir!r})")
+        old_path = os.environ["PATH"]
+        os.environ["PATH"] = graal_bin_dir + ";" + os.environ["PATH"]
+        try:
+            yield
+        finally:
+            os.environ["PATH"] = old_path
+    else:
+        yield
 
 
 def get_cmd_output(cmd, quiet=True):
@@ -93,6 +139,9 @@ def check_if_graal(java="java"):
 
 
 def get_java_args(client=False):
+    graal = check_if_graal()
+    if graal != USE_GRAAL:
+        print(f"WARNING: Should be using GraalVM={USE_GRAAL} but got GraalVM={graal}.")
     if client:
         ram = CLIENT_RAM
         gc = CLIENT_GC
@@ -101,7 +150,7 @@ def get_java_args(client=False):
         gc = SERVER_GC
     return (
         ["-Xmx" + ram, "-Xms" + ram]
-        + get_jvm_args(gc=gc, vm="graal" if check_if_graal() else "java")
+        + get_jvm_args(gc=gc, vm="graal" if graal else "java")
         + FML_ARGS
     )
 
@@ -123,12 +172,13 @@ def start_server(dry_run=False):
     clean_forge_jars()
     ensure_forge_server()
     fix_run_bat()
-    write_jvm_args()
-    if not dry_run:
-        if os.path.exists(FORGE_JAR_PATH):
-            run_java(get_java_args() + [FORGE_JAR_PATH] + FORGE_ARGS)
-        else:
-            run_high_priority(FORGE_LAUNCH_CMD + FORGE_ARGS)
+    with using_graal_java():
+        write_jvm_args()
+        if not dry_run:
+            if os.path.exists(FORGE_JAR_PATH):
+                run_java(get_java_args() + [FORGE_JAR_PATH] + FORGE_ARGS)
+            else:
+                run_high_priority(FORGE_LAUNCH_CMD + FORGE_ARGS)
 
 
 def main():

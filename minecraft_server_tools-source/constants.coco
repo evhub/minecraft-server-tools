@@ -297,64 +297,69 @@ CURSEFORGE_API_RETRIES = 3
 CURSEFORGE_API_RETRY_DELAY = 0.1
 
 
-# Large page setup constants
-
-USE_LARGE_PAGES = False
-
-
 # Server start constants
 
-JAVA_EXECUTABLE = "java"
+USE_GRAAL = True
+USE_LARGE_PAGES = True
+
+OS_NAME = if WINDOWS then "windows" else if sys.platform == "darwin" then "macos" else "linux"
+
+GRAAL_ZIP_NAME = f"graalvm-jdk-22_{OS_NAME}-x64_bin.zip"
+GRAAL_URL = f"https://download.oracle.com/graalvm/22/latest/{GRAAL_ZIP_NAME}"
+
+GRAAL_BASE_DIR = os.path.join(ROOT_DIR, "graal")
+GRAAL_ZIP_PATH = os.path.join(GRAAL_BASE_DIR, GRAAL_ZIP_NAME)
 
 # in my testing, G1 performs the best
 CLIENT_GC = "G1"  # brucethemoose: G1, Shenandoah, or ZGenerational
 SERVER_GC = "G1"  # brucethemoose: G1 or Z
 
-BASE_JVM_ARGS = [
-    # "-d64",  # OLD
-    "-server",
-    "-Xss2M",
-    # "-XX:+AggressiveOpts",  # OLD
-    "-XX:+UnlockExperimentalVMOptions",  # always
-    "-XX:+UnlockDiagnosticVMOptions",  # brucethemoose
-    "-XX:+AlwaysPreTouch",  # always
-    "-XX:+DisableExplicitGC",  # always
-    # "-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses",  # OLD
+def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
+    args = [
+        # "-d64",  # OLD
+        "-server",
+        "-Xss2M",
+        # "-XX:+AggressiveOpts",  # OLD
+        "-XX:+UnlockExperimentalVMOptions",  # always
+        "-XX:+UnlockDiagnosticVMOptions",  # brucethemoose
+        "-XX:+AlwaysPreTouch",  # always
+        "-XX:+DisableExplicitGC",  # always
+        # "-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses",  # OLD
 
-    "-XX:+OptimizeStringConcat",  # default: True
-    "-XX:+UseCompressedOops",  # default: True
-    "-XX:+ScavengeBeforeFullGC",  # default: True
-    "-XX:+ParallelRefProcEnabled",  # aikar-flags
-    "-XX:+PerfDisableSharedMem",  # aikar-flags, brucethemoose
-    "-XX:+UseStringDeduplication",
-    # "-XX:+OmitStackTraceInFastThrow",
-    # "-XX:+UseLargePagesInMetaspace",  # OLD
-    "-XX:+UseLargePages",  # hilltty-flags
-    # "-XX:-UseBiasedLocking",  # hilltty-flags, deprecated by java
-    "-XX:+AlwaysActAsServerClassMachine",  # brucethemoose
-    "-XX:-DontCompileHugeMethods",  # brucethemoose
-    "-XX:+UseFastUnorderedTimeStamps",  # brucethemoose
-    "-XX:+UseCriticalJavaThreadPriority",  # brucethemoose
+        "-XX:+OptimizeStringConcat",  # default: True
+        "-XX:+UseCompressedOops",  # default: True
+        "-XX:+ScavengeBeforeFullGC",  # default: True
+        "-XX:+ParallelRefProcEnabled",  # aikar-flags
+        "-XX:+PerfDisableSharedMem",  # aikar-flags, brucethemoose
+        # "-XX:+UseStringDeduplication",  # brucethemoose: False
+        # "-XX:+OmitStackTraceInFastThrow",
+        # "-XX:+UseLargePagesInMetaspace",  # OLD
+        # "-XX:-UseBiasedLocking",  # hilltty-flags, deprecated by java
+        "-XX:+AlwaysActAsServerClassMachine",  # brucethemoose
+        "-XX:-DontCompileHugeMethods",  # brucethemoose
+        "-XX:+UseFastUnorderedTimeStamps",  # brucethemoose
+        "-XX:+UseCriticalJavaThreadPriority",  # brucethemoose
 
-    "-XX:MaxGCPauseMillis=37",  # brucethemoose: 37; atm: 200; default: 200
-    "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
-    "-XX:NmethodSweepActivity=1",  # brucethemoose: 1
-    "-XX:ReservedCodeCacheSize=400M",  # brucethemoose: 400M
-    "-XX:NonNMethodCodeHeapSize=12M",  # brucethemoose: 12M
-    "-XX:ProfiledCodeHeapSize=194M",  # brucethemoose: 194M
-    "-XX:NonProfiledCodeHeapSize=194M",  # brucethemoose: 194M
-    "-XX:ThreadPriorityPolicy=1",  # brucethemoose: 1
-    f"-XX:ConcGCThreads={psutil.cpu_count(logical=False)*3//4}",  # brucethemoose: real cores - 2
-] + ([
-    "-XX:LargePageSizeInBytes=2M",  # hilltty-flags
-] if USE_LARGE_PAGES else [])
+        "-XX:MaxGCPauseMillis=37",  # brucethemoose: 37; atm: 200; default: 200
+        "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
+        "-XX:NmethodSweepActivity=1",  # brucethemoose: 1
+        "-XX:ReservedCodeCacheSize=400M",  # brucethemoose: 400M
+        "-XX:NonNMethodCodeHeapSize=12M",  # brucethemoose: 12M
+        "-XX:ProfiledCodeHeapSize=194M",  # brucethemoose: 194M
+        "-XX:NonProfiledCodeHeapSize=194M",  # brucethemoose: 194M
+        "-XX:ThreadPriorityPolicy=1",  # brucethemoose: 1
+        f"-XX:ConcGCThreads={psutil.cpu_count(logical=False)*3//4}",  # brucethemoose: real cores - 2
+    ]
 
-def get_jvm_args(gc, vm):
-    args = BASE_JVM_ARGS
+    if large_pages:
+        args += [
+            "-XX:+UseLargePages",  # hilltty-flags, brucethemoose
+            "-XX:LargePageSizeInBytes=2M",  # hilltty-flags, brucethemoose
+        ]
 
     if vm == "java":
         args += [
-            "-XX:+UseNUMA",  # hilltty-flags, brucethemoose
+            "-XX:+UseNUMA",  # hilltty-flags, brucethemoose: True; mukul1127: False
             "-XX:+UseVectorCmov",  # brucethemoose
             "-XX:MaxNodeLimit=240000",  # brucethemoose: 240000
             "-XX:NodeLimitFudgeFactor=8000",  # brucethemoose: 8000
