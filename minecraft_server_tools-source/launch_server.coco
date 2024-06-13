@@ -29,6 +29,7 @@ from minecraft_server_tools.constants import (
     GRAAL_ZIP_PATH,
     GRAAL_BASE_DIR,
     get_jvm_args,
+    MODPACK_NAME,
 )
 
 FORGE_JAR_PATH = os.path.join(SERVER_DIR, FORGE_JAR)
@@ -45,7 +46,7 @@ def run_cmd(cmd, check=True, shell=False, get_output=False, quiet=False):
     return subprocess.run(cmd, check=check, shell=shell, **kwargs)
 
 
-def run_high_priority(cmd, name="Minecraft Server"):
+def run_high_priority(cmd, name=MODPACK_NAME):
     if WINDOWS:
         return run_cmd(["START", name, "/B", "/I", "/WAIT", "/HIGH"] + cmd, shell=True)
     else:
