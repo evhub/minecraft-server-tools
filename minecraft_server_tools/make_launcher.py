@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x9e477554
+# __coconut_hash__ = 0x7ccd3ff1
 
 # Compiled with Coconut version 3.1.1-post_dev1
 
@@ -85,12 +85,12 @@ py -3 -m minecraft_server_tools.install_client{_coconut_format_1}
 
 def make_launcher_file(do_optional=False):  #28 (line in Coconut source)
     """Create the launcher script."""  #29 (line in Coconut source)
-    if do_optional is None:  #30 (line in Coconut source)
-        install_client_args = ""  #31 (line in Coconut source)
-    elif do_optional:  #32 (line in Coconut source)
-        install_client_args = " --yes-optional"  #33 (line in Coconut source)
-    else:  #34 (line in Coconut source)
-        install_client_args = " --no-optional"  #35 (line in Coconut source)
+    install_client_args = " --no-zip"  #30 (line in Coconut source)
+    if do_optional is not None:  #31 (line in Coconut source)
+        if do_optional:  #32 (line in Coconut source)
+            install_client_args += " --yes-optional"  #33 (line in Coconut source)
+        else:  #34 (line in Coconut source)
+            install_client_args += " --no-optional"  #35 (line in Coconut source)
     print("\nWriting mod launcher to {_coconut_format_0!r}...".format(_coconut_format_0=(NEW_LAUNCHER_PATH)))  #36 (line in Coconut source)
     contents = get_launcher_file_contents(install_client_args)  #37 (line in Coconut source)
     with open(NEW_LAUNCHER_PATH, "w") as new_launcher_file:  #38 (line in Coconut source)

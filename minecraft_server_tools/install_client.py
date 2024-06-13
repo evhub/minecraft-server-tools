@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xae670647
+# __coconut_hash__ = 0x194b615c
 
 # Compiled with Coconut version 3.1.1-post_dev1
 
@@ -232,7 +232,7 @@ def install_from_server():  #173 (line in Coconut source)
 
     install_from_dir(SERVER_DIR, do_optional=True)  #178 (line in Coconut source)
 
-    if "--only-mods" not in sys.argv:  #180 (line in Coconut source)
+    if "--only-mods" not in sys.argv and "--no-zip" not in sys.argv:  #180 (line in Coconut source)
         zip_mods()  #181 (line in Coconut source)
     return True  #182 (line in Coconut source)
 

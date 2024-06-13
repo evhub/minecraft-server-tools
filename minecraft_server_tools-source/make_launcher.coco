@@ -27,12 +27,12 @@ py -3 -m minecraft_server_tools.install_client{install_client_args}
 
 def make_launcher_file(do_optional=False):
     """Create the launcher script."""
-    if do_optional is None:
-        install_client_args = ""
-    elif do_optional:
-        install_client_args = " --yes-optional"
-    else:
-        install_client_args = " --no-optional"
+    install_client_args = " --no-zip"
+    if do_optional is not None:
+        if do_optional:
+            install_client_args += " --yes-optional"
+        else:
+            install_client_args += " --no-optional"
     print(f"\nWriting mod launcher to {NEW_LAUNCHER_PATH!r}...")
     contents = get_launcher_file_contents(install_client_args)
     with open(NEW_LAUNCHER_PATH, "w") as new_launcher_file:

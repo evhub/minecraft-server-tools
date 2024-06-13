@@ -177,7 +177,7 @@ def install_from_server():
 
     install_from_dir(SERVER_DIR, do_optional=True)
 
-    if "--only-mods" not in sys.argv:
+    if "--only-mods" not in sys.argv and "--no-zip" not in sys.argv:
         zip_mods()
     return True
 

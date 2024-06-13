@@ -102,6 +102,7 @@ EXTRA_INSTALL_FOLDERS = [
     "global_packs",
     "patchouli_books",
     "modernfix",
+    "configureddefaults",
 ]
 
 EXTRA_INSTALL_FILES = [
