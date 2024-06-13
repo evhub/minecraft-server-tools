@@ -83,7 +83,7 @@ def using_graal_java():
                     graal_bin_dir = os.path.join(entry.path, "bin")
                     graal_bin_dir_time = modified_time
 
-        print(f"\t(using GraalVM at: {graal_bin_dir!r})")
+        print(f"(using GraalVM at: {graal_bin_dir!r})")
         old_path = os.environ["PATH"]
         os.environ["PATH"] = graal_bin_dir + ";" + os.environ["PATH"]
         try:

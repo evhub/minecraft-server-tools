@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8cca2d2c
+# __coconut_hash__ = 0xe0645e2b
 
 # Compiled with Coconut version 3.1.1-post_dev1
 
@@ -164,7 +164,7 @@ def using_graal_java():  #70 (line in Coconut source)
                     graal_bin_dir = os.path.join(entry.path, "bin")  #83 (line in Coconut source)
                     graal_bin_dir_time = modified_time  #84 (line in Coconut source)
 
-        print("\t(using GraalVM at: {_coconut_format_0!r})".format(_coconut_format_0=(graal_bin_dir)))  #86 (line in Coconut source)
+        print("(using GraalVM at: {_coconut_format_0!r})".format(_coconut_format_0=(graal_bin_dir)))  #86 (line in Coconut source)
         old_path = os.environ["PATH"]  #87 (line in Coconut source)
         os.environ["PATH"] = graal_bin_dir + ";" + os.environ["PATH"]  #88 (line in Coconut source)
         try:  #89 (line in Coconut source)
