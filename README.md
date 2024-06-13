@@ -9,7 +9,7 @@ If I directed you here to install Minecraft mods, you'll need to follow the foll
 1. Install [OneDrive](https://www.microsoft.com/en-us/microsoft-365/onedrive/download) and accept my invitation to access "Minecraft Mods".
 2. Install the latest [Python](https://www.python.org/downloads/) and [Git](https://git-scm.com/downloads).
 3. Install the Minecraft Legacy Launcher ([Windows Download](https://aka.ms/minecraftClientWindows); [Mac Download](https://aka.ms/minecraftClientMac)).
-4. In the Minecraft launcher, run Minecraft: Java Edition at least once on the latest version, then make sure Minecraft is closed.
+4. In the Minecraft launcher, run "Minecraft: Java Edition" at least once on the latest version, then make sure Minecraft is closed.
 5. Open a command prompt, `cd` to wherever you want to clone the repository, and run `git clone https://github.com/evhub/minecraft-server-tools.git`.
 6. Open the `minecraft-server-tools` folder you just created and run `make-launcher.bat` on Windows or `make-launcher.sh` otherwise (on non-Windows you may need to run `chmod +x ./make-launcher.sh` first).
 7. You should now have an `Evan's Modded Minecraft.bat` or `Evan's Modded Minecraft.sh` file on your Desktop. Whenever you want to launch modded Minecraft, just run that file.
