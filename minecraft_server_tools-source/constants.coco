@@ -68,8 +68,8 @@ DOWNLOADS_PATH = first_that_exists([
 IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 
 if IS_MOD_SERVER:
-    CLIENT_RAM = "19G"
-    SERVER_RAM = "10G"
+    CLIENT_RAM = "20G"
+    SERVER_RAM = "9G"
 else:
     CLIENT_RAM = SERVER_RAM = "5G"
 
@@ -103,6 +103,7 @@ EXTRA_INSTALL_FOLDERS = [
     "patchouli_books",
     "modernfix",
     "configureddefaults",
+    "blueprints",
 ]
 
 EXTRA_INSTALL_FILES = [
