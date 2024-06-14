@@ -68,8 +68,8 @@ DOWNLOADS_PATH = first_that_exists([
 IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 
 if IS_MOD_SERVER:
-    CLIENT_RAM = "18G"
-    SERVER_RAM = "10G"
+    CLIENT_RAM = "19G"
+    SERVER_RAM = "11G"
 else:
     CLIENT_RAM = SERVER_RAM = "5G"
 
@@ -340,6 +340,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         "-XX:-DontCompileHugeMethods",  # brucethemoose
         "-XX:+UseFastUnorderedTimeStamps",  # brucethemoose
         "-XX:+UseCriticalJavaThreadPriority",  # brucethemoose
+        "-XX:+EnableDynamicAgentLoading",  # java warning
 
         "-XX:MaxGCPauseMillis=37",  # brucethemoose: 37; atm: 200; default: 200
         "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
