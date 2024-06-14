@@ -7,9 +7,10 @@ from minecraft_server_tools.constants import (
     LAUNCHER_FILE,
     NEW_LAUNCHER_PATH,
     MODPACK_NAME,
+    START_ARGS,
 )
 
-OPEN_CMD = f'start "{MODPACK_NAME}" ' if WINDOWS else "open "
+OPEN_CMD = f'START "{MODPACK_NAME}" {" ".join(START_ARGS)} ' if WINDOWS else "open "
 
 
 def get_launcher_file_contents(install_client_args=""):

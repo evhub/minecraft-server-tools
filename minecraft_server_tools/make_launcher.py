@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x5f125a7d
+# __coconut_hash__ = 0xe0a83bdc
 
 # Compiled with Coconut version 3.1.1-post_dev1
 
@@ -64,48 +64,49 @@ from minecraft_server_tools.constants import ROOT_DIR  #4 (line in Coconut sourc
 from minecraft_server_tools.constants import LAUNCHER_FILE  #4 (line in Coconut source)
 from minecraft_server_tools.constants import NEW_LAUNCHER_PATH  #4 (line in Coconut source)
 from minecraft_server_tools.constants import MODPACK_NAME  #4 (line in Coconut source)
+from minecraft_server_tools.constants import START_ARGS  #4 (line in Coconut source)
 
-OPEN_CMD = 'start "{_coconut_format_0}" '.format(_coconut_format_0=(MODPACK_NAME)) if WINDOWS else "open "  #12 (line in Coconut source)
+OPEN_CMD = 'START "{_coconut_format_0}" {_coconut_format_1} '.format(_coconut_format_0=(MODPACK_NAME), _coconut_format_1=(" ".join(START_ARGS))) if WINDOWS else "open "  #13 (line in Coconut source)
 
 
-@_coconut_tco  #15 (line in Coconut source)
-def get_launcher_file_contents(install_client_args=""):  #15 (line in Coconut source)
-    """Get the contents that should go in the launcher script."""  #16 (line in Coconut source)
-    if not os.path.exists(LAUNCHER_FILE):  #17 (line in Coconut source)
-        raise OSError("Could not find Minecraft Launcher file!\n\nMod files have still been installed, but custom launcher creation failed. You'll need to keep running this script every time before you launch Minecraft.")  #18 (line in Coconut source)
-    print("\tIdentified Minecraft Launcher location as: {_coconut_format_0!r}".format(_coconut_format_0=(LAUNCHER_FILE)))  #19 (line in Coconut source)
+@_coconut_tco  #16 (line in Coconut source)
+def get_launcher_file_contents(install_client_args=""):  #16 (line in Coconut source)
+    """Get the contents that should go in the launcher script."""  #17 (line in Coconut source)
+    if not os.path.exists(LAUNCHER_FILE):  #18 (line in Coconut source)
+        raise OSError("Could not find Minecraft Launcher file!\n\nMod files have still been installed, but custom launcher creation failed. You'll need to keep running this script every time before you launch Minecraft.")  #19 (line in Coconut source)
+    print("\tIdentified Minecraft Launcher location as: {_coconut_format_0!r}".format(_coconut_format_0=(LAUNCHER_FILE)))  #20 (line in Coconut source)
     return _coconut_tail_call("""
 cd "{_coconut_format_0}"
 git pull
 py -3 -m pip install -Ue .
 py -3 -m minecraft_server_tools.install_client{_coconut_format_1}
 {_coconut_format_2}"{_coconut_format_3}"
-    """.format(_coconut_format_0=(ROOT_DIR), _coconut_format_1=(install_client_args), _coconut_format_2=(OPEN_CMD), _coconut_format_3=(LAUNCHER_FILE)).strip)  #26 (line in Coconut source)
+    """.format(_coconut_format_0=(ROOT_DIR), _coconut_format_1=(install_client_args), _coconut_format_2=(OPEN_CMD), _coconut_format_3=(LAUNCHER_FILE)).strip)  #27 (line in Coconut source)
 
 
 
-def make_launcher_file(do_optional=False):  #29 (line in Coconut source)
-    """Create the launcher script."""  #30 (line in Coconut source)
-    install_client_args = " --no-zip"  #31 (line in Coconut source)
-    if do_optional is not None:  #32 (line in Coconut source)
-        if do_optional:  #33 (line in Coconut source)
-            install_client_args += " --yes-optional"  #34 (line in Coconut source)
-        else:  #35 (line in Coconut source)
-            install_client_args += " --no-optional"  #36 (line in Coconut source)
-    print("\nWriting mod launcher to {_coconut_format_0!r}...".format(_coconut_format_0=(NEW_LAUNCHER_PATH)))  #37 (line in Coconut source)
-    contents = get_launcher_file_contents(install_client_args)  #38 (line in Coconut source)
-    with open(NEW_LAUNCHER_PATH, "w") as new_launcher_file:  #39 (line in Coconut source)
-        new_launcher_file.write(contents)  #40 (line in Coconut source)
-    if not WINDOWS:  #41 (line in Coconut source)
-        launch_server.run_cmd(["chmod", "+x", NEW_LAUNCHER_PATH])  #42 (line in Coconut source)
+def make_launcher_file(do_optional=False):  #30 (line in Coconut source)
+    """Create the launcher script."""  #31 (line in Coconut source)
+    install_client_args = " --no-zip"  #32 (line in Coconut source)
+    if do_optional is not None:  #33 (line in Coconut source)
+        if do_optional:  #34 (line in Coconut source)
+            install_client_args += " --yes-optional"  #35 (line in Coconut source)
+        else:  #36 (line in Coconut source)
+            install_client_args += " --no-optional"  #37 (line in Coconut source)
+    print("\nWriting mod launcher to {_coconut_format_0!r}...".format(_coconut_format_0=(NEW_LAUNCHER_PATH)))  #38 (line in Coconut source)
+    contents = get_launcher_file_contents(install_client_args)  #39 (line in Coconut source)
+    with open(NEW_LAUNCHER_PATH, "w") as new_launcher_file:  #40 (line in Coconut source)
+        new_launcher_file.write(contents)  #41 (line in Coconut source)
+    if not WINDOWS:  #42 (line in Coconut source)
+        launch_server.run_cmd(["chmod", "+x", NEW_LAUNCHER_PATH])  #43 (line in Coconut source)
 
 
 
-def main():  #45 (line in Coconut source)
-    install_client.main()  #46 (line in Coconut source)
-    make_launcher_file()  #47 (line in Coconut source)
+def main():  #46 (line in Coconut source)
+    install_client.main()  #47 (line in Coconut source)
+    make_launcher_file()  #48 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #50 (line in Coconut source)
-    main()  #51 (line in Coconut source)
+if __name__ == "__main__":  #51 (line in Coconut source)
+    main()  #52 (line in Coconut source)
