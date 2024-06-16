@@ -5,12 +5,36 @@ from minecraft_server_tools.constants import (
     WINDOWS,
     ROOT_DIR,
     LAUNCHER_FILE,
-    NEW_LAUNCHER_PATH,
     MODPACK_NAME,
     START_ARGS,
+    first_that_exists,
+    fixpath,
 )
 
 OPEN_CMD = f'START "{MODPACK_NAME}" {" ".join(START_ARGS)} ' if WINDOWS else "open "
+
+
+def get_launcher_path():
+    desktop_dir = None
+    if WINDOWS:
+        desktop_dir = (
+            ["powershell", "-Command", '[Environment]::GetFolderPath("Desktop")']
+            |> launch_server.get_cmd_output
+            |> .splitlines()
+            |> .$[-1]
+        )
+        if not os.path.exists(desktop_dir):
+            print(f"WARNING: Failed to locate Desktop at {desktop_dir!r}.")
+            desktop_dir = None
+    if desktop_dir is None:
+        desktop_dir = first_that_exists([
+            "~/Desktop",
+            "~/OneDrive/Desktop",
+        ])
+    return fixpath(os.path.join(
+        desktop_dir,
+        MODPACK_NAME + (".bat" if WINDOWS else ".sh"),
+    ))
 
 
 def get_launcher_file_contents(install_client_args=""):
@@ -35,12 +59,13 @@ def make_launcher_file(do_optional=False):
             install_client_args += " --yes-optional"
         else:
             install_client_args += " --no-optional"
-    print(f"\nWriting mod launcher to {NEW_LAUNCHER_PATH!r}...")
+    launcher_path = get_launcher_path()
+    print(f"\nWriting mod launcher to {launcher_path!r}...")
     contents = get_launcher_file_contents(install_client_args)
-    with open(NEW_LAUNCHER_PATH, "w") as new_launcher_file:
+    with open(launcher_path, "w") as new_launcher_file:
         new_launcher_file.write(contents)
     if not WINDOWS:
-        launch_server.run_cmd(["chmod", "+x", NEW_LAUNCHER_PATH])
+        launch_server.run_cmd(["chmod", "+x", launcher_path])
 
 
 def main():

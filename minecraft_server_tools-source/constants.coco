@@ -68,7 +68,7 @@ DOWNLOADS_PATH = first_that_exists([
 IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 
 if IS_MOD_SERVER:
-    CLIENT_RAM = "21G"
+    CLIENT_RAM = "22G"
     SERVER_RAM = "9G"
 else:
     CLIENT_RAM = SERVER_RAM = "5G"
@@ -491,17 +491,7 @@ LAUNCHER_FILE = first_that_exists([
     r"C:\Users\Public\Desktop\Minecraft Launcher.ink",
 ])
 
-DESKTOP_DIR = first_that_exists([
-    "~/Desktop",
-    "~/OneDrive/Desktop",
-])
-
 MODPACK_NAME = "Evan's Modded Minecraft"
-
-NEW_LAUNCHER_PATH = fixpath(os.path.join(
-    DESKTOP_DIR,
-    MODPACK_NAME + (".bat" if WINDOWS else ".sh"),
-))
 
 
 # Searchable mods constants
