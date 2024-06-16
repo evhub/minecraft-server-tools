@@ -13,6 +13,7 @@ If I directed you here to install Minecraft mods, you'll need to follow the foll
 5. Open a command prompt, `cd` to wherever you want to clone the repository, and run `git clone https://github.com/evhub/minecraft-server-tools.git`.
 6. Open the `minecraft-server-tools` folder you just created and run `make-launcher.bat` on Windows or `make-launcher.sh` otherwise (on non-Windows you may need to run `chmod +x ./make-launcher.sh` first).
 7. You should now have an `Evan's Modded Minecraft.bat` or `Evan's Modded Minecraft.sh` file on your Desktop. Whenever you want to launch modded Minecraft, just run that file.
+8. Just select the "Evan's Modded Minecraft" profile in the launcher (to the left of the "Play" button) and press "Play"!
 
 ## Additional performance optimizations
 
