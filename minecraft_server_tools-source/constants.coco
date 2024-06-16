@@ -160,7 +160,8 @@ if JsonComment is None:
 else:
     COMMENT_JSON = JsonComment()
     SECRETS = load_json(SECRETS_FILE, {})
-    os.environ["CURSEFORGE_API_KEY"] = SECRETS["curseforge_api_key"]
+    if SECRETS:
+        os.environ["CURSEFORGE_API_KEY"] = SECRETS["curseforge_api_key"]
 
 
 # Mod sync constants
