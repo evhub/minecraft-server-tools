@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd73784f5
+# __coconut_hash__ = 0x5c6f6e09
 
 # Compiled with Coconut version 3.1.1-post_dev1
 
@@ -61,68 +61,51 @@ from minecraft_server_tools import install_client  #3 (line in Coconut source)
 from minecraft_server_tools import launch_server  #3 (line in Coconut source)
 from minecraft_server_tools.constants import WINDOWS  #4 (line in Coconut source)
 from minecraft_server_tools.constants import ROOT_DIR  #4 (line in Coconut source)
-from minecraft_server_tools.constants import LAUNCHER_FILE  #4 (line in Coconut source)
 from minecraft_server_tools.constants import MODPACK_NAME  #4 (line in Coconut source)
-from minecraft_server_tools.constants import START_ARGS  #4 (line in Coconut source)
 from minecraft_server_tools.constants import first_that_exists  #4 (line in Coconut source)
 from minecraft_server_tools.constants import fixpath  #4 (line in Coconut source)
 
-OPEN_CMD = 'START "{_coconut_format_0}" {_coconut_format_1} '.format(_coconut_format_0=(MODPACK_NAME), _coconut_format_1=(" ".join(START_ARGS))) if WINDOWS else "open "  #14 (line in Coconut source)
 
-
-@_coconut_tco  #17 (line in Coconut source)
-def get_launcher_path():  #17 (line in Coconut source)
-    desktop_dir = None  #18 (line in Coconut source)
-    if WINDOWS:  #19 (line in Coconut source)
-        desktop_dir = (_coconut_iter_getitem((((launch_server.get_cmd_output)(["powershell", "-Command", '[Environment]::GetFolderPath("Desktop")'])).splitlines()), (-1)))  #20 (line in Coconut source)
-        if not os.path.exists(desktop_dir):  #26 (line in Coconut source)
-            print("WARNING: Failed to locate Desktop at {_coconut_format_0!r}.".format(_coconut_format_0=(desktop_dir)))  #27 (line in Coconut source)
-            desktop_dir = None  #28 (line in Coconut source)
-    if desktop_dir is None:  #29 (line in Coconut source)
-        desktop_dir = first_that_exists(["~/Desktop", "~/OneDrive/Desktop"])  #30 (line in Coconut source)
-    return _coconut_tail_call(fixpath, os.path.join(desktop_dir, MODPACK_NAME + (".bat" if WINDOWS else ".sh")))  #34 (line in Coconut source)
+@_coconut_tco  #13 (line in Coconut source)
+def get_custom_launcher_path():  #13 (line in Coconut source)
+    desktop_dir = None  #14 (line in Coconut source)
+    if WINDOWS:  #15 (line in Coconut source)
+        desktop_dir = (_coconut_iter_getitem((((launch_server.get_cmd_output)(["powershell", "-Command", '[Environment]::GetFolderPath("Desktop")'])).splitlines()), (-1)))  #16 (line in Coconut source)
+        if not os.path.exists(desktop_dir):  #22 (line in Coconut source)
+            print("\tWARNING: Failed to locate Desktop at {_coconut_format_0!r}.".format(_coconut_format_0=(desktop_dir)))  #23 (line in Coconut source)
+            desktop_dir = None  #24 (line in Coconut source)
+    if desktop_dir is None:  #25 (line in Coconut source)
+        desktop_dir = first_that_exists(["~/Desktop", "~/OneDrive/Desktop"])  #26 (line in Coconut source)
+    return _coconut_tail_call(fixpath, os.path.join(desktop_dir, MODPACK_NAME + (".bat" if WINDOWS else ".sh")))  #30 (line in Coconut source)
 
 
 
-@_coconut_tco  #40 (line in Coconut source)
-def get_launcher_file_contents(install_client_args=""):  #40 (line in Coconut source)
-    """Get the contents that should go in the launcher script."""  #41 (line in Coconut source)
-    if not os.path.exists(LAUNCHER_FILE):  #42 (line in Coconut source)
-        raise OSError("Could not find Minecraft Launcher file!\n\nMod files have still been installed, but custom launcher creation failed. You'll need to keep running this script every time before you launch Minecraft.")  #43 (line in Coconut source)
-    print("\tIdentified Minecraft Launcher location as: {_coconut_format_0!r}".format(_coconut_format_0=(LAUNCHER_FILE)))  #44 (line in Coconut source)
-    return _coconut_tail_call("""
+def make_launcher_file(do_optional=False):  #36 (line in Coconut source)
+    """Create the launcher script."""  #37 (line in Coconut source)
+    print("\nCreating custom launcher...")  #38 (line in Coconut source)
+    launcher_path = get_custom_launcher_path()  #39 (line in Coconut source)
+    install_client_args = ["--launch", "--no-zip"]  #40 (line in Coconut source)
+    if do_optional is not None:  #41 (line in Coconut source)
+        install_client_args += ["--yes-optional" if do_optional else "--no-optional",]  #42 (line in Coconut source)
+    contents = """
 cd "{_coconut_format_0}"
 git pull
 py -3 -m pip install -Ue .
-py -3 -m minecraft_server_tools.install_client{_coconut_format_1}
-{_coconut_format_2}"{_coconut_format_3}"
-    """.format(_coconut_format_0=(ROOT_DIR), _coconut_format_1=(install_client_args), _coconut_format_2=(OPEN_CMD), _coconut_format_3=(LAUNCHER_FILE)).strip)  #51 (line in Coconut source)
+py -3 -m minecraft_server_tools.install_client {_coconut_format_1}
+    """.format(_coconut_format_0=(ROOT_DIR), _coconut_format_1=(" ".join(install_client_args))).strip()  #48 (line in Coconut source)
+    with open(launcher_path, "w") as new_launcher_file:  #49 (line in Coconut source)
+        new_launcher_file.write(contents)  #50 (line in Coconut source)
+    if not WINDOWS:  #51 (line in Coconut source)
+        launch_server.run_cmd(["chmod", "+x", launcher_path])  #52 (line in Coconut source)
+    print("\tWrote custom launcher to: {_coconut_format_0}".format(_coconut_format_0=(launcher_path)))  #53 (line in Coconut source)
 
 
 
-def make_launcher_file(do_optional=False):  #54 (line in Coconut source)
-    """Create the launcher script."""  #55 (line in Coconut source)
-    install_client_args = " --no-zip"  #56 (line in Coconut source)
-    if do_optional is not None:  #57 (line in Coconut source)
-        if do_optional:  #58 (line in Coconut source)
-            install_client_args += " --yes-optional"  #59 (line in Coconut source)
-        else:  #60 (line in Coconut source)
-            install_client_args += " --no-optional"  #61 (line in Coconut source)
-    launcher_path = get_launcher_path()  #62 (line in Coconut source)
-    print("\nWriting mod launcher to {_coconut_format_0!r}...".format(_coconut_format_0=(launcher_path)))  #63 (line in Coconut source)
-    contents = get_launcher_file_contents(install_client_args)  #64 (line in Coconut source)
-    with open(launcher_path, "w") as new_launcher_file:  #65 (line in Coconut source)
-        new_launcher_file.write(contents)  #66 (line in Coconut source)
-    if not WINDOWS:  #67 (line in Coconut source)
-        launch_server.run_cmd(["chmod", "+x", launcher_path])  #68 (line in Coconut source)
+def main():  #56 (line in Coconut source)
+    install_client.main()  #57 (line in Coconut source)
+    make_launcher_file()  #58 (line in Coconut source)
 
 
 
-def main():  #71 (line in Coconut source)
-    install_client.main()  #72 (line in Coconut source)
-    make_launcher_file()  #73 (line in Coconut source)
-
-
-
-if __name__ == "__main__":  #76 (line in Coconut source)
-    main()  #77 (line in Coconut source)
+if __name__ == "__main__":  #61 (line in Coconut source)
+    main()  #62 (line in Coconut source)

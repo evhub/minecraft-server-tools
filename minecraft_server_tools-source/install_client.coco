@@ -25,6 +25,8 @@ from minecraft_server_tools.constants import (
     YES_STRS,
     PROFILES_FILE,
     MODPACK_NAME,
+    START_ARGS,
+    LAUNCHER_FILE,
 )
 
 MINECRAFT_MODS_DIR = os.path.join(MINECRAFT_DIR, MODS_NAME)
@@ -199,15 +201,28 @@ def install_from_zip():
     return do_optional
 
 
+def launch_minecraft():
+    print(f"\nLaunching Minecraft at {LAUNCHER_FILE!r}...")
+    if not os.path.exists(LAUNCHER_FILE):
+        raise OSError("Could not find Minecraft Launcher file!\n\nMod files have still been installed, but you'll need to launch Minecraft manually.")
+    if WINDOWS:
+        launch_server.run_cmd(["START", MODPACK_NAME] + START_ARGS + [LAUNCHER_FILE], shell=True)
+    else:
+        launch_server.run_cmd(["open", LAUNCHER_FILE])
+
+
 def main():
     if os.path.exists(SERVER_DIR):
         print("\nInstalling from server...")
-        return install_from_server()
+        do_optional = install_from_server()
     elif os.path.exists(MOD_ZIP_PATH):
         print("\nInstalling from zipfile...")
-        return install_from_zip()
+        do_optional = install_from_zip()
     else:
         raise IOError("Could not find files for install.")
+    if "--launch" in sys.argv:
+        launch_minecraft()
+    return do_optional
 
 
 if __name__ == "__main__":
