@@ -69,7 +69,8 @@ IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 
 if IS_MOD_SERVER:
     CLIENT_RAM = "22G"
-    SERVER_RAM = "9G"
+    # SERVER_RAM = "9G"
+    SERVER_RAM = "12G"
 else:
     CLIENT_RAM = SERVER_RAM = "5G"
 
@@ -289,7 +290,7 @@ CURSEFORGE_QUERY_TEMPLATES = [
     "{mod_name}",
 ]
 
-TIMESTAMP_FORMAT_REGEX = full_regex("(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)\.?(\d+)?Z")
+TIMESTAMP_FORMAT_REGEX = full_regex(r"(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)\.?(\d+)?Z")
 
 UPDATED_MODS_DIR_SUFFIX = "-updates"
 OLD_MODS_DIR_SUFFIX = "-old"
