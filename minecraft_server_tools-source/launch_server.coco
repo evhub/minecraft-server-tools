@@ -174,9 +174,9 @@ def start_server(dry_run=False):
     clean_forge_jars()
     ensure_forge_server()
     fix_run_bat()
-    with using_graal_java():
-        write_jvm_args()
-        if not dry_run:
+    if not dry_run:
+        with using_graal_java():
+            write_jvm_args()
             if os.path.exists(FORGE_JAR_PATH):
                 run_java(get_java_args() + [FORGE_JAR_PATH] + FORGE_ARGS)
             else:

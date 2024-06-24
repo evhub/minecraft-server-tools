@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x10e876d2
+# __coconut_hash__ = 0x66f1d14d
 
 # Compiled with Coconut version 3.1.1-post_dev1
 
@@ -262,9 +262,9 @@ def start_server(dry_run=False):  #173 (line in Coconut source)
     clean_forge_jars()  #174 (line in Coconut source)
     ensure_forge_server()  #175 (line in Coconut source)
     fix_run_bat()  #176 (line in Coconut source)
-    with using_graal_java():  #177 (line in Coconut source)
-        write_jvm_args()  #178 (line in Coconut source)
-        if not dry_run:  #179 (line in Coconut source)
+    if not dry_run:  #177 (line in Coconut source)
+        with using_graal_java():  #178 (line in Coconut source)
+            write_jvm_args()  #179 (line in Coconut source)
             if os.path.exists(FORGE_JAR_PATH):  #180 (line in Coconut source)
                 run_java(get_java_args() + [FORGE_JAR_PATH,] + FORGE_ARGS)  #181 (line in Coconut source)
             else:  #182 (line in Coconut source)
