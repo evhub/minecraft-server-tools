@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # type: ignore
 
-# Compiled with Coconut version 3.1.1-post_dev1
+# Compiled with Coconut version 3.1.1-post_dev2
 
 """Built-in Coconut utilities."""
 
@@ -11,7 +11,7 @@
 from __future__ import print_function, absolute_import, unicode_literals, division
 import sys as _coconut_sys
 import os as _coconut_os
-_coconut_header_info = ('3.1.1-post_dev1', '', True)
+_coconut_header_info = ('3.1.1-post_dev2', '', True)
 try:
     __file__ = _coconut_os.path.abspath(__file__) if __file__ else __file__
 except NameError:

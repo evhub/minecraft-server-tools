@@ -11,9 +11,10 @@ If I directed you here to install Minecraft mods, you'll need to follow the foll
 3. Install the Minecraft Legacy Launcher ([Windows Download](https://aka.ms/minecraftClientWindows); [Mac Download](https://aka.ms/minecraftClientMac)).
 4. In the Minecraft launcher, run "Minecraft: Java Edition" at least once on the latest version, then make sure Minecraft is closed.
 5. Open a command prompt, `cd` to wherever you want to clone the repository, and run `git clone https://github.com/evhub/minecraft-server-tools.git`.
-6. Open the `minecraft-server-tools` folder you just created and run `make-launcher.bat` on Windows or `make-launcher.sh` otherwise (on non-Windows you may need to run `chmod +x ./make-launcher.sh` first).
+   1. Alternatively, if you'd prefer, you can use [GitHub Desktop](https://desktop.github.com/) to clone this repository instead.
+6. Open the `minecraft-server-tools` folder you just created and run `install.bat` on Windows or `install.sh` otherwise (on non-Windows you may need to run `chmod +x ./install.sh` first).
 7. You should now have an `Evan's Modded Minecraft.bat` or `Evan's Modded Minecraft.sh` file on your Desktop. Whenever you want to launch modded Minecraft, just run that file.
-8. Just select the "Evan's Modded Minecraft" profile in the launcher (to the left of the "Play" button) and press "Play"!
+8. Once you're in the Minecraft launcher, just select the "Evan's Modded Minecraft" profile (to the left of the "Play" button) and press "Play"!
 
 ## Additional performance optimizations
 
