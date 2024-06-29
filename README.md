@@ -10,11 +10,14 @@ If I directed you here to install Minecraft mods, you'll need to follow the foll
 2. Install the latest [Python](https://www.python.org/downloads/) and [Git](https://git-scm.com/downloads).
 3. Install the Minecraft Legacy Launcher ([Windows Download](https://aka.ms/minecraftClientWindows); [Mac Download](https://aka.ms/minecraftClientMac)).
 4. In the Minecraft launcher, run "Minecraft: Java Edition" at least once on the latest version, then make sure Minecraft is closed.
-5. Open a command prompt, `cd` to wherever you want to clone the repository, and run `git clone https://github.com/evhub/minecraft-server-tools.git`.
-   1. Alternatively, if you'd prefer, you can use [GitHub Desktop](https://desktop.github.com/) to clone this repository instead.
+5. Use one of the following methods to clone this repository:
+   1. Open a command prompt, `cd` to wherever you want to clone the repository, and run `git clone https://github.com/evhub/minecraft-server-tools.git`.
+   2. Download and install [GitHub Desktop](https://desktop.github.com/), open it, select "File" > "Clone repository", choose "URL", enter `https://github.com/evhub/minecraft-server-tools.git`, note the "Local path" where it's creating a `minecraft-server-tools` folder for you, and then press "Clone".
 6. Open the `minecraft-server-tools` folder you just created and run `install.bat` on Windows or `install.sh` otherwise (on non-Windows you may need to run `chmod +x ./install.sh` first).
 7. You should now have an `Evan's Modded Minecraft.bat` or `Evan's Modded Minecraft.sh` file on your Desktop. Whenever you want to launch modded Minecraft, just run that file.
-8. Once you're in the Minecraft launcher, just select the "Evan's Modded Minecraft" profile (to the left of the "Play" button) and press "Play"!
+8. Once you're in the Minecraft launcher, just select the "Evan's Modded Minecraft" profile (to the left of the "Play" button) and press "Play".
+9.  The game will take a bit to boot, and if minimized may require you to tab back occasionally to keep it booting.
+10. Once booted, select "Multiplayer" and join "Evan's Mod Server". Joining the server may take a bit as well.
 
 ## Additional performance optimizations
 
