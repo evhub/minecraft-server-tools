@@ -227,6 +227,8 @@ def main():
         print("\nInstalling from server...")
         do_optional = install_from_server()
     elif os.path.exists(MOD_ZIP_PATH):
+        if "downloads" in MOD_ZIP_PATH.lower():
+            print("WARNING: Using downloaded Minecraft Mods.zip instead of synchronized version; you will not get updates automatically.")
         print("\nInstalling from zipfile...")
         do_optional = install_from_zip()
     else:

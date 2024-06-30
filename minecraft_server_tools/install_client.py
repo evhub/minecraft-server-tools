@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4f66a6c8
+# __coconut_hash__ = 0x770ac187
 
 # Compiled with Coconut version 3.1.1-post_dev2
 
@@ -286,15 +286,17 @@ def main():  #225 (line in Coconut source)
         print("\nInstalling from server...")  #227 (line in Coconut source)
         do_optional = install_from_server()  #228 (line in Coconut source)
     elif os.path.exists(MOD_ZIP_PATH):  #229 (line in Coconut source)
-        print("\nInstalling from zipfile...")  #230 (line in Coconut source)
-        do_optional = install_from_zip()  #231 (line in Coconut source)
-    else:  #232 (line in Coconut source)
-        raise IOError("Could not find files for install (make sure you have the 'Minecraft Mods' folder in your OneDrive).")  #233 (line in Coconut source)
-    if "--launch" in sys.argv:  #234 (line in Coconut source)
-        launch_minecraft()  #235 (line in Coconut source)
-    return do_optional  #236 (line in Coconut source)
+        if "downloads" in MOD_ZIP_PATH.lower():  #230 (line in Coconut source)
+            print("WARNING: Using downloaded Minecraft Mods.zip instead of synchronized version; you will not get updates automatically.")  #231 (line in Coconut source)
+        print("\nInstalling from zipfile...")  #232 (line in Coconut source)
+        do_optional = install_from_zip()  #233 (line in Coconut source)
+    else:  #234 (line in Coconut source)
+        raise IOError("Could not find files for install (make sure you have the 'Minecraft Mods' folder in your OneDrive).")  #235 (line in Coconut source)
+    if "--launch" in sys.argv:  #236 (line in Coconut source)
+        launch_minecraft()  #237 (line in Coconut source)
+    return do_optional  #238 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #239 (line in Coconut source)
-    main()  #240 (line in Coconut source)
+if __name__ == "__main__":  #241 (line in Coconut source)
+    main()  #242 (line in Coconut source)
