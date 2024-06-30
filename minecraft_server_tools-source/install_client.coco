@@ -230,7 +230,7 @@ def main():
         print("\nInstalling from zipfile...")
         do_optional = install_from_zip()
     else:
-        raise IOError("Could not find files for install.")
+        raise IOError("Could not find files for install (make sure you have the 'Minecraft Mods' folder in your OneDrive).")
     if "--launch" in sys.argv:
         launch_minecraft()
     return do_optional

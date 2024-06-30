@@ -1,6 +1,6 @@
 # minecraft-server-tools
 
-A bunch of utilities for easily working with and managing minecraft servers, specifically aimed at managing minecraft Forge servers with large numbers of manually-installed mods.
+A bunch of utilities for easily working with and managing Minecraft servers, specifically aimed at managing Minecraft Forge servers with large numbers of manually-installed mods.
 
 ## Installing mods with this package
 

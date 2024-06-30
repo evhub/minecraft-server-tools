@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x5f3d47dc
+# __coconut_hash__ = 0x4f66a6c8
 
 # Compiled with Coconut version 3.1.1-post_dev2
 
@@ -289,7 +289,7 @@ def main():  #225 (line in Coconut source)
         print("\nInstalling from zipfile...")  #230 (line in Coconut source)
         do_optional = install_from_zip()  #231 (line in Coconut source)
     else:  #232 (line in Coconut source)
-        raise IOError("Could not find files for install.")  #233 (line in Coconut source)
+        raise IOError("Could not find files for install (make sure you have the 'Minecraft Mods' folder in your OneDrive).")  #233 (line in Coconut source)
     if "--launch" in sys.argv:  #234 (line in Coconut source)
         launch_minecraft()  #235 (line in Coconut source)
     return do_optional  #236 (line in Coconut source)
