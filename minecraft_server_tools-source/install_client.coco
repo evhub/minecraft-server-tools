@@ -70,8 +70,8 @@ def install_extras(source_dir, do_optional=True, clean=True):
             print("\t\t(skipped)")
 
 
-def ensure_forge_client(source_dir):
-    if not os.path.exists(os.path.join(MINECRAFT_DIR, FORGE_INSTALLER_JAR)):
+def ensure_forge_client(source_dir, force=False):
+    if force or not os.path.exists(os.path.join(MINECRAFT_DIR, FORGE_INSTALLER_JAR)):
         print("\nOpening forge installer; select 'Install client' and press 'Ok'.")
         launch_server.run_java(["-jar", os.path.join(source_dir, FORGE_INSTALLER_JAR)])
 
@@ -130,7 +130,10 @@ def set_jvm_args():
         java_path = get_javaw_path()
         with open(PROFILES_FILE, "r+") as profiles_file:
             top_level_json = json.load(profiles_file)
-            forge_profile = top_level_json["profiles"]["forge"]
+            profiles = top_level_json["profiles"]
+            if "forge" not in profiles:
+                return False
+            forge_profile = profiles["forge"]
             forge_profile["name"] = MODPACK_NAME
             forge_profile["javaArgs"] = java_args
             if java_path:
@@ -143,6 +146,7 @@ def set_jvm_args():
             profiles_file.truncate()
             json.dump(top_level_json, profiles_file, indent=2)
     print(f"\tSet JVM args to: {java_args}")
+    return True
 
 
 def open_readme():
@@ -170,7 +174,10 @@ def install_from_dir(source_dir, do_optional=False):
     if "--only-mods" not in sys.argv:
         install_extras(source_dir, do_optional)
 
-    set_jvm_args()
+    success = set_jvm_args()
+    if not success:
+        ensure_forge_client(force=True)
+        assert set_jvm_args(), "Failed to find Forge profile."
 
 
 def install_from_server():
