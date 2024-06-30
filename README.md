@@ -6,18 +6,19 @@ A bunch of utilities for easily working with and managing minecraft servers, spe
 
 If I directed you here to install Minecraft mods, you'll need to follow the following steps:
 
-1. Install [OneDrive](https://www.microsoft.com/en-us/microsoft-365/onedrive/download) and accept my invitation to access "Minecraft Mods".
-2. Install the latest [Python](https://www.python.org/downloads/) and [Git](https://git-scm.com/downloads).
-3. Install the Minecraft Legacy Launcher ([Windows Download](https://aka.ms/minecraftClientWindows); [Mac Download](https://aka.ms/minecraftClientMac)).
-4. In the Minecraft launcher, run "Minecraft: Java Edition" at least once on the latest version, then make sure Minecraft is closed.
-5. Use one of the following methods to clone this repository:
+1. Make sure you are using a computer with at least 32GB of RAM; you can try with something less but it's unlikely that it will work.
+2. Install [OneDrive](https://www.microsoft.com/en-us/microsoft-365/onedrive/download) and accept my invitation to access "Minecraft Mods".
+3. Install the latest [Python](https://www.python.org/downloads/) and [Git](https://git-scm.com/downloads).
+4. Install the Minecraft Legacy Launcher ([Windows Download](https://aka.ms/minecraftClientWindows); [Mac Download](https://aka.ms/minecraftClientMac)).
+5. In the Minecraft launcher, run "Minecraft: Java Edition" at least once on the latest version, then make sure Minecraft is closed.
+6. Use one of the following methods to clone this repository:
    1. Open a command prompt, `cd` to wherever you want to clone the repository, and run `git clone https://github.com/evhub/minecraft-server-tools.git`.
    2. Download and install [GitHub Desktop](https://desktop.github.com/), open it, select "File" > "Clone repository", choose "URL", enter `https://github.com/evhub/minecraft-server-tools.git`, note the "Local path" where it's creating a `minecraft-server-tools` folder for you, and then press "Clone".
-6. Open the `minecraft-server-tools` folder you just created and run `install.bat` on Windows or `install.sh` otherwise (on non-Windows you may need to run `chmod +x ./install.sh` first).
-7. You should now have an `Evan's Modded Minecraft.bat` or `Evan's Modded Minecraft.sh` file on your Desktop. Whenever you want to launch modded Minecraft, just run that file.
-8. Once you're in the Minecraft launcher, just select the "Evan's Modded Minecraft" profile (to the left of the "Play" button) and press "Play".
-9.  The game may take a bit to boot, and if minimized may require you to tab back occasionally to keep it booting.
-10. Once booted, select "Multiplayer" and join "Evan's Mod Server". Joining the server may take a bit as well (you'll be protected while you join).
+7. Open the `minecraft-server-tools` folder you just created and run `install.bat` on Windows or `install.sh` otherwise (on non-Windows you may need to run `chmod +x ./install.sh` first).
+8. You should now have an `Evan's Modded Minecraft.bat` or `Evan's Modded Minecraft.sh` file on your Desktop. Whenever you want to launch modded Minecraft, just run that file.
+9. Once you're in the Minecraft launcher, just select the "Evan's Modded Minecraft" profile (to the left of the "Play" button) and press "Play".
+10. The game may take a bit to boot, and if minimized may require you to tab back occasionally to keep it booting.
+11. Once booted, select "Multiplayer" and join "Evan's Mod Server". Joining the server may take a bit as well (you'll be protected while you join).
 
 ## Additional performance optimizations
 
