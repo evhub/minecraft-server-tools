@@ -16,7 +16,8 @@ If I directed you here to install Minecraft mods, you'll need to follow the foll
    2. Download and install [GitHub Desktop](https://desktop.github.com/), open it, select "File" > "Clone repository", choose "URL", enter `https://github.com/evhub/minecraft-server-tools.git`, note the "Local path" where it's creating a `minecraft-server-tools` folder for you, and then press "Clone".
 7. Open the `minecraft-server-tools` folder you just created and run `install.bat` on Windows or `install.sh` otherwise (on non-Windows you may need to run `chmod +x ./install.sh` first).
 8. You should now have an `Evan's Modded Minecraft.bat` or `Evan's Modded Minecraft.sh` file on your Desktop. Whenever you want to launch modded Minecraft, just run that file.
-9. Once you're in the Minecraft launcher, just select the "Evan's Modded Minecraft" profile (to the left of the "Play" button) and press "Play".
+   1. This will make sure you always have the latest mods without touching any of your options. If you want to get the latest recommended options, you'll need to rerun the install script (`install.bat`/`install.sh`) and say `yes` to install optional files.
+9.  Once you're in the Minecraft launcher, just select the "Evan's Modded Minecraft" profile (to the left of the "Play" button) and press "Play".
 10. The game may take a bit to boot, and if minimized may require you to tab back occasionally to keep it booting.
 11. Once booted, select "Multiplayer" and join "Evan's Mod Server". Joining the server may take a bit as well (you'll be protected while you join).
 
