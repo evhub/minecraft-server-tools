@@ -176,7 +176,7 @@ def install_from_dir(source_dir, do_optional=False):
 
     success = set_jvm_args()
     if not success:
-        ensure_forge_client(force=True)
+        ensure_forge_client(source_dir, force=True)
         assert set_jvm_args(), "Failed to find Forge profile."
 
 

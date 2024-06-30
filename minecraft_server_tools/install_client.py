@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x46518bb7
+# __coconut_hash__ = 0xf32aaef
 
 # Compiled with Coconut version 3.1.1-post_dev2
 
@@ -230,7 +230,7 @@ def install_from_dir(source_dir, do_optional=False):  #169 (line in Coconut sour
 
     success = set_jvm_args()  #177 (line in Coconut source)
     if not success:  #178 (line in Coconut source)
-        ensure_forge_client(force=True)  #179 (line in Coconut source)
+        ensure_forge_client(source_dir, force=True)  #179 (line in Coconut source)
         assert set_jvm_args(), "Failed to find Forge profile."  #180 (line in Coconut source)
 
 
