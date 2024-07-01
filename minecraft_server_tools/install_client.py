@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3de6868a
+# __coconut_hash__ = 0x611ca270
 
 # Compiled with Coconut version 3.1.1-post_dev2
 
@@ -224,15 +224,15 @@ def install_from_dir(source_dir, do_optional=False):  #169 (line in Coconut sour
     launch_server.clean_forge_jars(MINECRAFT_DIR)  #170 (line in Coconut source)
 
     ensure_forge_client(source_dir)  #172 (line in Coconut source)
-    sync_client_mods(source_dir)  #173 (line in Coconut source)
-    if "--only-mods" not in sys.argv:  #174 (line in Coconut source)
-        install_extras(source_dir, do_optional)  #175 (line in Coconut source)
+    success = set_jvm_args()  #173 (line in Coconut source)
+    if not success:  #174 (line in Coconut source)
+        ensure_forge_client(source_dir, force=True)  #175 (line in Coconut source)
+        if not set_jvm_args():  #176 (line in Coconut source)
+            raise OSError("Failed to automatically install forge; you'll need to run {_coconut_format_0} manually.".format(_coconut_format_0=(FORGE_INSTALLER_JAR)))  #177 (line in Coconut source)
 
-    success = set_jvm_args()  #177 (line in Coconut source)
-    if not success:  #178 (line in Coconut source)
-        ensure_forge_client(source_dir, force=True)  #179 (line in Coconut source)
-        if not set_jvm_args():  #180 (line in Coconut source)
-            raise OSError("Failed to automatically install forge; you'll need to run {_coconut_format_0} manually.".format(_coconut_format_0=(FORGE_INSTALLER_JAR)))  #181 (line in Coconut source)
+    sync_client_mods(source_dir)  #179 (line in Coconut source)
+    if "--only-mods" not in sys.argv:  #180 (line in Coconut source)
+        install_extras(source_dir, do_optional)  #181 (line in Coconut source)
 
 
 

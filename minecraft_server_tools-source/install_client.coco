@@ -170,15 +170,15 @@ def install_from_dir(source_dir, do_optional=False):
     launch_server.clean_forge_jars(MINECRAFT_DIR)
 
     ensure_forge_client(source_dir)
-    sync_client_mods(source_dir)
-    if "--only-mods" not in sys.argv:
-        install_extras(source_dir, do_optional)
-
     success = set_jvm_args()
     if not success:
         ensure_forge_client(source_dir, force=True)
         if not set_jvm_args():
             raise OSError(f"Failed to automatically install forge; you'll need to run {FORGE_INSTALLER_JAR} manually.")
+
+    sync_client_mods(source_dir)
+    if "--only-mods" not in sys.argv:
+        install_extras(source_dir, do_optional)
 
 
 def install_from_server():
