@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xec3b13bc
+# __coconut_hash__ = 0xa04796dd
 
 # Compiled with Coconut version 3.1.1-post_dev2
 
@@ -95,7 +95,7 @@ from minecraft_server_tools.constants import CURSEFORGE_API_FILE  #14 (line in C
 from minecraft_server_tools.constants import TIMESTAMP_FORMAT_REGEX  #14 (line in Coconut source)
 from minecraft_server_tools.constants import UPDATED_MODS_DIR_SUFFIX  #14 (line in Coconut source)
 from minecraft_server_tools.constants import OLD_MODS_DIR_SUFFIX  #14 (line in Coconut source)
-from minecraft_server_tools.constants import DEBUG  #14 (line in Coconut source)
+from minecraft_server_tools.constants import PRINT_DEBUG  #14 (line in Coconut source)
 from minecraft_server_tools.constants import MAX_DEBUG_RESULTS  #14 (line in Coconut source)
 from minecraft_server_tools.constants import CURSEFORGE_NAME_ELEMS_TO_STRIP  #14 (line in Coconut source)
 from minecraft_server_tools.constants import CURSEFORGE_QUERY_TEMPLATES  #14 (line in Coconut source)
@@ -119,7 +119,7 @@ def get_mod_name(jar_name, silent=None, do_component_splitting=True):  #48 (line
         return (jar_name, silent, do_component_splitting,)  #49 (line in Coconut source)
     while True:  #49 (line in Coconut source)
         if silent is None:  #49 (line in Coconut source)
-            silent = not DEBUG  #50 (line in Coconut source)
+            silent = not PRINT_DEBUG  #50 (line in Coconut source)
 
         base_name = jar_name.removesuffix(".jar")  #52 (line in Coconut source)
 
@@ -418,42 +418,42 @@ def get_curseforge_mod(curseforge_name, mod_name):  #319 (line in Coconut source
         mod = get_matching_mod(modloader_version_results, curseforge_name, mod_name)  #334 (line in Coconut source)
         if mod is not None:  #335 (line in Coconut source)
             return mod  #336 (line in Coconut source)
-        if DEBUG:  #337 (line in Coconut source)
+        if PRINT_DEBUG:  #337 (line in Coconut source)
             print("\tCould not find mod {_coconut_format_0!r} in modloader-version-specific results for query {_coconut_format_1!r}.".format(_coconut_format_0=(curseforge_name), _coconut_format_1=(query)))  #338 (line in Coconut source)
 
         modloader_compatible_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION[:2]), MODLOADER])  #340 (line in Coconut source)
         mod = get_matching_mod(modloader_compatible_version_results, curseforge_name, mod_name)  #341 (line in Coconut source)
         if mod is not None:  #342 (line in Coconut source)
             return mod  #343 (line in Coconut source)
-        if DEBUG:  #344 (line in Coconut source)
+        if PRINT_DEBUG:  #344 (line in Coconut source)
             print("\tCould not find mod {_coconut_format_0!r} in modloader-compatibly-versioned results for query {_coconut_format_1!r}.".format(_coconut_format_0=(curseforge_name), _coconut_format_1=(query)))  #345 (line in Coconut source)
 
         version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION)])  #347 (line in Coconut source)
         mod = get_matching_mod(version_results, curseforge_name, mod_name)  #348 (line in Coconut source)
         if mod is not None:  #349 (line in Coconut source)
             return mod  #350 (line in Coconut source)
-        if DEBUG:  #351 (line in Coconut source)
+        if PRINT_DEBUG:  #351 (line in Coconut source)
             print("\tCould not find mod {_coconut_format_0!r} in version-specific results for query {_coconut_format_1!r}.".format(_coconut_format_0=(curseforge_name), _coconut_format_1=(query)))  #352 (line in Coconut source)
 
         compatible_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION[:2])])  #354 (line in Coconut source)
         mod = get_matching_mod(compatible_version_results, curseforge_name, mod_name)  #355 (line in Coconut source)
         if mod is not None:  #356 (line in Coconut source)
             return mod  #357 (line in Coconut source)
-        if DEBUG:  #358 (line in Coconut source)
+        if PRINT_DEBUG:  #358 (line in Coconut source)
             print("\tCould not find mod {_coconut_format_0!r} in compatibly-versioned results for query {_coconut_format_1!r}.".format(_coconut_format_0=(curseforge_name), _coconut_format_1=(query)))  #359 (line in Coconut source)
 
         modloader_results = run_curseforge_api_cmd(["search", query, MODLOADER])  #361 (line in Coconut source)
         mod = get_matching_mod(modloader_results, curseforge_name, mod_name)  #362 (line in Coconut source)
         if mod is not None:  #363 (line in Coconut source)
             return mod  #364 (line in Coconut source)
-        if DEBUG:  #365 (line in Coconut source)
+        if PRINT_DEBUG:  #365 (line in Coconut source)
             print("\tCould not find mod {_coconut_format_0!r} in modloader-versioned results for query {_coconut_format_1!r}.".format(_coconut_format_0=(curseforge_name), _coconut_format_1=(query)))  #366 (line in Coconut source)
 
         versionless_results = run_curseforge_api_cmd(["search", query])  #368 (line in Coconut source)
         mod = get_matching_mod(versionless_results, curseforge_name, mod_name)  #369 (line in Coconut source)
         if mod is not None:  #370 (line in Coconut source)
             return mod  #371 (line in Coconut source)
-        if DEBUG:  #372 (line in Coconut source)
+        if PRINT_DEBUG:  #372 (line in Coconut source)
             print("\tCould not find mod {_coconut_format_0!r} in version-less results for query {_coconut_format_1!r}.".format(_coconut_format_0=(curseforge_name), _coconut_format_1=(query)))  #373 (line in Coconut source)
 
     print("\nERROR: Failed to find mod {_coconut_format_0!r} in any results.\n".format(_coconut_format_0=(curseforge_name)))  #375 (line in Coconut source)
@@ -689,7 +689,7 @@ def make_dirs(*dirs):  #597 (line in Coconut source)
 
 
 def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interact=None):  #603 (line in Coconut source)
-    if interact is None and not DEBUG:  #604 (line in Coconut source)
+    if interact is None and not PRINT_DEBUG:  #604 (line in Coconut source)
         interact = False  #605 (line in Coconut source)
     try:  #606 (line in Coconut source)
         mod_names_to_jar_names = get_mod_names_to_jar_names(mods_dir)  #607 (line in Coconut source)

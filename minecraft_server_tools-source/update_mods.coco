@@ -28,7 +28,7 @@ from minecraft_server_tools.constants import (
     TIMESTAMP_FORMAT_REGEX,
     UPDATED_MODS_DIR_SUFFIX,
     OLD_MODS_DIR_SUFFIX,
-    DEBUG,
+    PRINT_DEBUG,
     MAX_DEBUG_RESULTS,
     CURSEFORGE_NAME_ELEMS_TO_STRIP,
     CURSEFORGE_QUERY_TEMPLATES,
@@ -47,7 +47,7 @@ BEGINNING_OF_TIME = datetime.datetime(1, 1, 1)
 
 def get_mod_name(jar_name, silent=None, do_component_splitting=True):
     if silent is None:
-        silent = not DEBUG
+        silent = not PRINT_DEBUG
 
     base_name = jar_name.removesuffix(".jar")
 
@@ -334,42 +334,42 @@ def get_curseforge_mod(curseforge_name, mod_name):
         mod = get_matching_mod(modloader_version_results, curseforge_name, mod_name)
         if mod is not None:
             return mod
-        if DEBUG:
+        if PRINT_DEBUG:
             print(f"\tCould not find mod {curseforge_name!r} in modloader-version-specific results for query {query!r}.")
 
         modloader_compatible_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION[:2]), MODLOADER])
         mod = get_matching_mod(modloader_compatible_version_results, curseforge_name, mod_name)
         if mod is not None:
             return mod
-        if DEBUG:
+        if PRINT_DEBUG:
             print(f"\tCould not find mod {curseforge_name!r} in modloader-compatibly-versioned results for query {query!r}.")
 
         version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION)])
         mod = get_matching_mod(version_results, curseforge_name, mod_name)
         if mod is not None:
             return mod
-        if DEBUG:
+        if PRINT_DEBUG:
             print(f"\tCould not find mod {curseforge_name!r} in version-specific results for query {query!r}.")
 
         compatible_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION[:2])])
         mod = get_matching_mod(compatible_version_results, curseforge_name, mod_name)
         if mod is not None:
             return mod
-        if DEBUG:
+        if PRINT_DEBUG:
             print(f"\tCould not find mod {curseforge_name!r} in compatibly-versioned results for query {query!r}.")
 
         modloader_results = run_curseforge_api_cmd(["search", query, MODLOADER])
         mod = get_matching_mod(modloader_results, curseforge_name, mod_name)
         if mod is not None:
             return mod
-        if DEBUG:
+        if PRINT_DEBUG:
             print(f"\tCould not find mod {curseforge_name!r} in modloader-versioned results for query {query!r}.")
 
         versionless_results = run_curseforge_api_cmd(["search", query])
         mod = get_matching_mod(versionless_results, curseforge_name, mod_name)
         if mod is not None:
             return mod
-        if DEBUG:
+        if PRINT_DEBUG:
             print(f"\tCould not find mod {curseforge_name!r} in version-less results for query {query!r}.")
 
     print(f"\nERROR: Failed to find mod {curseforge_name!r} in any results.\n")
@@ -601,7 +601,7 @@ def make_dirs(*dirs):
 
 
 def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interact=None):
-    if interact is None and not DEBUG:
+    if interact is None and not PRINT_DEBUG:
         interact = False
     try:
         mod_names_to_jar_names = get_mod_names_to_jar_names(mods_dir)

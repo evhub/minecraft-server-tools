@@ -71,7 +71,7 @@ IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 if IS_MOD_SERVER:
     CLIENT_RAM = "23G"
     # SERVER_RAM = "9G"
-    SERVER_RAM = "20G"
+    SERVER_RAM = "18G"
 else:
     CLIENT_RAM = SERVER_RAM = "5G"
 
@@ -124,7 +124,8 @@ OPTIONAL_INSTALL_FOLDERS = [
     "ESM",
 ]
 
-DEBUG = False
+PRINT_DEBUG = False
+JPS_DEBUG = False  # filter jstack: ^(\s*(at java|at jdk|at sun|at net.minecraft|at io.netty)\b)[^\n]*\n*
 LOG4J_DEBUG = False
 
 
@@ -304,10 +305,14 @@ CURSEFORGE_API_RETRY_DELAY = 0.1
 
 # Server start constants
 
-USE_GRAAL = True
+USE_GRAAL = not JPS_DEBUG
 USE_LARGE_PAGES = False
 
-OS_NAME = if WINDOWS then "windows" else if sys.platform == "darwin" then "macos" else "linux"
+OS_NAME = (
+    if WINDOWS then "windows"
+    else if sys.platform == "darwin" then "macos"
+    else "linux"
+)
 
 GRAAL_ZIP_NAME = f"graalvm-jdk-22_{OS_NAME}-x64_bin.zip"
 GRAAL_URL = f"https://download.oracle.com/graalvm/22/latest/{GRAAL_ZIP_NAME}"
@@ -335,7 +340,6 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         "-XX:+UseCompressedOops",  # default: True
         "-XX:+ScavengeBeforeFullGC",  # default: True
         "-XX:+ParallelRefProcEnabled",  # aikar-flags
-        "-XX:+PerfDisableSharedMem",  # aikar-flags, brucethemoose
         # "-XX:+UseStringDeduplication",  # brucethemoose: False
         # "-XX:+OmitStackTraceInFastThrow",
         # "-XX:+UseLargePagesInMetaspace",  # OLD
@@ -356,6 +360,10 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         "-XX:ThreadPriorityPolicy=1",  # brucethemoose: 1
         f"-XX:ConcGCThreads={psutil.cpu_count(logical=False)*3//4}",  # brucethemoose: real cores - 2
     ]
+    if not JPS_DEBUG:
+        args += [
+            "-XX:+PerfDisableSharedMem",  # aikar-flags, brucethemoose
+        ]
 
     if large_pages:
         args += [
