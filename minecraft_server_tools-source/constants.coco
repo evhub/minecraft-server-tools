@@ -71,7 +71,7 @@ IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 if IS_MOD_SERVER:
     CLIENT_RAM = "23G"
     # SERVER_RAM = "9G"
-    SERVER_RAM = "18G"
+    SERVER_RAM = "20G"
 else:
     CLIENT_RAM = SERVER_RAM = "5G"
 
