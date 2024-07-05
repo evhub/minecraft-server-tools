@@ -80,6 +80,9 @@ ALWAYS_USE_LATEST_VERSION_FOR_MODS = [
     "toofast",
     "supplementaries",
     "packet fixer",
+    "embeddium",
+    "oculus",
+    "immediately fast",
 ]
 
 NON_CURSEFORGE_MODS = [
