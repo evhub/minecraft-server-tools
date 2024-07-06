@@ -56,6 +56,22 @@ def bool_env_var(env_var, default):
 
 WINDOWS = os.name == "nt"
 
+YES_STRS = [
+    "y",
+    "yes",
+    "t",
+    "true",
+    "1",
+]
+
+NO_STRS = [
+    "n",
+    "no",
+    "f",
+    "false",
+    "0",
+]
+
 
 # Commonly changed constants
 
@@ -488,22 +504,6 @@ README_FILE = "README.txt"
 EXTRA_INSTALL_FILES += [
     README_FILE,
     FORGE_INSTALLER_JAR,
-]
-
-YES_STRS = [
-    "y",
-    "yes",
-    "t",
-    "true",
-    "1",
-]
-
-NO_STRS = [
-    "n",
-    "no",
-    "f",
-    "false",
-    "0",
 ]
 
 
