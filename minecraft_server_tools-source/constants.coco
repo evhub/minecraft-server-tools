@@ -42,6 +42,18 @@ def first_that_exists(path_list):
                 return path
     return [p for p in path_list if p is not None][0]
 
+def bool_env_var(env_var, default):
+    got = os.getenv(env_var)
+    if got is None:
+        return default
+    got = got.lower()
+    if got in YES_STRS:
+        return True
+    elif got in NO_STRS:
+        return False
+    else:
+        return default
+
 WINDOWS = os.name == "nt"
 
 
@@ -78,6 +90,7 @@ else:
 ALWAYS_USE_LATEST_VERSION_FOR_MODS = [
     "jei",
     "toofast",
+    "gottagofast",
     "supplementaries",
     "packet fixer",
     "embeddium",
@@ -127,9 +140,9 @@ OPTIONAL_INSTALL_FOLDERS = [
     "ESM",
 ]
 
-PRINT_DEBUG = False
-JPS_DEBUG = False  # filter jstack: ^(\s*(at java|at jdk|at sun|at net.minecraft|at io.netty)\b)[^\n]*\n*
-LOG4J_DEBUG = False
+PRINT_DEBUG = bool_env_var("MC_DEBUG_PRINT", False)
+JPS_DEBUG = bool_env_var("MC_DEBUG_JPS", False)  # filter jstack: ^(\s*(at java|at jdk|at sun|at net.minecraft|at io.netty)\b)[^\n]*\n*
+LOG4J_DEBUG = bool_env_var("MC_DEBUG_LOG4J", False)
 
 
 # Fix RAMs
