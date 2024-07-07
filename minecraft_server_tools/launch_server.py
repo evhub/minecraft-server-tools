@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb95fd400
+# __coconut_hash__ = 0xef82c6b2
 
 # Compiled with Coconut version 3.1.1-post_dev2
 
@@ -260,39 +260,47 @@ def write_jvm_args():  #170 (line in Coconut source)
 
 
 
-def copy_new_world_configs():  #175 (line in Coconut source)
+def clean_world_configs():  #175 (line in Coconut source)
     if os.path.exists(WORLD_CONFIG_DIR):  #176 (line in Coconut source)
-        print("\nLooking for new configs...")  #177 (line in Coconut source)
-        for fname in os.listdir(WORLD_CONFIG_DIR):  #178 (line in Coconut source)
-            defaultconfigs_path = os.path.join(DEFAULTCONFIGS_DIR, fname)  #179 (line in Coconut source)
-            if not os.path.exists(defaultconfigs_path):  #180 (line in Coconut source)
-                world_path = os.path.join(WORLD_CONFIG_DIR, fname)  #181 (line in Coconut source)
-                print("\tCopying {_coconut_format_0!r} to {_coconut_format_1!r}...".format(_coconut_format_0=(world_path), _coconut_format_1=(defaultconfigs_path)))  #182 (line in Coconut source)
-                shutil.copy(world_path, defaultconfigs_path)  #183 (line in Coconut source)
+        print("Removing world configs...")  #177 (line in Coconut source)
+        shutil.rmtree(WORLD_CONFIG_DIR)  #178 (line in Coconut source)
+    else:  #179 (line in Coconut source)
+        print("WARNING: Couldn't find world configs.")  #180 (line in Coconut source)
 
 
 
-def start_server(dry_run=False):  #186 (line in Coconut source)
-    clean_forge_jars()  #187 (line in Coconut source)
-    ensure_forge_server()  #188 (line in Coconut source)
-    fix_run_bat()  #189 (line in Coconut source)
-    if not dry_run:  #190 (line in Coconut source)
-        if os.path.exists(WORLD_CONFIG_DIR):  #191 (line in Coconut source)
-            shutil.rmtree(WORLD_CONFIG_DIR)  #192 (line in Coconut source)
-        with using_graal_java():  #193 (line in Coconut source)
-            write_jvm_args()  #194 (line in Coconut source)
-            if os.path.exists(FORGE_JAR_PATH):  #195 (line in Coconut source)
-                run_java(get_java_args() + [FORGE_JAR_PATH,] + FORGE_ARGS)  #196 (line in Coconut source)
-            else:  #197 (line in Coconut source)
-                run_high_priority(FORGE_LAUNCH_CMD + FORGE_ARGS)  #198 (line in Coconut source)
-        copy_new_world_configs()  #199 (line in Coconut source)
+def copy_new_world_configs():  #183 (line in Coconut source)
+    if os.path.exists(WORLD_CONFIG_DIR):  #184 (line in Coconut source)
+        print("\nLooking for new configs...")  #185 (line in Coconut source)
+        for fname in os.listdir(WORLD_CONFIG_DIR):  #186 (line in Coconut source)
+            defaultconfigs_path = os.path.join(DEFAULTCONFIGS_DIR, fname)  #187 (line in Coconut source)
+            if not os.path.exists(defaultconfigs_path):  #188 (line in Coconut source)
+                world_path = os.path.join(WORLD_CONFIG_DIR, fname)  #189 (line in Coconut source)
+                print("\tCopying {_coconut_format_0!r} to {_coconut_format_1!r}...".format(_coconut_format_0=(world_path), _coconut_format_1=(defaultconfigs_path)))  #190 (line in Coconut source)
+                shutil.copy(world_path, defaultconfigs_path)  #191 (line in Coconut source)
 
 
 
-def main():  #202 (line in Coconut source)
-    start_server(dry_run="--dry-run" in sys.argv)  #203 (line in Coconut source)
+def start_server(dry_run=False):  #194 (line in Coconut source)
+    clean_forge_jars()  #195 (line in Coconut source)
+    ensure_forge_server()  #196 (line in Coconut source)
+    fix_run_bat()  #197 (line in Coconut source)
+    if not dry_run:  #198 (line in Coconut source)
+        clean_world_configs()  #199 (line in Coconut source)
+        with using_graal_java():  #200 (line in Coconut source)
+            write_jvm_args()  #201 (line in Coconut source)
+            if os.path.exists(FORGE_JAR_PATH):  #202 (line in Coconut source)
+                run_java(get_java_args() + [FORGE_JAR_PATH,] + FORGE_ARGS)  #203 (line in Coconut source)
+            else:  #204 (line in Coconut source)
+                run_high_priority(FORGE_LAUNCH_CMD + FORGE_ARGS)  #205 (line in Coconut source)
+        copy_new_world_configs()  #206 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #206 (line in Coconut source)
-    main()  #207 (line in Coconut source)
+def main():  #209 (line in Coconut source)
+    start_server(dry_run="--dry-run" in sys.argv)  #210 (line in Coconut source)
+
+
+
+if __name__ == "__main__":  #213 (line in Coconut source)
+    main()  #214 (line in Coconut source)

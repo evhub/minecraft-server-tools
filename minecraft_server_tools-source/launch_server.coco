@@ -172,6 +172,14 @@ def write_jvm_args():
         jvm_args_file.write("\n".join(get_java_args()) + "\n")
 
 
+def clean_world_configs():
+    if os.path.exists(WORLD_CONFIG_DIR):
+        print("Removing world configs...")
+        shutil.rmtree(WORLD_CONFIG_DIR)
+    else:
+        print("WARNING: Couldn't find world configs.")
+
+
 def copy_new_world_configs():
     if os.path.exists(WORLD_CONFIG_DIR):
         print("\nLooking for new configs...")
@@ -188,8 +196,7 @@ def start_server(dry_run=False):
     ensure_forge_server()
     fix_run_bat()
     if not dry_run:
-        if os.path.exists(WORLD_CONFIG_DIR):
-            shutil.rmtree(WORLD_CONFIG_DIR)
+        clean_world_configs()
         with using_graal_java():
             write_jvm_args()
             if os.path.exists(FORGE_JAR_PATH):
