@@ -174,10 +174,10 @@ def write_jvm_args():
 
 def clean_world_configs():
     if os.path.exists(WORLD_CONFIG_DIR):
-        print("Removing world configs...")
+        print(f"Deleting {WORLD_CONFIG_DIR!r}...")
         shutil.rmtree(WORLD_CONFIG_DIR)
     else:
-        print("WARNING: Couldn't find world configs.")
+        print(f"WARNING: Couldn't find {WORLD_CONFIG_DIR!r}.")
 
 
 def copy_new_world_configs():

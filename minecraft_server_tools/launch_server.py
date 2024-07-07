@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xef82c6b2
+# __coconut_hash__ = 0x5928ee77
 
 # Compiled with Coconut version 3.1.1-post_dev2
 
@@ -262,10 +262,10 @@ def write_jvm_args():  #170 (line in Coconut source)
 
 def clean_world_configs():  #175 (line in Coconut source)
     if os.path.exists(WORLD_CONFIG_DIR):  #176 (line in Coconut source)
-        print("Removing world configs...")  #177 (line in Coconut source)
+        print("Deleting {_coconut_format_0!r}...".format(_coconut_format_0=(WORLD_CONFIG_DIR)))  #177 (line in Coconut source)
         shutil.rmtree(WORLD_CONFIG_DIR)  #178 (line in Coconut source)
     else:  #179 (line in Coconut source)
-        print("WARNING: Couldn't find world configs.")  #180 (line in Coconut source)
+        print("WARNING: Couldn't find {_coconut_format_0!r}.".format(_coconut_format_0=(WORLD_CONFIG_DIR)))  #180 (line in Coconut source)
 
 
 
