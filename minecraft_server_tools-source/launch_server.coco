@@ -31,6 +31,8 @@ from minecraft_server_tools.constants import (
     get_jvm_args,
     MODPACK_NAME,
     START_ARGS,
+    WORLD_CONFIG_DIR,
+    DEFAULTCONFIGS_DIR,
 )
 
 FORGE_JAR_PATH = os.path.join(SERVER_DIR, FORGE_JAR)
@@ -170,17 +172,30 @@ def write_jvm_args():
         jvm_args_file.write("\n".join(get_java_args()) + "\n")
 
 
+def copy_new_world_configs():
+    print("\nLooking for new configs...")
+    for fname in os.listdir(WORLD_CONFIG_DIR):
+        defaultconfigs_path = os.path.join(DEFAULTCONFIGS_DIR, fname)
+        if not os.path.exists(defaultconfigs_path):
+            world_path = os.path.join(WORLD_CONFIG_DIR, fname)
+            print(f"\tCopying {world_path!r} to {defaultconfigs_path!r}...")
+            shutil.copy(world_path, defaultconfigs_path)
+
+
 def start_server(dry_run=False):
     clean_forge_jars()
     ensure_forge_server()
     fix_run_bat()
     if not dry_run:
+        if os.path.exists(WORLD_CONFIG_DIR):
+            shutil.rmtree(WORLD_CONFIG_DIR)
         with using_graal_java():
             write_jvm_args()
             if os.path.exists(FORGE_JAR_PATH):
                 run_java(get_java_args() + [FORGE_JAR_PATH] + FORGE_ARGS)
             else:
                 run_high_priority(FORGE_LAUNCH_CMD + FORGE_ARGS)
+        copy_new_world_configs()
 
 
 def main():

@@ -474,6 +474,8 @@ FORGE_ARGS = ["nogui"]
 START_ARGS = ["/HIGH", "/B", "/I"]
 
 JVM_ARGS_FILE = os.path.join(SERVER_DIR, "user_jvm_args.txt")
+WORLD_CONFIG_DIR = os.path.join(SERVER_DIR, "world", "serverconfig")
+DEFAULTCONFIGS_DIR = os.path.join(SERVER_DIR, "defaultconfigs")
 
 if WINDOWS:
     FORGE_LAUNCH_CMD = [os.path.join(SERVER_DIR, "run.bat")]
