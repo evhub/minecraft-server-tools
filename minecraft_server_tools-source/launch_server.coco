@@ -173,13 +173,14 @@ def write_jvm_args():
 
 
 def copy_new_world_configs():
-    print("\nLooking for new configs...")
-    for fname in os.listdir(WORLD_CONFIG_DIR):
-        defaultconfigs_path = os.path.join(DEFAULTCONFIGS_DIR, fname)
-        if not os.path.exists(defaultconfigs_path):
-            world_path = os.path.join(WORLD_CONFIG_DIR, fname)
-            print(f"\tCopying {world_path!r} to {defaultconfigs_path!r}...")
-            shutil.copy(world_path, defaultconfigs_path)
+    if os.path.exists(WORLD_CONFIG_DIR):
+        print("\nLooking for new configs...")
+        for fname in os.listdir(WORLD_CONFIG_DIR):
+            defaultconfigs_path = os.path.join(DEFAULTCONFIGS_DIR, fname)
+            if not os.path.exists(defaultconfigs_path):
+                world_path = os.path.join(WORLD_CONFIG_DIR, fname)
+                print(f"\tCopying {world_path!r} to {defaultconfigs_path!r}...")
+                shutil.copy(world_path, defaultconfigs_path)
 
 
 def start_server(dry_run=False):
