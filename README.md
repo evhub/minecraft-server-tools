@@ -18,8 +18,9 @@ If I directed you here to install Minecraft mods, you'll need to follow the foll
 8. You should now have an `Evan's Modded Minecraft.bat` or `Evan's Modded Minecraft.sh` file on your Desktop. Whenever you want to launch modded Minecraft, just run that file.
    1. This will make sure you always have the latest mods without touching any of your options. If you want to get the latest recommended options, you'll need to rerun the install script (`install.bat`/`install.sh`) and say `yes` to install optional files.
 9.  Once you're in the Minecraft launcher, just select the "Evan's Modded Minecraft" profile (to the left of the "Play" button) and press "Play".
-10. The game may take a bit to boot, and if minimized may require you to tab back occasionally to keep it booting.
-11. Once booted, select "Multiplayer" and join "Evan's Mod Server". Joining the server may take a bit as well (you'll be protected while you join).
+10. The game should take ~10 minutes to boot, and if minimized may require you to tab back occasionally to keep it booting.
+    1.  If it freezes, just give it a bit of time; it's probably just loading. If it crashes though when you tab out, you might need to try not tabbing away from it.
+11. Once booted, select "Multiplayer" and join "Evan's Mod Server". Joining the server should take ~5 minutes.
 
 ## Additional performance optimizations
 
