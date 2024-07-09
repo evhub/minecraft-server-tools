@@ -83,15 +83,15 @@ SERVER_DIR = first_that_exists([
     "~/OneDrive/Minecraft/1.20 Mod Server",
 ])
 
-ALT_MOD_ZIP_PATH = "~/Dropbox/Minecraft Mods/Minecraft Mods.zip"
-
 MOD_ZIP_PATH = first_that_exists([
     "D:\\\\Minecraft Mods.zip",
     "~/OneDrive/Minecraft/Minecraft Mods/Minecraft Mods.zip",
     "~/OneDrive/Minecraft Mods/Minecraft Mods.zip",
-    ALT_MOD_ZIP_PATH,
+    "~/Dropbox/Minecraft Mods/Minecraft Mods.zip",
     "~/Downloads/Minecraft Mods.zip",
 ])
+
+ALT_MOD_ZIP_PATH = fixpath("~/Evan Personal Dropbox/Evan/Minecraft Mods/Minecraft Mods.zip")
 
 DOWNLOADS_PATH = first_that_exists([
     "~/Downloads",
