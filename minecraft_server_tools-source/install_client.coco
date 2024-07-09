@@ -18,6 +18,7 @@ from minecraft_server_tools.constants import (
     FORGE_INSTALLER_JAR,
     README_FILE,
     MOD_ZIP_PATH,
+    ALT_MOD_ZIP_PATH,
     OPTIONAL_INSTALL_FILES,
     OPTIONAL_INSTALL_FOLDERS,
     MODS_NAME,
@@ -103,6 +104,8 @@ def zip_mods():
     with zipfile.ZipFile(MOD_ZIP_PATH, "w", zipfile.ZIP_DEFLATED) as zf:
         for install_path in tqdm(list(get_paths_to_zip())):
             zf.write(install_path, os.path.relpath(install_path, MINECRAFT_DIR))
+    print(f"\tCopying {MOD_ZIP_PATH!r} to {ALT_MOD_ZIP_PATH!r}...")
+    shutil.copy(MOD_ZIP_PATH, ALT_MOD_ZIP_PATH)
 
 
 def get_javaw_path():
