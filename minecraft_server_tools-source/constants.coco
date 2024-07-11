@@ -100,7 +100,7 @@ DOWNLOADS_PATH = first_that_exists([
 IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 
 if IS_MOD_SERVER:
-    CLIENT_RAM = "25G"
+    CLIENT_RAM = "26G"
     # SERVER_RAM = "9G"
     SERVER_RAM = "18G"
 else:
