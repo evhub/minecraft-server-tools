@@ -4,6 +4,8 @@ A bunch of utilities for easily working with and managing Minecraft servers, spe
 
 ## Installing mods with this package
 
+_If you need help with any of the below, please just ask me!_
+
 If I directed you here to install Minecraft mods, you'll need to follow the following steps:
 
 1. Make sure you are using a computer with at least 32GB of RAM; you can try with something less but it's unlikely that it will work.
