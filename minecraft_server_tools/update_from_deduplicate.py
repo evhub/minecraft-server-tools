@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb48f73de
+# __coconut_hash__ = 0x6bac0e81
 
 # Compiled with Coconut version 3.1.1-post_dev2
 
@@ -100,7 +100,13 @@ def main():  #40 (line in Coconut source)
     update_mods_from(deduplicate_mods.DEDUPLICATE_MODS_DIR, sync_mods.BASE_MODS_DIR)  #46 (line in Coconut source)
     update_mods_from(deduplicate_mods.DEDUPLICATE_MODS_DIR, sync_mods.EXTRA_MODS_DIR)  #47 (line in Coconut source)
 
+    update_mods_from(deduplicate_mods.DEDUPLICATE_CLIENT_MODS_DIR, sync_mods.BASE_MODS_DIR)  #49 (line in Coconut source)
+    update_mods_from(deduplicate_mods.DEDUPLICATE_CLIENT_MODS_DIR, sync_mods.EXTRA_MODS_DIR)  #50 (line in Coconut source)
+
+    update_mods_from(deduplicate_mods.DEDUPLICATE_MODS_DIR, sync_mods.BASE_CLIENT_MODS_DIR)  #52 (line in Coconut source)
+    update_mods_from(deduplicate_mods.DEDUPLICATE_MODS_DIR, sync_mods.EXTRA_CLIENT_MODS_DIR)  #53 (line in Coconut source)
 
 
-if __name__ == "__main__":  #50 (line in Coconut source)
-    main()  #51 (line in Coconut source)
+
+if __name__ == "__main__":  #56 (line in Coconut source)
+    main()  #57 (line in Coconut source)

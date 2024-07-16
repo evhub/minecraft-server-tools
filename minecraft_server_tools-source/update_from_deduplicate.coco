@@ -46,6 +46,12 @@ def main():
     update_mods_from(deduplicate_mods.DEDUPLICATE_MODS_DIR, sync_mods.BASE_MODS_DIR)
     update_mods_from(deduplicate_mods.DEDUPLICATE_MODS_DIR, sync_mods.EXTRA_MODS_DIR)
 
+    update_mods_from(deduplicate_mods.DEDUPLICATE_CLIENT_MODS_DIR, sync_mods.BASE_MODS_DIR)
+    update_mods_from(deduplicate_mods.DEDUPLICATE_CLIENT_MODS_DIR, sync_mods.EXTRA_MODS_DIR)
+
+    update_mods_from(deduplicate_mods.DEDUPLICATE_MODS_DIR, sync_mods.BASE_CLIENT_MODS_DIR)
+    update_mods_from(deduplicate_mods.DEDUPLICATE_MODS_DIR, sync_mods.EXTRA_CLIENT_MODS_DIR)
+
 
 if __name__ == "__main__":
     main()
