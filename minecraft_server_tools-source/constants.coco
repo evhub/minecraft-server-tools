@@ -363,7 +363,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
     args = [
         # "-d64",  # OLD
         "-server",
-        "-Xss6M",
+        "-Xss4M",
         # "-XX:+AggressiveOpts",  # OLD
         "-XX:+UnlockExperimentalVMOptions",  # always
         "-XX:+UnlockDiagnosticVMOptions",  # brucethemoose
