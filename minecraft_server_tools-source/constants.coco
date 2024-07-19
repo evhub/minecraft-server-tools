@@ -227,6 +227,10 @@ MODLOADER = "Forge"
 WRONG_MODLOADERS = ["Fabric", "Quilt"]
 MAYBE_WRONG_MODLOADERS = ["NeoForge"]
 
+NO_COMPONENT_SPLIT_MODS = [
+    "project red",
+]
+
 COMPONENT_SEPS = [
     ("-", 2),
     ("(", 1),

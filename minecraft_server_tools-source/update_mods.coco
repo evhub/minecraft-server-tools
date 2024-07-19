@@ -37,6 +37,7 @@ from minecraft_server_tools.constants import (
     CURSEFORGE_API_RETRY_DELAY,
     AVOID_FILES_PUBLISHED_WITHIN,
     FIX_MOD_NAMES,
+    NO_COMPONENT_SPLIT_MODS,
     ver_join,
     ver_split,
 )
@@ -97,6 +98,12 @@ def get_mod_name(jar_name, silent=None, do_component_splitting=True):
         mod_name = mod_name.replace("  ", " ")
 
     mod_name = mod_name.strip().lower()
+
+    if mod_name in NO_COMPONENT_SPLIT_MODS:
+        if not silent:
+            print(f"Got mod name {mod_name!r}, but it's marked as no component splitting; redoing without component splitting.")
+        return get_mod_name(jar_name, do_component_splitting=False)
+
     if not silent:
         print(f"Determined mod name {mod_name!r} for jar {jar_name!r}.")
     return mod_name
