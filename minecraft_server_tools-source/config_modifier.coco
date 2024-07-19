@@ -6,19 +6,16 @@ from minecraft_server_tools.constants import SERVER_DIR
 
 JETPACK_CONFIG_DIR = os.path.join(SERVER_DIR, "config", "ironjetpacks", "jetpacks")
 
-JETPACK_SPEED_CONFIGS = [
-    "speedVertical",
-    "accelVertical",
-    "speedSideways",
-    "speedHoverAscend",
-    "speedHoverDescend",
-]
-
-JETPACK_SPRINT_SPEED_CONFIGS = [
-    "sprintSpeedMulti",
-    "sprintSpeedMultiVertical",
-    "sprintFuelMulti",
-]
+JETPACK_SPEED_CONFIGS = {
+    "speedVertical": 0.18,
+    "accelVertical": 0.1,
+    "speedSideways": 0.06,
+    "speedHoverAscend": 0.16,
+    "speedHoverDescend": 0.25,
+    "sprintSpeedMulti": 1,
+    "sprintSpeedMultiVertical": 1,
+    "sprintFuelMulti": 1,
+}
 
 
 def modify_jetpack_configs(speed_modifier=1.0):
@@ -28,13 +25,11 @@ def modify_jetpack_configs(speed_modifier=1.0):
         print(f"\tModifying {fname!r}...")
         with open(fpath, "r+") as fobj:
             cfg = json.load(fobj)
-            for speed in JETPACK_SPEED_CONFIGS:
-                cfg[speed] *= speed_modifier
-            for sprint_speed in JETPACK_SPRINT_SPEED_CONFIGS:
-                cfg[sprint_speed] = 1 + (cfg[sprint_speed] - 1) * speed_modifier
+            for speed, base in JETPACK_SPEED_CONFIGS.items():
+                cfg[speed] = base + (cfg[speed] - base) * speed_modifier
             fobj.seek(0)
             fobj.truncate()
-            json.dump(cfg, fobj)
+            json.dump(cfg, fobj, indent=4)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xab5c15e5
+# __coconut_hash__ = 0x7d502e2d
 
 # Compiled with Coconut version 3.1.1-post_dev2
 
@@ -63,27 +63,23 @@ from minecraft_server_tools.constants import SERVER_DIR  #4 (line in Coconut sou
 
 JETPACK_CONFIG_DIR = os.path.join(SERVER_DIR, "config", "ironjetpacks", "jetpacks")  #7 (line in Coconut source)
 
-JETPACK_SPEED_CONFIGS = ["speedVertical", "accelVertical", "speedSideways", "speedHoverAscend", "speedHoverDescend"]  #9 (line in Coconut source)
-
-JETPACK_SPRINT_SPEED_CONFIGS = ["sprintSpeedMulti", "sprintSpeedMultiVertical", "sprintFuelMulti"]  #17 (line in Coconut source)
+JETPACK_SPEED_CONFIGS = _coconut.dict((("speedVertical", 0.18), ("accelVertical", 0.1), ("speedSideways", 0.06), ("speedHoverAscend", 0.16), ("speedHoverDescend", 0.25), ("sprintSpeedMulti", 1), ("sprintSpeedMultiVertical", 1), ("sprintFuelMulti", 1)))  #9 (line in Coconut source)
 
 
-def modify_jetpack_configs(speed_modifier=1.0):  #24 (line in Coconut source)
-    print("Modifying jetpack speed by {_coconut_format_0!r}...".format(_coconut_format_0=(speed_modifier)))  #25 (line in Coconut source)
-    for fname in os.listdir(JETPACK_CONFIG_DIR):  #26 (line in Coconut source)
-        fpath = os.path.join(JETPACK_CONFIG_DIR, fname)  #27 (line in Coconut source)
-        print("\tModifying {_coconut_format_0!r}...".format(_coconut_format_0=(fname)))  #28 (line in Coconut source)
-        with open(fpath, "r+") as fobj:  #29 (line in Coconut source)
-            cfg = json.load(fobj)  #30 (line in Coconut source)
-            for speed in JETPACK_SPEED_CONFIGS:  #31 (line in Coconut source)
-                cfg[speed] *= speed_modifier  #32 (line in Coconut source)
-            for sprint_speed in JETPACK_SPRINT_SPEED_CONFIGS:  #33 (line in Coconut source)
-                cfg[sprint_speed] = 1 + (cfg[sprint_speed] - 1) * speed_modifier  #34 (line in Coconut source)
-            fobj.seek(0)  #35 (line in Coconut source)
-            fobj.truncate()  #36 (line in Coconut source)
-            json.dump(cfg, fobj)  #37 (line in Coconut source)
+def modify_jetpack_configs(speed_modifier=1.0):  #21 (line in Coconut source)
+    print("Modifying jetpack speed by {_coconut_format_0!r}...".format(_coconut_format_0=(speed_modifier)))  #22 (line in Coconut source)
+    for fname in os.listdir(JETPACK_CONFIG_DIR):  #23 (line in Coconut source)
+        fpath = os.path.join(JETPACK_CONFIG_DIR, fname)  #24 (line in Coconut source)
+        print("\tModifying {_coconut_format_0!r}...".format(_coconut_format_0=(fname)))  #25 (line in Coconut source)
+        with open(fpath, "r+") as fobj:  #26 (line in Coconut source)
+            cfg = json.load(fobj)  #27 (line in Coconut source)
+            for speed, base in JETPACK_SPEED_CONFIGS.items():  #28 (line in Coconut source)
+                cfg[speed] = base + (cfg[speed] - base) * speed_modifier  #29 (line in Coconut source)
+            fobj.seek(0)  #30 (line in Coconut source)
+            fobj.truncate()  #31 (line in Coconut source)
+            json.dump(cfg, fobj, indent=4)  #32 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #40 (line in Coconut source)
-    modify_jetpack_configs(0.1)  #41 (line in Coconut source)
+if __name__ == "__main__":  #35 (line in Coconut source)
+    modify_jetpack_configs(0.1)  #36 (line in Coconut source)
