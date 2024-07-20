@@ -390,13 +390,15 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         "-XX:+EnableDynamicAgentLoading",  # java warning
 
         "-XX:MaxGCPauseMillis=37",  # brucethemoose: 37; atm: 200; default: 200
-        "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
         "-XX:NmethodSweepActivity=1",  # brucethemoose: 1
-        "-XX:ReservedCodeCacheSize=400M",  # brucethemoose: 400M
-        "-XX:NonNMethodCodeHeapSize=12M",  # brucethemoose: 12M
-        "-XX:ProfiledCodeHeapSize=194M",  # brucethemoose: 194M
-        "-XX:NonProfiledCodeHeapSize=194M",  # brucethemoose: 194M
         "-XX:ThreadPriorityPolicy=1",  # brucethemoose: 1
+
+        "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
+        "-XX:ReservedCodeCacheSize=800M",  # brucethemoose: 400M
+        "-XX:NonNMethodCodeHeapSize=32M",  # brucethemoose: 12M
+        "-XX:ProfiledCodeHeapSize=256M",  # brucethemoose: 194M
+        "-XX:NonProfiledCodeHeapSize=512M",  # brucethemoose: 194M
+
         f"-XX:ConcGCThreads={psutil.cpu_count(logical=False)*3//8}",  # brucethemoose: real cores - 2; default: virtual cores * 5/8 // 4
     ]
     if not JPS_DEBUG:
