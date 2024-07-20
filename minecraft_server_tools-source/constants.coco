@@ -394,12 +394,14 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         "-XX:ThreadPriorityPolicy=1",  # brucethemoose: 1
 
         "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
-        "-XX:ReservedCodeCacheSize=800M",  # brucethemoose: 400M
-        "-XX:NonNMethodCodeHeapSize=32M",  # brucethemoose: 12M
-        "-XX:ProfiledCodeHeapSize=384M",  # brucethemoose: 194M
-        "-XX:NonProfiledCodeHeapSize=384M",  # brucethemoose: 194M
 
-        f"-XX:ConcGCThreads={psutil.cpu_count(logical=False)*3//8}",  # brucethemoose: real cores - 2; default: virtual cores * 5/8 // 4
+        # ReservedCodeCacheSize = NonNMethodCodeHeapSize + ProfiledCodeHeapSize + NonProfiledCodeHeapSize
+        "-XX:ReservedCodeCacheSize=1G",  # brucethemoose: 400M
+        "-XX:NonNMethodCodeHeapSize=24M",  # brucethemoose: 12M
+        "-XX:ProfiledCodeHeapSize=500M",  # brucethemoose: 194M
+        "-XX:NonProfiledCodeHeapSize=500M",  # brucethemoose: 194M
+
+        f"-XX:ConcGCThreads={psutil.cpu_count(logical=False)//2}",  # brucethemoose: real cores - 2; default: virtual cores * 5/8 // 4
     ]
     if not JPS_DEBUG:
         args += [
