@@ -63,10 +63,13 @@ def rm_mod(path):
     os.remove(path)
 
 
-def remove_mods_in_from(remove_mod_location_table, current_mod_location_table):
+def remove_mods_in_from(remove_mod_location_table, current_mod_location_table, dry_run=False):
     for mod, cur_path in current_mod_location_table.items():
         if mod in remove_mod_location_table and os.path.exists(cur_path):
-            rm_mod(cur_path)
+            if dry_run:
+                print(f"\tWARNING: Found mod that should be removed: {cur_path!r}")
+            else:
+                rm_mod(cur_path)
 
 
 def add_mod(from_path, to_path):
@@ -203,12 +206,12 @@ def main():
         (STAGING_MODS_DIR, STAGING_CLIENT_MODS_DIR),
     ):
         removed_server_mods = get_location_table_for(removed_mods_dir)
-        remove_mods_in_from(all_server_mods, removed_server_mods)
+        remove_mods_in_from(all_server_mods, removed_server_mods, dry_run=True)
 
         removed_client_mods = get_location_table_for(removed_client_mods_dir)
         remove_mods_in_from(removed_server_mods, removed_client_mods)
-        remove_mods_in_from(all_server_mods, removed_client_mods)
-        remove_mods_in_from(all_client_only_mods, removed_client_mods)
+        remove_mods_in_from(all_server_mods, removed_client_mods, dry_run=True)
+        remove_mods_in_from(all_client_only_mods, removed_client_mods, dry_run=True)
 
 
     binary_search = load_binary_search_file()
