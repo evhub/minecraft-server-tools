@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf0b4fd34
+# __coconut_hash__ = 0x95d6f22d
 
 # Compiled with Coconut version 3.1.1-post_dev2
 
@@ -147,7 +147,7 @@ IS_MOD_SERVER = "mod" in SERVER_DIR.lower()  #100 (line in Coconut source)
 if IS_MOD_SERVER:  #102 (line in Coconut source)
     CLIENT_RAM = "27G"  #103 (line in Coconut source)
 # SERVER_RAM = "9G"
-    SERVER_RAM = "18G"  #105 (line in Coconut source)
+    SERVER_RAM = "19G"  #105 (line in Coconut source)
 else:  #106 (line in Coconut source)
     CLIENT_RAM = SERVER_RAM = "5G"  #107 (line in Coconut source)
 
@@ -285,7 +285,7 @@ CLIENT_GC = "G1"  # brucethemoose: G1, Shenandoah, or ZGenerational  #363 (line 
 SERVER_GC = "G1"  # brucethemoose: G1 or Z  #364 (line in Coconut source)
 
 def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):  #366 (line in Coconut source)
-    args = ["-server", "-Xss4M", "-XX:+UnlockExperimentalVMOptions", "-XX:+UnlockDiagnosticVMOptions", "-XX:+AlwaysPreTouch", "-XX:+DisableExplicitGC", "-XX:+OptimizeStringConcat", "-XX:+UseCompressedOops", "-XX:+ScavengeBeforeFullGC", "-XX:+ParallelRefProcEnabled", "-XX:+AlwaysActAsServerClassMachine", "-XX:-DontCompileHugeMethods", "-XX:+UseFastUnorderedTimeStamps", "-XX:+UseCriticalJavaThreadPriority", "-XX:+EnableDynamicAgentLoading", "-XX:MaxGCPauseMillis=37", "-XX:NmethodSweepActivity=1", "-XX:ThreadPriorityPolicy=1", "-XX:MaxMetaspaceExpansion=64M", "-XX:ReservedCodeCacheSize=1G", "-XX:NonNMethodCodeHeapSize=24M", "-XX:ProfiledCodeHeapSize=500M", "-XX:NonProfiledCodeHeapSize=500M", "-XX:ConcGCThreads={_coconut_format_0}".format(_coconut_format_0=(psutil.cpu_count(logical=False) // 2))]  # brucethemoose: 12M  # brucethemoose  # default: True  # default: 5M  # always  # brucethemoose: 1  # brucethemoose: 194M  # brucethemoose: real cores - 2; default: virtual cores * 5/8 // 4  # aikar-flags  # default: True  # brucethemoose: 400M  # brucethemoose  # brucethemoose: 37; atm: 200; default: 200  # java warning  # always  # always  # brucethemoose  # brucethemoose: 1  # default: True  # brucethemoose  # brucethemoose  # brucethemoose: 194M  #367 (line in Coconut source)
+    args = ["-server", "-Xss4M", "-XX:+UnlockExperimentalVMOptions", "-XX:+UnlockDiagnosticVMOptions", "-XX:+AlwaysPreTouch", "-XX:+DisableExplicitGC", "-XX:+OptimizeStringConcat", "-XX:+UseCompressedOops", "-XX:+ScavengeBeforeFullGC", "-XX:+ParallelRefProcEnabled", "-XX:+AlwaysActAsServerClassMachine", "-XX:-DontCompileHugeMethods", "-XX:+UseFastUnorderedTimeStamps", "-XX:+UseCriticalJavaThreadPriority", "-XX:+EnableDynamicAgentLoading", "-XX:MaxGCPauseMillis=37", "-XX:NmethodSweepActivity=1", "-XX:ThreadPriorityPolicy=1", "-XX:MaxMetaspaceExpansion=64M", "-XX:ReservedCodeCacheSize=1G", "-XX:NonNMethodCodeHeapSize=24M", "-XX:ProfiledCodeHeapSize=500M", "-XX:NonProfiledCodeHeapSize=500M", "-XX:ConcGCThreads={_coconut_format_0}".format(_coconut_format_0=(psutil.cpu_count(logical=False) // 2))]  # default: True  # always  # brucethemoose: 1  # always  # brucethemoose: 194M  # brucethemoose  # brucethemoose  # brucethemoose: 194M  # default: True  # default: True  # java warning  # brucethemoose: 400M  # brucethemoose: real cores - 2; default: virtual cores * 5/8 // 4  # brucethemoose: 37; atm: 200; default: 200  # brucethemoose  # brucethemoose  # brucethemoose  # default: 5M  # brucethemoose: 12M  # always  # aikar-flags  # brucethemoose: 1  #367 (line in Coconut source)
     if not JPS_DEBUG:  #406 (line in Coconut source)
         args += ["-XX:+PerfDisableSharedMem",]  # aikar-flags, brucethemoose  #407 (line in Coconut source)
 
@@ -295,14 +295,14 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):  #366 (line in Coconut so
     if vm == "java":  #417 (line in Coconut source)
         args += ["-XX:+UseNUMA", "-XX:+UseVectorCmov", "-XX:MaxNodeLimit=240000", "-XX:NodeLimitFudgeFactor=8000"]  # brucethemoose: 240000  # hilltty-flags, brucethemoose: True; mukul1127: False  # brucethemoose: 8000  # brucethemoose  #418 (line in Coconut source)
     elif vm == "graal":  #424 (line in Coconut source)
-        args += ["-XX:+EagerJVMCI", "-Dgraal.TuneInlinerExploration=1"]  # brucethemoose  # brucethemoose: 1  #425 (line in Coconut source)
+        args += ["-XX:+EagerJVMCI", "-Dgraal.TuneInlinerExploration=1"]  # brucethemoose: 1  # brucethemoose  #425 (line in Coconut source)
     else:  #429 (line in Coconut source)
         raise ValueError("unknown java VM {_coconut_format_0!r}".format(_coconut_format_0=(vm)))  #430 (line in Coconut source)
 
     if gc == "G1":  #432 (line in Coconut source)
-        args += ["-XX:+UseG1GC", "-XX:AllocatePrefetchStyle=3", "-XX:SurvivorRatio=32", "-XX:InitiatingHeapOccupancyPercent=10", "-XX:MaxTenuringThreshold=1", "-XX:G1ReservePercent=20", "-XX:G1NewSizePercent=23", "-XX:G1HeapRegionSize=32M", "-XX:G1MixedGCCountTarget=3", "-XX:G1RSetUpdatingPauseTimePercent=0", "-XX:G1HeapWastePercent=20", "-XX:G1SATBBufferEnqueueingThresholdPercent=30", "-XX:G1ConcMarkStepDurationMillis=5.0", "-XX:GCTimeRatio=99", "-XX:G1ConcRSHotCardLimit=16", "-XX:G1ConcRefinementServiceIntervalMillis=150"]  # brucethemoose: 16  # brucethemoose: 5  # brucethemoose: 20; atm: 20; aikar: 15  # brucethemoose: 23; atm: 30; aikar: 40  # brucethemoose: 1; atm: 1; default: 15  # brucethemoose: 99  # brucethemoose: 3; atm: 4; default: 8  # atm: 32; brucethemoose: 32; default: 8  # brucethemoose: 150  # brucethemoose: 10; atm: 15; aikar: 20; default: 45  # brucethemoose: 20; atm: 5; default: 5  # brucethemoose: 0; atm: 5; default: 10  # brucethemoose: 16M; atm: 8M; aikar: 16M  # brucethemoose: 3  # brucethemoose: 30  #433 (line in Coconut source)
+        args += ["-XX:+UseG1GC", "-XX:AllocatePrefetchStyle=3", "-XX:SurvivorRatio=32", "-XX:InitiatingHeapOccupancyPercent=10", "-XX:MaxTenuringThreshold=1", "-XX:G1ReservePercent=20", "-XX:G1NewSizePercent=23", "-XX:G1HeapRegionSize=32M", "-XX:G1MixedGCCountTarget=3", "-XX:G1RSetUpdatingPauseTimePercent=0", "-XX:G1HeapWastePercent=20", "-XX:G1SATBBufferEnqueueingThresholdPercent=30", "-XX:G1ConcMarkStepDurationMillis=5.0", "-XX:GCTimeRatio=99", "-XX:G1ConcRSHotCardLimit=16", "-XX:G1ConcRefinementServiceIntervalMillis=150"]  # brucethemoose: 1; atm: 1; default: 15  # brucethemoose: 99  # brucethemoose: 30  # brucethemoose: 23; atm: 30; aikar: 40  # brucethemoose: 150  # brucethemoose: 10; atm: 15; aikar: 20; default: 45  # brucethemoose: 0; atm: 5; default: 10  # atm: 32; brucethemoose: 32; default: 8  # brucethemoose: 16  # brucethemoose: 3  # brucethemoose: 20; atm: 20; aikar: 15  # brucethemoose: 3; atm: 4; default: 8  # brucethemoose: 20; atm: 5; default: 5  # brucethemoose: 16M; atm: 8M; aikar: 16M  # brucethemoose: 5  #433 (line in Coconut source)
     elif gc == "Shenandoah":  #454 (line in Coconut source)
-        args += ["-XX:+UseShenandoahGC", "-XX:AllocatePrefetchStyle=1", "-XX:ShenandoahGCMode=iu", "-XX:ShenandoahGuaranteedGCInterval=1000000"]  # brucethemoose: 1  # brucethemoose: 1000000  # hilltty-flags  #455 (line in Coconut source)
+        args += ["-XX:+UseShenandoahGC", "-XX:AllocatePrefetchStyle=1", "-XX:ShenandoahGCMode=iu", "-XX:ShenandoahGuaranteedGCInterval=1000000"]  # brucethemoose: 1000000  # brucethemoose: 1  # hilltty-flags  #455 (line in Coconut source)
     elif gc == "Z":  #461 (line in Coconut source)
         args += ["-XX:+UseZGC", "-XX:AllocatePrefetchStyle=1", "-XX:+ZGenerational"]  # brucethemoose: 1  # brucethemoose (incompatible with -ZProactive; Java 21+)  #462 (line in Coconut source)
     else:  #468 (line in Coconut source)
