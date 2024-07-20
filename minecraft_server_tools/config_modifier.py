@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7d502e2d
+# __coconut_hash__ = 0x26e6c944
 
 # Compiled with Coconut version 3.1.1-post_dev2
 
@@ -63,7 +63,7 @@ from minecraft_server_tools.constants import SERVER_DIR  #4 (line in Coconut sou
 
 JETPACK_CONFIG_DIR = os.path.join(SERVER_DIR, "config", "ironjetpacks", "jetpacks")  #7 (line in Coconut source)
 
-JETPACK_SPEED_CONFIGS = _coconut.dict((("speedVertical", 0.18), ("accelVertical", 0.1), ("speedSideways", 0.06), ("speedHoverAscend", 0.16), ("speedHoverDescend", 0.25), ("sprintSpeedMulti", 1), ("sprintSpeedMultiVertical", 1), ("sprintFuelMulti", 1)))  #9 (line in Coconut source)
+JETPACK_SPEED_CONFIGS = _coconut.dict((("speedVertical", 0.18), ("accelVertical", 0.1), ("speedSideways", 0), ("speedHoverAscend", 0.16), ("speedHoverDescend", 0.25), ("sprintSpeedMulti", 1), ("sprintSpeedMultiVertical", 1), ("sprintFuelMulti", 1)))  #9 (line in Coconut source)
 
 
 def modify_jetpack_configs(speed_modifier=1.0):  #21 (line in Coconut source)

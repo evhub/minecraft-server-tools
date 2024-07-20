@@ -9,7 +9,7 @@ JETPACK_CONFIG_DIR = os.path.join(SERVER_DIR, "config", "ironjetpacks", "jetpack
 JETPACK_SPEED_CONFIGS = {
     "speedVertical": 0.18,
     "accelVertical": 0.1,
-    "speedSideways": 0.06,
+    "speedSideways": 0,
     "speedHoverAscend": 0.16,
     "speedHoverDescend": 0.25,
     "sprintSpeedMulti": 1,
