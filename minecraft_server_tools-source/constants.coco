@@ -378,9 +378,9 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         "-XX:+OptimizeStringConcat",  # default: True
         "-XX:+UseCompressedOops",  # default: True
         "-XX:+ScavengeBeforeFullGC",  # default: True
+        "-XX:+OmitStackTraceInFastThrow",  # default: True
         "-XX:+ParallelRefProcEnabled",  # aikar-flags
         # "-XX:+UseStringDeduplication",  # brucethemoose: False
-        # "-XX:+OmitStackTraceInFastThrow",
         # "-XX:+UseLargePagesInMetaspace",  # OLD
         # "-XX:-UseBiasedLocking",  # hilltty-flags, deprecated by java
         "-XX:+AlwaysActAsServerClassMachine",  # brucethemoose
@@ -401,7 +401,10 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         "-XX:ProfiledCodeHeapSize=500M",  # brucethemoose: 194M
         "-XX:NonProfiledCodeHeapSize=500M",  # brucethemoose: 194M
 
-        f"-XX:ConcGCThreads={psutil.cpu_count(logical=False)//2}",  # brucethemoose: real cores - 2; default: virtual cores * 5/8 // 4
+        "-XX:InitialCodeCacheSize=1G",  # = ReservedCodeCacheSize
+        "-XX:+UseCodeCacheFlushing",  # default: True
+
+        f"-XX:ConcGCThreads={psutil.cpu_count(logical=False)*5//8}",  # brucethemoose: real cores - 2; default: virtual cores * 5/8 // 4
     ]
     if not JPS_DEBUG:
         args += [
