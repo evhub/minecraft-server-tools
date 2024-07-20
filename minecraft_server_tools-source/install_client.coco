@@ -29,15 +29,22 @@ from minecraft_server_tools.constants import (
     MODPACK_NAME,
     START_ARGS,
     LAUNCHER_FILE,
+    BARREL_ROLL_MOD_PREFIX,
 )
 
 MINECRAFT_MODS_DIR = os.path.join(MINECRAFT_DIR, MODS_NAME)
 
 
-def sync_client_mods(source_dir):
+def sync_client_mods(source_dir, do_barrel_roll=True):
     print("\nInstalling mods...")
     all_client_mods = sync_mods.get_location_table_for(os.path.join(source_dir, MODS_NAME))
     all_client_mods.update(sync_mods.get_location_table_for(os.path.join(source_dir, CLIENT_MODS_NAME)))
+
+    if do_barrel_roll is False:
+        barrel_roll_mods = all_client_mods |> filter$(.startswith(BARREL_ROLL_MOD_PREFIX)) |> tuple
+        for barrel_roll_mod_name in barrel_roll_mods:
+            print(f"\tSkipping {barrel_roll_mod_name!r} (not doing a barrel roll)...")
+            del all_client_mods[barrel_roll_mod_name]
 
     current_client_mods = sync_mods.get_location_table_for(MINECRAFT_MODS_DIR)
 
@@ -170,7 +177,7 @@ def unzipped_mods():
         yield temp_dir
 
 
-def install_from_dir(source_dir, do_optional=False):
+def install_from_dir(source_dir, do_optional=False, do_barrel_roll=True):
     launch_server.clean_forge_jars(MINECRAFT_DIR)
 
     ensure_forge_client(source_dir)
@@ -180,7 +187,7 @@ def install_from_dir(source_dir, do_optional=False):
         if not set_jvm_args():
             raise OSError(f"Failed to automatically install forge; you'll need to run {FORGE_INSTALLER_JAR} manually.")
 
-    sync_client_mods(source_dir)
+    sync_client_mods(source_dir, do_barrel_roll)
     if "--only-mods" not in sys.argv:
         install_extras(source_dir, do_optional)
 
@@ -194,7 +201,7 @@ def install_from_server():
 
     if "--only-mods" not in sys.argv and "--no-zip" not in sys.argv:
         zip_mods()
-    return True
+    return True, True
 
 
 def ask_question(text, default):
@@ -219,9 +226,23 @@ def install_from_zip():
         print("Will install optional files.")
     else:
         print("Will NOT install optional files.")
+
+    if BARREL_ROLL_MOD_PREFIX is None:
+        do_barrel_roll = None
+    elif "--yes-barrel-roll" in sys.argv:
+        do_barrel_roll = True
+    elif "--no-barrel-roll" in sys.argv:
+        do_barrel_roll = False
+    else:
+        do_barrel_roll = ask_question("\nDo a barrel roll? [Y/n] ", True)
+    if do_barrel_roll:
+        print("Will do a barrel roll.")
+    else:
+        print("Will NOT do a barrel roll.")
+
     with unzipped_mods() as temp_dir:
-        install_from_dir(temp_dir, do_optional)
-    return do_optional
+        install_from_dir(temp_dir, do_optional=, do_barrel_roll=)
+    return do_optional, do_barrel_roll
 
 
 def launch_minecraft():
@@ -237,17 +258,17 @@ def launch_minecraft():
 def main():
     if os.path.exists(SERVER_DIR):
         print("\nInstalling from server...")
-        do_optional = install_from_server()
+        do_optional, do_barrel_roll = install_from_server()
     elif os.path.exists(MOD_ZIP_PATH):
         if "downloads" in MOD_ZIP_PATH.lower():
             print("WARNING: Using downloaded Minecraft Mods.zip instead of synchronized version; you will not get updates automatically.")
         print("\nInstalling from zipfile...")
-        do_optional = install_from_zip()
+        do_optional, do_barrel_roll = install_from_zip()
     else:
         raise IOError("Could not find files for install (make sure you have the 'Minecraft Mods' folder in your OneDrive).")
     if "--launch" in sys.argv:
         launch_minecraft()
-    return do_optional
+    return do_optional, do_barrel_roll
 
 
 if __name__ == "__main__":

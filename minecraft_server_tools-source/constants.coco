@@ -397,7 +397,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         "-XX:ProfiledCodeHeapSize=194M",  # brucethemoose: 194M
         "-XX:NonProfiledCodeHeapSize=194M",  # brucethemoose: 194M
         "-XX:ThreadPriorityPolicy=1",  # brucethemoose: 1
-        # f"-XX:ConcGCThreads={psutil.cpu_count(logical=False)*3//8}",  # brucethemoose: real cores - 2; default: virtual cores * 5/8 // 4
+        f"-XX:ConcGCThreads={psutil.cpu_count(logical=False)*3//8}",  # brucethemoose: real cores - 2; default: virtual cores * 5/8 // 4
     ]
     if not JPS_DEBUG:
         args += [
@@ -514,6 +514,8 @@ EXTRA_INSTALL_FILES += [
     README_FILE,
     FORGE_INSTALLER_JAR,
 ]
+
+BARREL_ROLL_MOD_PREFIX = "do_a_barrel_roll"
 
 
 # Make launcher constants

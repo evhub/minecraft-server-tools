@@ -33,13 +33,15 @@ def get_custom_launcher_path():
     ))
 
 
-def make_launcher_file(do_optional=False):
+def make_launcher_file(do_optional=False, do_barrel_roll=True):
     """Create the launcher script."""
     print("\nCreating custom launcher...")
     launcher_path = get_custom_launcher_path()
     install_client_args = ["--launch", "--no-zip"]
     if do_optional is not None:
         install_client_args += ["--yes-optional" if do_optional else "--no-optional"]
+    if do_barrel_roll is not None:
+        install_client_args += ["--yes-barrel-roll" if do_barrel_roll else "--no-barrel-roll"]
     contents = f"""
 cd "{ROOT_DIR}"
 git pull
@@ -54,8 +56,8 @@ py -3 -m minecraft_server_tools.install_client {" ".join(install_client_args)}
 
 
 def main():
-    install_client.main()
-    make_launcher_file()
+    do_optional, do_barrel_roll = install_client.main()
+    make_launcher_file(do_optional=False, do_barrel_roll=do_barrel_roll)
 
 
 if __name__ == "__main__":

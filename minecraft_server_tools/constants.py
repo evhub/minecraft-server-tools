@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x41aab5c0
+# __coconut_hash__ = 0x37b1b5ee
 
 # Compiled with Coconut version 3.1.1-post_dev2
 
@@ -285,7 +285,7 @@ CLIENT_GC = "G1"  # brucethemoose: G1, Shenandoah, or ZGenerational  #363 (line 
 SERVER_GC = "G1"  # brucethemoose: G1 or Z  #364 (line in Coconut source)
 
 def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):  #366 (line in Coconut source)
-    args = ["-server", "-Xss4M", "-XX:+UnlockExperimentalVMOptions", "-XX:+UnlockDiagnosticVMOptions", "-XX:+AlwaysPreTouch", "-XX:+DisableExplicitGC", "-XX:+OptimizeStringConcat", "-XX:+UseCompressedOops", "-XX:+ScavengeBeforeFullGC", "-XX:+ParallelRefProcEnabled", "-XX:+AlwaysActAsServerClassMachine", "-XX:-DontCompileHugeMethods", "-XX:+UseFastUnorderedTimeStamps", "-XX:+UseCriticalJavaThreadPriority", "-XX:+EnableDynamicAgentLoading", "-XX:MaxGCPauseMillis=37", "-XX:MaxMetaspaceExpansion=64M", "-XX:NmethodSweepActivity=1", "-XX:ReservedCodeCacheSize=400M", "-XX:NonNMethodCodeHeapSize=12M", "-XX:ProfiledCodeHeapSize=194M", "-XX:NonProfiledCodeHeapSize=194M", "-XX:ThreadPriorityPolicy=1"]  # brucethemoose: 400M  # aikar-flags  # brucethemoose  # brucethemoose: 1  # always  # brucethemoose: 194M  # default: True  # brucethemoose  # brucethemoose  # brucethemoose: 1  # default: 5M  # always  # brucethemoose  # default: True  # java warning  # always  # default: True  # brucethemoose: 194M  # brucethemoose: 37; atm: 200; default: 200  # brucethemoose: 12M  # brucethemoose  #367 (line in Coconut source)
+    args = ["-server", "-Xss4M", "-XX:+UnlockExperimentalVMOptions", "-XX:+UnlockDiagnosticVMOptions", "-XX:+AlwaysPreTouch", "-XX:+DisableExplicitGC", "-XX:+OptimizeStringConcat", "-XX:+UseCompressedOops", "-XX:+ScavengeBeforeFullGC", "-XX:+ParallelRefProcEnabled", "-XX:+AlwaysActAsServerClassMachine", "-XX:-DontCompileHugeMethods", "-XX:+UseFastUnorderedTimeStamps", "-XX:+UseCriticalJavaThreadPriority", "-XX:+EnableDynamicAgentLoading", "-XX:MaxGCPauseMillis=37", "-XX:MaxMetaspaceExpansion=64M", "-XX:NmethodSweepActivity=1", "-XX:ReservedCodeCacheSize=400M", "-XX:NonNMethodCodeHeapSize=12M", "-XX:ProfiledCodeHeapSize=194M", "-XX:NonProfiledCodeHeapSize=194M", "-XX:ThreadPriorityPolicy=1", "-XX:ConcGCThreads={_coconut_format_0}".format(_coconut_format_0=(psutil.cpu_count(logical=False) * 3 // 8))]  # always  # brucethemoose: 400M  # brucethemoose: 1  # brucethemoose: 194M  # brucethemoose: 12M  # brucethemoose  # brucethemoose  # default: True  # brucethemoose: real cores - 2; default: virtual cores * 5/8 // 4  # brucethemoose  # default: 5M  # always  # brucethemoose  # brucethemoose  # brucethemoose: 194M  # brucethemoose: 37; atm: 200; default: 200  # always  # aikar-flags  # brucethemoose: 1  # default: True  # default: True  # java warning  #367 (line in Coconut source)
     if not JPS_DEBUG:  #402 (line in Coconut source)
         args += ["-XX:+PerfDisableSharedMem",]  # aikar-flags, brucethemoose  #403 (line in Coconut source)
 
@@ -293,16 +293,16 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):  #366 (line in Coconut so
         args += ["-XX:+UseLargePages", "-XX:LargePageSizeInBytes=2M"]  # hilltty-flags, brucethemoose  # hilltty-flags, brucethemoose  #408 (line in Coconut source)
 
     if vm == "java":  #413 (line in Coconut source)
-        args += ["-XX:+UseNUMA", "-XX:+UseVectorCmov", "-XX:MaxNodeLimit=240000", "-XX:NodeLimitFudgeFactor=8000"]  # brucethemoose: 240000  # brucethemoose  # brucethemoose: 8000  # hilltty-flags, brucethemoose: True; mukul1127: False  #414 (line in Coconut source)
+        args += ["-XX:+UseNUMA", "-XX:+UseVectorCmov", "-XX:MaxNodeLimit=240000", "-XX:NodeLimitFudgeFactor=8000"]  # brucethemoose  # hilltty-flags, brucethemoose: True; mukul1127: False  # brucethemoose: 8000  # brucethemoose: 240000  #414 (line in Coconut source)
     elif vm == "graal":  #420 (line in Coconut source)
-        args += ["-XX:+EagerJVMCI", "-Dgraal.TuneInlinerExploration=1"]  # brucethemoose  # brucethemoose: 1  #421 (line in Coconut source)
+        args += ["-XX:+EagerJVMCI", "-Dgraal.TuneInlinerExploration=1"]  # brucethemoose: 1  # brucethemoose  #421 (line in Coconut source)
     else:  #425 (line in Coconut source)
         raise ValueError("unknown java VM {_coconut_format_0!r}".format(_coconut_format_0=(vm)))  #426 (line in Coconut source)
 
     if gc == "G1":  #428 (line in Coconut source)
-        args += ["-XX:+UseG1GC", "-XX:AllocatePrefetchStyle=3", "-XX:SurvivorRatio=32", "-XX:InitiatingHeapOccupancyPercent=10", "-XX:MaxTenuringThreshold=1", "-XX:G1ReservePercent=20", "-XX:G1NewSizePercent=23", "-XX:G1HeapRegionSize=32M", "-XX:G1MixedGCCountTarget=3", "-XX:G1RSetUpdatingPauseTimePercent=0", "-XX:G1HeapWastePercent=20", "-XX:G1SATBBufferEnqueueingThresholdPercent=30", "-XX:G1ConcMarkStepDurationMillis=5.0", "-XX:GCTimeRatio=99", "-XX:G1ConcRSHotCardLimit=16", "-XX:G1ConcRefinementServiceIntervalMillis=150"]  # brucethemoose: 20; atm: 5; default: 5  # brucethemoose: 3; atm: 4; default: 8  # brucethemoose: 23; atm: 30; aikar: 40  # brucethemoose: 16  # brucethemoose: 16M; atm: 8M; aikar: 16M  # brucethemoose: 30  # brucethemoose: 1; atm: 1; default: 15  # atm: 32; brucethemoose: 32; default: 8  # brucethemoose: 3  # brucethemoose: 99  # brucethemoose: 10; atm: 15; aikar: 20; default: 45  # brucethemoose: 150  # brucethemoose: 0; atm: 5; default: 10  # brucethemoose: 20; atm: 20; aikar: 15  # brucethemoose: 5  #429 (line in Coconut source)
+        args += ["-XX:+UseG1GC", "-XX:AllocatePrefetchStyle=3", "-XX:SurvivorRatio=32", "-XX:InitiatingHeapOccupancyPercent=10", "-XX:MaxTenuringThreshold=1", "-XX:G1ReservePercent=20", "-XX:G1NewSizePercent=23", "-XX:G1HeapRegionSize=32M", "-XX:G1MixedGCCountTarget=3", "-XX:G1RSetUpdatingPauseTimePercent=0", "-XX:G1HeapWastePercent=20", "-XX:G1SATBBufferEnqueueingThresholdPercent=30", "-XX:G1ConcMarkStepDurationMillis=5.0", "-XX:GCTimeRatio=99", "-XX:G1ConcRSHotCardLimit=16", "-XX:G1ConcRefinementServiceIntervalMillis=150"]  # brucethemoose: 20; atm: 5; default: 5  # brucethemoose: 99  # brucethemoose: 0; atm: 5; default: 10  # brucethemoose: 5  # brucethemoose: 16M; atm: 8M; aikar: 16M  # brucethemoose: 23; atm: 30; aikar: 40  # brucethemoose: 30  # brucethemoose: 3; atm: 4; default: 8  # brucethemoose: 20; atm: 20; aikar: 15  # atm: 32; brucethemoose: 32; default: 8  # brucethemoose: 3  # brucethemoose: 16  # brucethemoose: 10; atm: 15; aikar: 20; default: 45  # brucethemoose: 150  # brucethemoose: 1; atm: 1; default: 15  #429 (line in Coconut source)
     elif gc == "Shenandoah":  #450 (line in Coconut source)
-        args += ["-XX:+UseShenandoahGC", "-XX:AllocatePrefetchStyle=1", "-XX:ShenandoahGCMode=iu", "-XX:ShenandoahGuaranteedGCInterval=1000000"]  # brucethemoose: 1000000  # hilltty-flags  # brucethemoose: 1  #451 (line in Coconut source)
+        args += ["-XX:+UseShenandoahGC", "-XX:AllocatePrefetchStyle=1", "-XX:ShenandoahGCMode=iu", "-XX:ShenandoahGuaranteedGCInterval=1000000"]  # brucethemoose: 1  # brucethemoose: 1000000  # hilltty-flags  #451 (line in Coconut source)
     elif gc == "Z":  #457 (line in Coconut source)
         args += ["-XX:+UseZGC", "-XX:AllocatePrefetchStyle=1", "-XX:+ZGenerational"]  # brucethemoose: 1  # brucethemoose (incompatible with -ZProactive; Java 21+)  #458 (line in Coconut source)
     else:  #464 (line in Coconut source)
@@ -350,20 +350,22 @@ README_FILE = "README.txt"  #511 (line in Coconut source)
 
 EXTRA_INSTALL_FILES += [README_FILE, FORGE_INSTALLER_JAR]  #513 (line in Coconut source)
 
+BARREL_ROLL_MOD_PREFIX = "do_a_barrel_roll"  #518 (line in Coconut source)
+
 
 # Make launcher constants
 
-LAUNCHER_FILE = first_that_exists(["~/Applications/Minecraft.app", "/Applications/Minecraft.app", r"C:\Program Files (x86)\Minecraft Launcher\MinecraftLauncher.exe", r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Minecraft Launcher\Minecraft Launcher.ink", r"C:\Users\Public\Desktop\Minecraft Launcher.ink"])  #521 (line in Coconut source)
+LAUNCHER_FILE = first_that_exists(["~/Applications/Minecraft.app", "/Applications/Minecraft.app", r"C:\Program Files (x86)\Minecraft Launcher\MinecraftLauncher.exe", r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Minecraft Launcher\Minecraft Launcher.ink", r"C:\Users\Public\Desktop\Minecraft Launcher.ink"])  #523 (line in Coconut source)
 
-MODPACK_NAME = "Evan's Modded Minecraft"  #529 (line in Coconut source)
+MODPACK_NAME = "Evan's Modded Minecraft"  #531 (line in Coconut source)
 
 
 # Searchable mods constants
 
-SEARCHABLE_MODS_NAME = MODS_NAME + "-searchable"  #534 (line in Coconut source)
-SEARCHABLE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-searchable"  #535 (line in Coconut source)
+SEARCHABLE_MODS_NAME = MODS_NAME + "-searchable"  #536 (line in Coconut source)
+SEARCHABLE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-searchable"  #537 (line in Coconut source)
 
 
 # Binary search constants
 
-BINARY_SEARCH_FILE = os.path.join(SERVER_DIR, "binary_search.json")  #540 (line in Coconut source)
+BINARY_SEARCH_FILE = os.path.join(SERVER_DIR, "binary_search.json")  #542 (line in Coconut source)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc782eb45
+# __coconut_hash__ = 0xf9b014c2
 
 # Compiled with Coconut version 3.1.1-post_dev2
 
@@ -80,32 +80,34 @@ def get_custom_launcher_path():  #13 (line in Coconut source)
 
 
 
-def make_launcher_file(do_optional=False):  #36 (line in Coconut source)
+def make_launcher_file(do_optional=False, do_barrel_roll=True):  #36 (line in Coconut source)
     """Create the launcher script."""  #37 (line in Coconut source)
     print("\nCreating custom launcher...")  #38 (line in Coconut source)
     launcher_path = get_custom_launcher_path()  #39 (line in Coconut source)
     install_client_args = ["--launch", "--no-zip"]  #40 (line in Coconut source)
     if do_optional is not None:  #41 (line in Coconut source)
         install_client_args += ["--yes-optional" if do_optional else "--no-optional",]  #42 (line in Coconut source)
+    if do_barrel_roll is not None:  #43 (line in Coconut source)
+        install_client_args += ["--yes-barrel-roll" if do_barrel_roll else "--no-barrel-roll",]  #44 (line in Coconut source)
     contents = """
 cd "{_coconut_format_0}"
 git pull
 py -3 -m pip install -Ue .
 py -3 -m minecraft_server_tools.install_client {_coconut_format_1}
-    """.format(_coconut_format_0=(ROOT_DIR), _coconut_format_1=(" ".join(install_client_args))).strip()  #48 (line in Coconut source)
-    with open(launcher_path, "w") as new_launcher_file:  #49 (line in Coconut source)
-        new_launcher_file.write(contents)  #50 (line in Coconut source)
-    if not WINDOWS:  #51 (line in Coconut source)
-        launch_server.run_cmd(["chmod", "+x", launcher_path])  #52 (line in Coconut source)
-    print("\tWrote custom launcher to: {_coconut_format_0}".format(_coconut_format_0=(launcher_path)))  #53 (line in Coconut source)
+    """.format(_coconut_format_0=(ROOT_DIR), _coconut_format_1=(" ".join(install_client_args))).strip()  #50 (line in Coconut source)
+    with open(launcher_path, "w") as new_launcher_file:  #51 (line in Coconut source)
+        new_launcher_file.write(contents)  #52 (line in Coconut source)
+    if not WINDOWS:  #53 (line in Coconut source)
+        launch_server.run_cmd(["chmod", "+x", launcher_path])  #54 (line in Coconut source)
+    print("\tWrote custom launcher to: {_coconut_format_0}".format(_coconut_format_0=(launcher_path)))  #55 (line in Coconut source)
 
 
 
-def main():  #56 (line in Coconut source)
-    install_client.main()  #57 (line in Coconut source)
-    make_launcher_file()  #58 (line in Coconut source)
+def main():  #58 (line in Coconut source)
+    do_optional, do_barrel_roll = install_client.main()  #59 (line in Coconut source)
+    make_launcher_file(do_optional=False, do_barrel_roll=do_barrel_roll)  #60 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #61 (line in Coconut source)
-    main()  #62 (line in Coconut source)
+if __name__ == "__main__":  #63 (line in Coconut source)
+    main()  #64 (line in Coconut source)
