@@ -396,11 +396,11 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
 
         # ReservedCodeCacheSize = NonNMethodCodeHeapSize + ProfiledCodeHeapSize + NonProfiledCodeHeapSize
-        "-XX:ReservedCodeCacheSize=600M",  # brucethemoose: 400M
-        "-XX:NonNMethodCodeHeapSize=16M",  # brucethemoose: 12M
-        "-XX:ProfiledCodeHeapSize=292M",  # brucethemoose: 194M
-        "-XX:NonProfiledCodeHeapSize=292M",  # brucethemoose: 194M
-        "-XX:InitialCodeCacheSize=600M",  # = ReservedCodeCacheSize
+        "-XX:ReservedCodeCacheSize=400M",  # brucethemoose: 400M
+        "-XX:NonNMethodCodeHeapSize=12M",  # brucethemoose: 12M
+        "-XX:ProfiledCodeHeapSize=194M",  # brucethemoose: 194M
+        "-XX:NonProfiledCodeHeapSize=194M",  # brucethemoose: 194M
+        "-XX:InitialCodeCacheSize=400M",  # = ReservedCodeCacheSize
 
         f"-XX:ParallelGCThreads={psutil.cpu_count(logical=False) - 2}",  # default: virtual * 5/8
         # f"-XX:ConcGCThreads={psutil.cpu_count(logical=False)*5//8}",  # brucethemoose: real cores - 2; default: parallel / 4
