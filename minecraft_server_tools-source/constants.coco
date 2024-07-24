@@ -100,7 +100,7 @@ DOWNLOADS_PATH = first_that_exists([
 IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 
 if IS_MOD_SERVER:
-    CLIENT_RAM = "29G"
+    CLIENT_RAM = "30G"
     SERVER_RAM = "24G"
 else:
     CLIENT_RAM = SERVER_RAM = "5G"
@@ -400,7 +400,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         "-XX:NonNMethodCodeHeapSize=12M",  # brucethemoose: 12M
         "-XX:ProfiledCodeHeapSize=194M",  # brucethemoose: 194M
         "-XX:NonProfiledCodeHeapSize=194M",  # brucethemoose: 194M
-        "-XX:InitialCodeCacheSize=400M",  # = ReservedCodeCacheSize
+        "-XX:CodeCacheExpansionSize=1M",
 
         f"-XX:ParallelGCThreads={psutil.cpu_count(logical=False) - 2}",  # default: virtual * 5/8
         # f"-XX:ConcGCThreads={psutil.cpu_count(logical=False)*5//8}",  # brucethemoose: real cores - 2; default: ParallelGCThreads / 4
