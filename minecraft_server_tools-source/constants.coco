@@ -401,10 +401,9 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         "-XX:ProfiledCodeHeapSize=194M",  # brucethemoose: 194M
         "-XX:NonProfiledCodeHeapSize=194M",  # brucethemoose: 194M
         "-XX:CodeCacheExpansionSize=2M",  # default: 64K
-        "-XX:CodeCacheMinimumFreeSpace=16M",  # default: 500K
+        "-XX:CodeCacheMinimumFreeSpace=8M",  # default: 500K
 
         f"-XX:ParallelGCThreads={psutil.cpu_count(logical=False) - 2}",  # default: virtual * 5/8
-        # f"-XX:ConcGCThreads={psutil.cpu_count(logical=False)*5//8}",  # brucethemoose: real cores - 2; default: ParallelGCThreads / 4
     ]
     if not JPS_DEBUG:
         args += [
@@ -435,6 +434,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
     if gc == "G1":
         args += [
             "-XX:+UseG1GC",
+            f"-XX:ConcGCThreads={psutil.cpu_count(logical=False) - 2}",  # brucethemoose: real cores - 2; default: ParallelGCThreads / 4
             "-XX:AllocatePrefetchStyle=3",  # brucethemoose: 3
             # "-XX:TargetSurvivorRatio=90",  # atm: 32; default: 50
             "-XX:SurvivorRatio=32",  # atm: 32; brucethemoose: 32; default: 8
