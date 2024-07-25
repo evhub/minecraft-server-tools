@@ -454,6 +454,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
             "-XX:G1ConcRefinementServiceIntervalMillis=150",  # brucethemoose: 150
         ]
     elif gc == "Shenandoah":
+        assert vm != "graal", "graal doesn't yet support Shenandoah"
         args += [
             "-XX:+UseShenandoahGC",
             "-XX:AllocatePrefetchStyle=1",  # brucethemoose: 1
