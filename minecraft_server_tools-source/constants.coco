@@ -401,7 +401,6 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         "-XX:ProfiledCodeHeapSize=194M",  # brucethemoose: 194M
         "-XX:NonProfiledCodeHeapSize=194M",  # brucethemoose: 194M
         "-XX:CodeCacheExpansionSize=2M",  # default: 64K
-        "-XX:CodeCacheMinimumFreeSpace=8M",  # default: 500K
 
         f"-XX:ParallelGCThreads={psutil.cpu_count(logical=False) - 2}",  # default: virtual * 5/8
     ]
