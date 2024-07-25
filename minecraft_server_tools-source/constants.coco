@@ -101,7 +101,7 @@ IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 
 if IS_MOD_SERVER:
     CLIENT_RAM = "29G"
-    SERVER_RAM = "26G"
+    SERVER_RAM = "28G"
 else:
     CLIENT_RAM = SERVER_RAM = "5G"
 
@@ -362,6 +362,7 @@ CLIENT_GC = "G1"  # brucethemoose: G1, Shenandoah, or ZGenerational
 SERVER_GC = "Z"  # brucethemoose: G1 or Z
 
 def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
+    code_cache_mul = 3 if gc == "G1" else 1
     args = [
         # "-d64",  # OLD
         "-server",  # default: True
@@ -396,13 +397,15 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
 
         # ReservedCodeCacheSize = NonNMethodCodeHeapSize + ProfiledCodeHeapSize + NonProfiledCodeHeapSize
-        "-XX:ReservedCodeCacheSize=400M",  # brucethemoose: 400M
-        "-XX:NonNMethodCodeHeapSize=12M",  # brucethemoose: 12M
-        "-XX:ProfiledCodeHeapSize=194M",  # brucethemoose: 194M
-        "-XX:NonProfiledCodeHeapSize=194M",  # brucethemoose: 194M
-        "-XX:CodeCacheExpansionSize=2M",  # default: 64K
+        f"-XX:ReservedCodeCacheSize={400*code_cache_mul}M",  # brucethemoose: 400M
+        f"-XX:NonNMethodCodeHeapSize={12*code_cache_mul}M",  # brucethemoose: 12M
+        f"-XX:ProfiledCodeHeapSize={194*code_cache_mul}M",  # brucethemoose: 194M
+        f"-XX:NonProfiledCodeHeapSize={194*code_cache_mul}M",  # brucethemoose: 194M
+        f"-XX:InitialCodeCacheSize={200*code_cache_mul}M",  # default: 160K
+        f"-XX:CodeCacheExpansionSize={1*code_cache_mul}M",  # default: 64K
 
-        f"-XX:ParallelGCThreads={psutil.cpu_count(logical=False) - 2}",  # default: virtual * 5/8
+        # f"-XX:ParallelGCThreads={psutil.cpu_count(logical=False) - 2}",  # brucethemoose: default; default: virtual * 5/8
+        # f"-XX:ConcGCThreads={psutil.cpu_count(logical=False) - 2}",  # brucethemoose: real - 2; default: ParallelGCThreads / 4
     ]
     if not JPS_DEBUG:
         args += [
@@ -433,8 +436,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
     if gc == "G1":
         args += [
             "-XX:+UseG1GC",
-            f"-XX:ConcGCThreads={psutil.cpu_count(logical=False) - 2}",  # brucethemoose: real cores - 2; default: ParallelGCThreads / 4
-            "-XX:AllocatePrefetchStyle=3",  # brucethemoose: 3
+            "-XX:AllocatePrefetchStyle=3",  # brucethemoose: 3; default: 1
             # "-XX:TargetSurvivorRatio=90",  # atm: 32; default: 50
             "-XX:SurvivorRatio=32",  # atm: 32; brucethemoose: 32; default: 8
             "-XX:InitiatingHeapOccupancyPercent=10",  # brucethemoose: 10; atm: 15; aikar: 20; default: 45
@@ -447,9 +449,9 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
             # "-XX:G1MixedGCLiveThresholdPercent=35",  # atm: 90; default: 85
             # "-XX:G1MaxNewSizePercent=60",  # atm: 40; aikar: 50; default: 60
             "-XX:G1HeapWastePercent=20",  # brucethemoose: 20; atm: 5; default: 5
-            "-XX:G1SATBBufferEnqueueingThresholdPercent=30",  # brucethemoose: 30
-            "-XX:G1ConcMarkStepDurationMillis=5.0",  # brucethemoose: 5
-            "-XX:GCTimeRatio=99",  # brucethemoose: 99
+            "-XX:G1SATBBufferEnqueueingThresholdPercent=30",  # brucethemoose: 30; default: 60
+            "-XX:G1ConcMarkStepDurationMillis=5.0",  # brucethemoose: 5; default: 10
+            "-XX:GCTimeRatio=99",  # brucethemoose: 99; default: 12
             "-XX:G1ConcRSHotCardLimit=16",  # brucethemoose: 16
             "-XX:G1ConcRefinementServiceIntervalMillis=150",  # brucethemoose: 150
         ]
@@ -457,14 +459,14 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         assert vm != "graal", "graal doesn't yet support Shenandoah"
         args += [
             "-XX:+UseShenandoahGC",
-            "-XX:AllocatePrefetchStyle=1",  # brucethemoose: 1
+            "-XX:AllocatePrefetchStyle=1",  # brucethemoose: 1; default: 1
             "-XX:ShenandoahGCMode=iu",  # hilltty-flags
             "-XX:ShenandoahGuaranteedGCInterval=1000000",  # brucethemoose: 1000000
         ]
     elif gc == "Z":
         args += [
             "-XX:+UseZGC",
-            "-XX:AllocatePrefetchStyle=1",  # brucethemoose: 1
+            "-XX:AllocatePrefetchStyle=1",  # brucethemoose: 1; default: 1
             # "-XX:-ZProactive",  # brucethemoose (incompatible with +ZGenerational)
             "-XX:+ZGenerational",  # brucethemoose (incompatible with -ZProactive; Java 21+)
         ]
