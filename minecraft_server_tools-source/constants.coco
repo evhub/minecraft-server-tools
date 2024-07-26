@@ -404,7 +404,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         f"-XX:InitialCodeCacheSize={200*code_cache_mul}M",  # default: 160K
         f"-XX:CodeCacheExpansionSize={1*code_cache_mul}M",  # default: 64K
 
-        # f"-XX:ParallelGCThreads={psutil.cpu_count(logical=False) - 2}",  # brucethemoose: default; default: virtual * 5/8
+        # f"-XX:ParallelGCThreads={psutil.cpu_count(logical=False)}",  # brucethemoose: default; default: virtual * 5/8
         # f"-XX:ConcGCThreads={psutil.cpu_count(logical=False) - 2}",  # brucethemoose: real - 2; default: ParallelGCThreads / 4
     ]
     if not JPS_DEBUG:
