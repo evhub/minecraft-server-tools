@@ -24,6 +24,7 @@ If I directed you here to install Minecraft mods, you'll need to follow the foll
 10. The game should take ~10 minutes to boot, and if minimized may require you to tab back occasionally to keep it booting.
     1.  If it freezes, just give it a bit of time; it's probably just loading. If it crashes though when you tab out, you might need to try not tabbing away from it.
 11. Once booted, select "Multiplayer" and join "Evan's Mod Server". Joining the server should take ~5 minutes.
+    1.  I recommend not tabbing away from Minecraft while it's joining the server.
 
 ## Additional performance optimizations
 
