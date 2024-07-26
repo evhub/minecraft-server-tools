@@ -405,13 +405,18 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         f"-XX:CodeCacheExpansionSize={1*code_cache_mul}M",  # default: 64K
 
         # f"-XX:ParallelGCThreads={psutil.cpu_count(logical=False)}",  # brucethemoose: default; default: virtual * 5/8
-        # f"-XX:ConcGCThreads={psutil.cpu_count(logical=False) - 2}",  # brucethemoose: real - 2; default: ParallelGCThreads / 4
+        f"-XX:ConcGCThreads={
+            max(
+                min(psutil.cpu_count(logical=False) - 2, 6),
+                psutil.cpu_count(logical=False) // 4,
+                psutil.cpu_count()*5//8 // 4,
+            )
+        }",  # brucethemoose: real - 2; default: ParallelGCThreads / 4
     ]
     if not JPS_DEBUG:
         args += [
             "-XX:+PerfDisableSharedMem",  # aikar-flags, brucethemoose
         ]
-
     if large_pages:
         args += [
             "-XX:+UseLargePages",  # hilltty-flags, brucethemoose
