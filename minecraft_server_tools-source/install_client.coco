@@ -187,8 +187,9 @@ def install_from_dir(source_dir, do_optional=False, do_barrel_roll=True):
         if not set_jvm_args():
             raise OSError(f"Failed to automatically install forge; you'll need to run {FORGE_INSTALLER_JAR} manually.")
 
-    sync_client_mods(source_dir, do_barrel_roll)
-    if "--only-mods" not in sys.argv:
+    if "--no-mods" in sys.argv:
+        sync_client_mods(source_dir, do_barrel_roll)
+    if "--no-files" in sys.argv:
         install_extras(source_dir, do_optional)
 
 
@@ -199,7 +200,7 @@ def install_from_server():
 
     install_from_dir(SERVER_DIR, do_optional=True)
 
-    if "--only-mods" not in sys.argv and "--no-zip" not in sys.argv:
+    if not any(x in sys.argv for x in ("--no-zip", "--no-mods", "--no-files")):
         zip_mods()
     return True, True
 
