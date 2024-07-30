@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x63233789
+# __coconut_hash__ = 0x6de1e4f4
 
 # Compiled with Coconut version 3.1.1-post_dev3
 
@@ -241,9 +241,9 @@ def install_from_dir(source_dir, do_optional=False, do_barrel_roll=True):  #180 
         if not set_jvm_args():  #187 (line in Coconut source)
             raise OSError("Failed to automatically install forge; you'll need to run {_coconut_format_0} manually.".format(_coconut_format_0=(FORGE_INSTALLER_JAR)))  #188 (line in Coconut source)
 
-    if "--no-mods" in sys.argv:  #190 (line in Coconut source)
+    if "--no-mods" not in sys.argv:  #190 (line in Coconut source)
         sync_client_mods(source_dir, do_barrel_roll)  #191 (line in Coconut source)
-    if "--no-files" in sys.argv:  #192 (line in Coconut source)
+    if "--no-files" not in sys.argv:  #192 (line in Coconut source)
         install_extras(source_dir, do_optional)  #193 (line in Coconut source)
 
 

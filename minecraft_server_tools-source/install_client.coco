@@ -187,9 +187,9 @@ def install_from_dir(source_dir, do_optional=False, do_barrel_roll=True):
         if not set_jvm_args():
             raise OSError(f"Failed to automatically install forge; you'll need to run {FORGE_INSTALLER_JAR} manually.")
 
-    if "--no-mods" in sys.argv:
+    if "--no-mods" not in sys.argv:
         sync_client_mods(source_dir, do_barrel_roll)
-    if "--no-files" in sys.argv:
+    if "--no-files" not in sys.argv:
         install_extras(source_dir, do_optional)
 
 
