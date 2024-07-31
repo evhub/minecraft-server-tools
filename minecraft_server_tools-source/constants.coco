@@ -359,7 +359,7 @@ GRAAL_BASE_DIR = os.path.join(ROOT_DIR, "graal")
 GRAAL_ZIP_PATH = os.path.join(GRAAL_BASE_DIR, GRAAL_ZIP_NAME)
 
 CLIENT_GC = "Z" if psutil.cpu_count(logical=False) > 8 else "G1"  # brucethemoose: G1, Shenandoah, or ZGenerational
-SERVER_GC = "Z"  # brucethemoose: G1 or Z
+SERVER_GC = CLIENT_GC  # brucethemoose: G1 or Z
 
 def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
     code_cache_mul = 2 if gc == "G1" else 1
