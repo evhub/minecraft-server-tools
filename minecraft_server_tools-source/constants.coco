@@ -474,7 +474,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
             "-XX:AllocatePrefetchStyle=1",  # brucethemoose: 1; default: 1
             # "-XX:-ZProactive",  # brucethemoose (incompatible with +ZGenerational)
             "-XX:+ZGenerational",  # brucethemoose (incompatible with -ZProactive; Java 21+)
-            "-XX:ZMarkStackSpaceLimit=10G",  # java error; default: 8G
+            "-XX:ZMarkStackSpaceLimit=16G",  # java error; default: 8G
         ]
     else:
         raise ValueError(f"unknown java GC {gc!r}")
