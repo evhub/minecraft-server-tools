@@ -100,7 +100,7 @@ DOWNLOADS_PATH = first_that_exists([
 IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 
 if IS_MOD_SERVER:
-    CLIENT_RAM = "29G"
+    CLIENT_RAM = "30G"
     SERVER_RAM = "28G"
 else:
     CLIENT_RAM = SERVER_RAM = "5G"
@@ -166,7 +166,7 @@ LOG4J_DEBUG = bool_env_var("MC_DEBUG_LOG4J", False)
 # Fix RAMs
 
 GB = 1024**3
-max_client_ram = psutil.virtual_memory().total // GB - 2
+max_client_ram = psutil.virtual_memory().total // GB - 1
 max_server_ram = psutil.virtual_memory().total // GB - 3
 
 if int(CLIENT_RAM[:-1]) > max_client_ram:
@@ -188,7 +188,7 @@ def load_json(filename, default=None):
     try:
         with open(filename, "r") as fp:
             return COMMENT_JSON.load(fp)
-    except (FileNotFoundError, ValueError):
+    except FileNotFoundError, ValueError:
         return default
 
 
