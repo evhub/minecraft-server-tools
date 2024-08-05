@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x6de1e4f4
+# __coconut_hash__ = 0x743663a9
 
 # Compiled with Coconut version 3.1.1-post_dev3
 
@@ -207,130 +207,129 @@ def set_jvm_args():  #137 (line in Coconut source)
             profiles_file.seek(0)  #156 (line in Coconut source)
             profiles_file.truncate()  #157 (line in Coconut source)
             json.dump(top_level_json, profiles_file, indent=2)  #158 (line in Coconut source)
-    print("\tSet JVM args to: {_coconut_format_0}".format(_coconut_format_0=(java_args)))  #159 (line in Coconut source)
-    return True  #160 (line in Coconut source)
+    return True  #159 (line in Coconut source)
 
 
 
-def open_readme():  #163 (line in Coconut source)
-    installed_readme = os.path.join(MINECRAFT_DIR, README_FILE)  #164 (line in Coconut source)
-    print("\nOpening {_coconut_format_0}...".format(_coconut_format_0=(installed_readme)))  #165 (line in Coconut source)
-    if WINDOWS:  #166 (line in Coconut source)
-        launch_server.run_cmd(["explorer", installed_readme], check=False)  #167 (line in Coconut source)
-    else:  #168 (line in Coconut source)
-        launch_server.run_cmd(["xdg-open", installed_readme], check=False)  #169 (line in Coconut source)
+def open_readme():  #162 (line in Coconut source)
+    installed_readme = os.path.join(MINECRAFT_DIR, README_FILE)  #163 (line in Coconut source)
+    print("\nOpening {_coconut_format_0}...".format(_coconut_format_0=(installed_readme)))  #164 (line in Coconut source)
+    if WINDOWS:  #165 (line in Coconut source)
+        launch_server.run_cmd(["explorer", installed_readme], check=False)  #166 (line in Coconut source)
+    else:  #167 (line in Coconut source)
+        launch_server.run_cmd(["xdg-open", installed_readme], check=False)  #168 (line in Coconut source)
 
 
 
-@contextmanager  #172 (line in Coconut source)
-def unzipped_mods():  #173 (line in Coconut source)
-    with tempfile.TemporaryDirectory() as temp_dir:  #174 (line in Coconut source)
-        print("\nUnzipping mods from {_coconut_format_0!r} to temporary directory {_coconut_format_1!r}...".format(_coconut_format_0=(MOD_ZIP_PATH), _coconut_format_1=(temp_dir)))  #175 (line in Coconut source)
-        shutil.unpack_archive(MOD_ZIP_PATH, temp_dir)  #176 (line in Coconut source)
-        yield temp_dir  #177 (line in Coconut source)
+@contextmanager  #171 (line in Coconut source)
+def unzipped_mods():  #172 (line in Coconut source)
+    with tempfile.TemporaryDirectory() as temp_dir:  #173 (line in Coconut source)
+        print("\nUnzipping mods from {_coconut_format_0!r} to temporary directory {_coconut_format_1!r}...".format(_coconut_format_0=(MOD_ZIP_PATH), _coconut_format_1=(temp_dir)))  #174 (line in Coconut source)
+        shutil.unpack_archive(MOD_ZIP_PATH, temp_dir)  #175 (line in Coconut source)
+        yield temp_dir  #176 (line in Coconut source)
 
 
 
-def install_from_dir(source_dir, do_optional=False, do_barrel_roll=True):  #180 (line in Coconut source)
-    launch_server.clean_forge_jars(MINECRAFT_DIR)  #181 (line in Coconut source)
+def install_from_dir(source_dir, do_optional=False, do_barrel_roll=True):  #179 (line in Coconut source)
+    launch_server.clean_forge_jars(MINECRAFT_DIR)  #180 (line in Coconut source)
 
-    ensure_forge_client(source_dir)  #183 (line in Coconut source)
-    success = set_jvm_args()  #184 (line in Coconut source)
-    if not success:  #185 (line in Coconut source)
-        ensure_forge_client(source_dir, force=True)  #186 (line in Coconut source)
-        if not set_jvm_args():  #187 (line in Coconut source)
-            raise OSError("Failed to automatically install forge; you'll need to run {_coconut_format_0} manually.".format(_coconut_format_0=(FORGE_INSTALLER_JAR)))  #188 (line in Coconut source)
+    ensure_forge_client(source_dir)  #182 (line in Coconut source)
+    success = set_jvm_args()  #183 (line in Coconut source)
+    if not success:  #184 (line in Coconut source)
+        ensure_forge_client(source_dir, force=True)  #185 (line in Coconut source)
+        if not set_jvm_args():  #186 (line in Coconut source)
+            raise OSError("Failed to automatically install forge; you'll need to run {_coconut_format_0} manually.".format(_coconut_format_0=(FORGE_INSTALLER_JAR)))  #187 (line in Coconut source)
 
-    if "--no-mods" not in sys.argv:  #190 (line in Coconut source)
-        sync_client_mods(source_dir, do_barrel_roll)  #191 (line in Coconut source)
-    if "--no-files" not in sys.argv:  #192 (line in Coconut source)
-        install_extras(source_dir, do_optional)  #193 (line in Coconut source)
-
-
-
-def install_from_server():  #196 (line in Coconut source)
-    """Install from server and return whether or not to install optional files."""  #197 (line in Coconut source)
-    sync_mods.main()  #198 (line in Coconut source)
-    launch_server.start_server(dry_run=True)  #199 (line in Coconut source)
-
-    install_from_dir(SERVER_DIR, do_optional=True)  #201 (line in Coconut source)
-
-    if not any((x in sys.argv for x in ("--no-zip", "--no-mods", "--no-files"))):  #203 (line in Coconut source)
-        zip_mods()  #204 (line in Coconut source)
-    return True, True  #205 (line in Coconut source)
+    if "--no-mods" not in sys.argv:  #189 (line in Coconut source)
+        sync_client_mods(source_dir, do_barrel_roll)  #190 (line in Coconut source)
+    if "--no-files" not in sys.argv:  #191 (line in Coconut source)
+        install_extras(source_dir, do_optional)  #192 (line in Coconut source)
 
 
 
-def ask_question(text, default):  #208 (line in Coconut source)
-    got = input(text).lower()  #209 (line in Coconut source)
-    if got in YES_STRS:  #210 (line in Coconut source)
-        return True  #211 (line in Coconut source)
-    elif got in NO_STRS:  #212 (line in Coconut source)
-        return False  #213 (line in Coconut source)
-    else:  #214 (line in Coconut source)
-        return default  #215 (line in Coconut source)
+def install_from_server():  #195 (line in Coconut source)
+    """Install from server and return whether or not to install optional files."""  #196 (line in Coconut source)
+    sync_mods.main()  #197 (line in Coconut source)
+    launch_server.start_server(dry_run=True)  #198 (line in Coconut source)
+
+    install_from_dir(SERVER_DIR, do_optional=True)  #200 (line in Coconut source)
+
+    if not any((x in sys.argv for x in ("--no-zip", "--no-mods", "--no-files"))):  #202 (line in Coconut source)
+        zip_mods()  #203 (line in Coconut source)
+    return True, True  #204 (line in Coconut source)
 
 
 
-def install_from_zip():  #218 (line in Coconut source)
-    """Install from zip and return whether or not to install optional files."""  #219 (line in Coconut source)
-    if "--yes-optional" in sys.argv:  #220 (line in Coconut source)
-        do_optional = True  #221 (line in Coconut source)
-    elif "--no-optional" in sys.argv:  #222 (line in Coconut source)
-        do_optional = False  #223 (line in Coconut source)
-    else:  #224 (line in Coconut source)
-        do_optional = ask_question("\nInstall optional files {_coconut_format_0}? [Y/n] ".format(_coconut_format_0=(OPTIONAL_INSTALL_FILES + OPTIONAL_INSTALL_FOLDERS)), True)  #225 (line in Coconut source)
-    if do_optional:  #226 (line in Coconut source)
-        print("Will install optional files.")  #227 (line in Coconut source)
-    else:  #228 (line in Coconut source)
-        print("Will NOT install optional files.")  #229 (line in Coconut source)
-
-    if BARREL_ROLL_MOD_PREFIX is None:  #231 (line in Coconut source)
-        do_barrel_roll = None  #232 (line in Coconut source)
-    elif "--yes-barrel-roll" in sys.argv:  #233 (line in Coconut source)
-        do_barrel_roll = True  #234 (line in Coconut source)
-    elif "--no-barrel-roll" in sys.argv:  #235 (line in Coconut source)
-        do_barrel_roll = False  #236 (line in Coconut source)
-    else:  #237 (line in Coconut source)
-        do_barrel_roll = ask_question("\nDo a barrel roll? [Y/n] ", True)  #238 (line in Coconut source)
-    if do_barrel_roll:  #239 (line in Coconut source)
-        print("Will do a barrel roll.")  #240 (line in Coconut source)
-    else:  #241 (line in Coconut source)
-        print("Will NOT do a barrel roll.")  #242 (line in Coconut source)
-
-    with unzipped_mods() as temp_dir:  #244 (line in Coconut source)
-        install_from_dir(temp_dir, do_optional=do_optional, do_barrel_roll=do_barrel_roll)  #245 (line in Coconut source)
-    return do_optional, do_barrel_roll  #246 (line in Coconut source)
+def ask_question(text, default):  #207 (line in Coconut source)
+    got = input(text).lower()  #208 (line in Coconut source)
+    if got in YES_STRS:  #209 (line in Coconut source)
+        return True  #210 (line in Coconut source)
+    elif got in NO_STRS:  #211 (line in Coconut source)
+        return False  #212 (line in Coconut source)
+    else:  #213 (line in Coconut source)
+        return default  #214 (line in Coconut source)
 
 
 
-def launch_minecraft():  #249 (line in Coconut source)
-    print("\nLaunching Minecraft at {_coconut_format_0!r}...".format(_coconut_format_0=(LAUNCHER_FILE)))  #250 (line in Coconut source)
-    if not os.path.exists(LAUNCHER_FILE):  #251 (line in Coconut source)
-        raise OSError("Could not find Minecraft Launcher file!\n\nMod files have still been installed, but you'll need to launch Minecraft manually.")  #252 (line in Coconut source)
-    if WINDOWS:  #253 (line in Coconut source)
-        launch_server.run_cmd(["START", MODPACK_NAME] + START_ARGS + [LAUNCHER_FILE,], shell=True)  #254 (line in Coconut source)
-    else:  #255 (line in Coconut source)
-        launch_server.run_cmd(["open", LAUNCHER_FILE])  #256 (line in Coconut source)
+def install_from_zip():  #217 (line in Coconut source)
+    """Install from zip and return whether or not to install optional files."""  #218 (line in Coconut source)
+    if "--yes-optional" in sys.argv:  #219 (line in Coconut source)
+        do_optional = True  #220 (line in Coconut source)
+    elif "--no-optional" in sys.argv:  #221 (line in Coconut source)
+        do_optional = False  #222 (line in Coconut source)
+    else:  #223 (line in Coconut source)
+        do_optional = ask_question("\nInstall optional files {_coconut_format_0}? [Y/n] ".format(_coconut_format_0=(OPTIONAL_INSTALL_FILES + OPTIONAL_INSTALL_FOLDERS)), True)  #224 (line in Coconut source)
+    if do_optional:  #225 (line in Coconut source)
+        print("Will install optional files.")  #226 (line in Coconut source)
+    else:  #227 (line in Coconut source)
+        print("Will NOT install optional files.")  #228 (line in Coconut source)
+
+    if BARREL_ROLL_MOD_PREFIX is None:  #230 (line in Coconut source)
+        do_barrel_roll = None  #231 (line in Coconut source)
+    elif "--yes-barrel-roll" in sys.argv:  #232 (line in Coconut source)
+        do_barrel_roll = True  #233 (line in Coconut source)
+    elif "--no-barrel-roll" in sys.argv:  #234 (line in Coconut source)
+        do_barrel_roll = False  #235 (line in Coconut source)
+    else:  #236 (line in Coconut source)
+        do_barrel_roll = ask_question("\nDo a barrel roll? [Y/n] ", True)  #237 (line in Coconut source)
+    if do_barrel_roll:  #238 (line in Coconut source)
+        print("Will do a barrel roll.")  #239 (line in Coconut source)
+    else:  #240 (line in Coconut source)
+        print("Will NOT do a barrel roll.")  #241 (line in Coconut source)
+
+    with unzipped_mods() as temp_dir:  #243 (line in Coconut source)
+        install_from_dir(temp_dir, do_optional=do_optional, do_barrel_roll=do_barrel_roll)  #244 (line in Coconut source)
+    return do_optional, do_barrel_roll  #245 (line in Coconut source)
 
 
 
-def main():  #259 (line in Coconut source)
-    if os.path.exists(SERVER_DIR):  #260 (line in Coconut source)
-        print("\nInstalling from server...")  #261 (line in Coconut source)
-        do_optional, do_barrel_roll = install_from_server()  #262 (line in Coconut source)
-    elif os.path.exists(MOD_ZIP_PATH):  #263 (line in Coconut source)
-        if "downloads" in MOD_ZIP_PATH.lower():  #264 (line in Coconut source)
-            print("WARNING: Using downloaded Minecraft Mods.zip instead of synchronized version; you will not get updates automatically.")  #265 (line in Coconut source)
-        print("\nInstalling from zipfile...")  #266 (line in Coconut source)
-        do_optional, do_barrel_roll = install_from_zip()  #267 (line in Coconut source)
-    else:  #268 (line in Coconut source)
-        raise IOError("Could not find files for install (make sure you have the 'Minecraft Mods' folder in your OneDrive).")  #269 (line in Coconut source)
-    if "--launch" in sys.argv:  #270 (line in Coconut source)
-        launch_minecraft()  #271 (line in Coconut source)
-    return do_optional, do_barrel_roll  #272 (line in Coconut source)
+def launch_minecraft():  #248 (line in Coconut source)
+    print("\nLaunching Minecraft at {_coconut_format_0!r}...".format(_coconut_format_0=(LAUNCHER_FILE)))  #249 (line in Coconut source)
+    if not os.path.exists(LAUNCHER_FILE):  #250 (line in Coconut source)
+        raise OSError("Could not find Minecraft Launcher file!\n\nMod files have still been installed, but you'll need to launch Minecraft manually.")  #251 (line in Coconut source)
+    if WINDOWS:  #252 (line in Coconut source)
+        launch_server.run_cmd(["START", MODPACK_NAME] + START_ARGS + [LAUNCHER_FILE,], shell=True)  #253 (line in Coconut source)
+    else:  #254 (line in Coconut source)
+        launch_server.run_cmd(["open", LAUNCHER_FILE])  #255 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #275 (line in Coconut source)
-    main()  #276 (line in Coconut source)
+def main():  #258 (line in Coconut source)
+    if os.path.exists(SERVER_DIR):  #259 (line in Coconut source)
+        print("\nInstalling from server...")  #260 (line in Coconut source)
+        do_optional, do_barrel_roll = install_from_server()  #261 (line in Coconut source)
+    elif os.path.exists(MOD_ZIP_PATH):  #262 (line in Coconut source)
+        if "downloads" in MOD_ZIP_PATH.lower():  #263 (line in Coconut source)
+            print("WARNING: Using downloaded Minecraft Mods.zip instead of synchronized version; you will not get updates automatically.")  #264 (line in Coconut source)
+        print("\nInstalling from zipfile...")  #265 (line in Coconut source)
+        do_optional, do_barrel_roll = install_from_zip()  #266 (line in Coconut source)
+    else:  #267 (line in Coconut source)
+        raise IOError("Could not find files for install (make sure you have the 'Minecraft Mods' folder in your OneDrive).")  #268 (line in Coconut source)
+    if "--launch" in sys.argv:  #269 (line in Coconut source)
+        launch_minecraft()  #270 (line in Coconut source)
+    return do_optional, do_barrel_roll  #271 (line in Coconut source)
+
+
+
+if __name__ == "__main__":  #274 (line in Coconut source)
+    main()  #275 (line in Coconut source)

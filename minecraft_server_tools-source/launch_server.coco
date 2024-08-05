@@ -152,11 +152,13 @@ def get_java_args(client=False):
     else:
         ram = SERVER_RAM
         gc = SERVER_GC
-    return (
+    java_args = (
         ["-Xmx" + ram, "-Xms" + ram]
         + get_jvm_args(gc=gc, vm="graal" if graal else "java")
         + FML_ARGS
     )
+    print(f"\tUsing JVM args: {' '.join(java_args)}")
+    return java_args
 
 
 def fix_run_bat():
