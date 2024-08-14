@@ -7,6 +7,7 @@ import datetime
 import time
 from pprint import pprint
 from urllib.parse import unquote
+from collections import defaultdict
 
 import requests
 
@@ -229,6 +230,14 @@ def get_jar_names(mods_dir):
     for fname in os.listdir(mods_dir):
         if fname.endswith(".jar"):
             yield fname
+
+
+def get_mod_names_to_all_jar_names(mods_dir, **kwargs):
+    mod_names_to_all_jar_names = defaultdict(list)
+    for jar_name in get_jar_names(mods_dir):
+        mod_name = get_mod_name(jar_name, **kwargs)
+        mod_names_to_all_jar_names[mod_name] += [jar_name]
+    return mod_names_to_all_jar_names
 
 
 def get_mod_names_to_jar_names(mods_dir, **kwargs):

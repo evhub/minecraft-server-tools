@@ -38,7 +38,16 @@ def update_mods_from(update_from_dir, mods_dir):
 
 
 def main():
-    sync_mods.main()
+    deduplicate_mods.fix_deduplicate_mods()
+
+    removed_mod_names = deduplicate_mods.get_all_mod_names([
+        sync_mods.REMOVED_MODS_DIR,
+        sync_mods.REMOVED_CLIENT_MODS_DIR,
+        sync_mods.STAGING_MODS_DIR,
+        sync_mods.STAGING_CLIENT_MODS_DIR,
+    ])
+    deduplicate_mods.deduplicate_mods(deduplicate_mods.DEDUPLICATE_CLIENT_MODS_DIR, removed_mod_names)
+    deduplicate_mods.deduplicate_mods(deduplicate_mods.DEDUPLICATE_MODS_DIR, removed_mod_names)
 
     update_mods_from(deduplicate_mods.DEDUPLICATE_CLIENT_MODS_DIR, sync_mods.BASE_CLIENT_MODS_DIR)
     update_mods_from(deduplicate_mods.DEDUPLICATE_CLIENT_MODS_DIR, sync_mods.EXTRA_CLIENT_MODS_DIR)

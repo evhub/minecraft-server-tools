@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe2da6af9
+# __coconut_hash__ = 0x5748571a
 
 # Compiled with Coconut version 3.1.1-post_dev3
 
@@ -92,21 +92,25 @@ def update_mods_from(update_from_dir, mods_dir):  #14 (line in Coconut source)
 
 
 def main():  #40 (line in Coconut source)
-    sync_mods.main()  #41 (line in Coconut source)
+    deduplicate_mods.fix_deduplicate_mods()  #41 (line in Coconut source)
 
-    update_mods_from(deduplicate_mods.DEDUPLICATE_CLIENT_MODS_DIR, sync_mods.BASE_CLIENT_MODS_DIR)  #43 (line in Coconut source)
-    update_mods_from(deduplicate_mods.DEDUPLICATE_CLIENT_MODS_DIR, sync_mods.EXTRA_CLIENT_MODS_DIR)  #44 (line in Coconut source)
+    removed_mod_names = deduplicate_mods.get_all_mod_names([sync_mods.REMOVED_MODS_DIR, sync_mods.REMOVED_CLIENT_MODS_DIR, sync_mods.STAGING_MODS_DIR, sync_mods.STAGING_CLIENT_MODS_DIR])  #43 (line in Coconut source)
+    deduplicate_mods.deduplicate_mods(deduplicate_mods.DEDUPLICATE_CLIENT_MODS_DIR, removed_mod_names)  #49 (line in Coconut source)
+    deduplicate_mods.deduplicate_mods(deduplicate_mods.DEDUPLICATE_MODS_DIR, removed_mod_names)  #50 (line in Coconut source)
 
-    update_mods_from(deduplicate_mods.DEDUPLICATE_MODS_DIR, sync_mods.BASE_MODS_DIR)  #46 (line in Coconut source)
-    update_mods_from(deduplicate_mods.DEDUPLICATE_MODS_DIR, sync_mods.EXTRA_MODS_DIR)  #47 (line in Coconut source)
+    update_mods_from(deduplicate_mods.DEDUPLICATE_CLIENT_MODS_DIR, sync_mods.BASE_CLIENT_MODS_DIR)  #52 (line in Coconut source)
+    update_mods_from(deduplicate_mods.DEDUPLICATE_CLIENT_MODS_DIR, sync_mods.EXTRA_CLIENT_MODS_DIR)  #53 (line in Coconut source)
 
-    update_mods_from(deduplicate_mods.DEDUPLICATE_CLIENT_MODS_DIR, sync_mods.BASE_MODS_DIR)  #49 (line in Coconut source)
-    update_mods_from(deduplicate_mods.DEDUPLICATE_CLIENT_MODS_DIR, sync_mods.EXTRA_MODS_DIR)  #50 (line in Coconut source)
+    update_mods_from(deduplicate_mods.DEDUPLICATE_MODS_DIR, sync_mods.BASE_MODS_DIR)  #55 (line in Coconut source)
+    update_mods_from(deduplicate_mods.DEDUPLICATE_MODS_DIR, sync_mods.EXTRA_MODS_DIR)  #56 (line in Coconut source)
 
-    update_mods_from(deduplicate_mods.DEDUPLICATE_MODS_DIR, sync_mods.BASE_CLIENT_MODS_DIR)  #52 (line in Coconut source)
-    update_mods_from(deduplicate_mods.DEDUPLICATE_MODS_DIR, sync_mods.EXTRA_CLIENT_MODS_DIR)  #53 (line in Coconut source)
+    update_mods_from(deduplicate_mods.DEDUPLICATE_CLIENT_MODS_DIR, sync_mods.BASE_MODS_DIR)  #58 (line in Coconut source)
+    update_mods_from(deduplicate_mods.DEDUPLICATE_CLIENT_MODS_DIR, sync_mods.EXTRA_MODS_DIR)  #59 (line in Coconut source)
+
+    update_mods_from(deduplicate_mods.DEDUPLICATE_MODS_DIR, sync_mods.BASE_CLIENT_MODS_DIR)  #61 (line in Coconut source)
+    update_mods_from(deduplicate_mods.DEDUPLICATE_MODS_DIR, sync_mods.EXTRA_CLIENT_MODS_DIR)  #62 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #56 (line in Coconut source)
-    main()  #57 (line in Coconut source)
+if __name__ == "__main__":  #65 (line in Coconut source)
+    main()  #66 (line in Coconut source)
