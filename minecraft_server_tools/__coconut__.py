@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # type: ignore
 
-# Compiled with Coconut version 3.1.2-post_dev9
+# Compiled with Coconut version 3.2.0
 
 """Built-in Coconut utilities."""
 
@@ -11,7 +11,7 @@
 from __future__ import print_function, absolute_import, unicode_literals, division
 import sys as _coconut_sys
 import os as _coconut_os
-_coconut_header_info = ('3.1.2-post_dev9', '', True)
+_coconut_header_info = ('3.2.0', '', True)
 try:
     __file__ = _coconut_os.path.abspath(__file__) if __file__ else __file__
 except NameError:
@@ -67,6 +67,12 @@ if _coconut_sys.version_info < (3,):
                 return _coconut.isinstance(inst, (_coconut_py_int, _coconut_py_long))
             def __subclasscheck__(cls, subcls):
                 return _coconut.issubclass(subcls, (_coconut_py_int, _coconut_py_long))
+            def __eq__(cls, other):
+                if other is _coconut_py_int or other is _coconut_py_long:
+                    return True
+                return _coconut.type.__eq__(cls, other)
+            def __hash__(cls):
+                return _coconut.hash(_coconut_py_int)
     class bytes(_coconut_py_bytes):
         __slots__ = ()
         __doc__ = getattr(_coconut_py_bytes, "__doc__", "<see help(py_bytes)>")
@@ -75,6 +81,12 @@ if _coconut_sys.version_info < (3,):
                 return _coconut.isinstance(inst, _coconut_py_bytes)
             def __subclasscheck__(cls, subcls):
                 return _coconut.issubclass(subcls, _coconut_py_bytes)
+            def __eq__(cls, other):
+                if other is _coconut_py_bytes:
+                    return True
+                return _coconut.type.__eq__(cls, other)
+            def __hash__(cls):
+                return _coconut.hash(_coconut_py_bytes)
         def __new__(self, *args):
             if not args:
                 return b""
@@ -488,6 +500,11 @@ class _coconut(object):
         import async_generator
     except ImportError as async_generator_import_err:
         async_generator = _coconut_missing_module(async_generator_import_err)
+    if _coconut_sys.version_info < (3, 14):
+        try:
+            import tstr
+        except ImportError as tstr_import_err:
+            tstr = _coconut_missing_module(tstr_import_err)
     if _coconut_sys.version_info < (3,):
         import cPickle as pickle
     else:
