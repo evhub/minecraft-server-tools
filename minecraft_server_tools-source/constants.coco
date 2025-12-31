@@ -256,7 +256,7 @@ COMPONENT_SEPS = [
 
 NON_NAME_COMPONENT_REGEX = full_regex(
     r"[0-9].*|"
-    + r"(?!cave|a$|ae2|rare|da)(((neo)?forge|fabric|quilt|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+"
+    + r"(?!cave|a$|ae2|rare|da|cfm)(((neo)?forge|fabric|quilt|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r|f|pre)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+"
 )
 
 NAME_REGEXES_TO_SPACE = [
@@ -289,16 +289,16 @@ NAME_REGEXES_TO_SPACE = [
         r"MC",
         r"\bmc\b",
         r"1\.\d+",
-        r"[.vV]0",
-        r"[.vV]1",
-        r"[.vV]2",
-        r"[.vV]3",
-        r"[.vV]4",
-        r"[.vV]5",
-        r"[.vV]6",
-        r"[.vV]7",
-        r"[.vV]8",
-        r"[.vV]9",
+        r"[.vVf]0",
+        r"[.vVf]1",
+        r"[.vVf]2",
+        r"[.vVf]3",
+        r"[.vVf]4",
+        r"[.vVf]5",
+        r"[.vVf]6",
+        r"[.vVf]7",
+        r"[.vVf]8",
+        r"[.vVf]9",
         r"\.",
         r" / ",
         r" \| ",

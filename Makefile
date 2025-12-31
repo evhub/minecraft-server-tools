@@ -35,7 +35,7 @@ watch-verbose:
 
 .PHONY: clean
 clean:
-	rm -rf ./minecraft_server_tools-source/__coconut_cache__
+	rm -rf ./minecraft_server_tools-source/__coconut_cache__ ./curseforge_ids_cache.json
 
 .PHONY: time
 time:
