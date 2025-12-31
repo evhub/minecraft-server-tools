@@ -247,6 +247,3 @@ __coconut_cache__/
 
 # Graal Downloading
 graal/
-
-# CurseForge ID cache (ephemeral)
-curseforge_ids_cache.json
