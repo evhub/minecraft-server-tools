@@ -25,6 +25,7 @@ from minecraft_server_tools.constants import (
     MAYBE_WRONG_MODLOADERS,
     MOD_PAGE_NAME_SUFFICES,
     CURSEFORGE_NAMES_FILE,
+    CURSEFORGE_IDS_CACHE_FILE,
     CURSEFORGE_API_FILE,
     TIMESTAMP_FORMAT_REGEX,
     UPDATED_MODS_DIR_SUFFIX,
@@ -203,6 +204,21 @@ def load_curseforge_names():
 def save_curseforge_names(mod_names_to_curseforge_names):
     with open(CURSEFORGE_NAMES_FILE, "w") as ids_fobj:
         json.dump(mod_names_to_curseforge_names, ids_fobj, indent=4)
+
+
+def load_curseforge_ids_cache():
+    """Load the cached curseforge_name -> curseforge_id mappings."""
+    if os.path.exists(CURSEFORGE_IDS_CACHE_FILE):
+        with open(CURSEFORGE_IDS_CACHE_FILE, "r") as cache_fobj:
+            return json.load(cache_fobj)
+    else:
+        return {}
+
+
+def save_curseforge_ids_cache(curseforge_ids_cache):
+    """Save the curseforge_name -> curseforge_id cache."""
+    with open(CURSEFORGE_IDS_CACHE_FILE, "w") as cache_fobj:
+        json.dump(curseforge_ids_cache, cache_fobj, indent=4)
 
 
 def get_curseforge_names_for(mod_names_to_jar_names, google=False):
@@ -407,14 +423,26 @@ def get_curseforge_id(curseforge_name, mod_name):
 
 
 def get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names):
+    curseforge_ids_cache = load_curseforge_ids_cache()
     mod_names_to_curseforge_ids = {}
     missing_mods = []
-    for mod_name, curseforge_name in mod_names_to_curseforge_names.items():
-        curseforge_id = get_curseforge_id(curseforge_name, mod_name)
-        if curseforge_id is None:
-            missing_mods.append(mod_name)
-        else:
-            mod_names_to_curseforge_ids[mod_name] = curseforge_id
+    try:
+        for mod_name, curseforge_name in mod_names_to_curseforge_names.items():
+            # Check cache first
+            if curseforge_name in curseforge_ids_cache:
+                curseforge_id = curseforge_ids_cache[curseforge_name]
+                print(f"\tUsing cached CurseForge ID for {curseforge_name!r}.")
+            else:
+                curseforge_id = get_curseforge_id(curseforge_name, mod_name)
+                if curseforge_id is not None:
+                    curseforge_ids_cache[curseforge_name] = curseforge_id
+
+            if curseforge_id is None:
+                missing_mods.append(mod_name)
+            else:
+                mod_names_to_curseforge_ids[mod_name] = curseforge_id
+    finally:
+        save_curseforge_ids_cache(curseforge_ids_cache)
     return mod_names_to_curseforge_ids, missing_mods
 
 
