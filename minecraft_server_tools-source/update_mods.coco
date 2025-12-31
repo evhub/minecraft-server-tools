@@ -596,6 +596,7 @@ def get_latest_version(mod_name, curseforge_id, old_jar_name):
         jar_name = get_jar_name_for_curseforge_file(file_data)
         if (
             jar_name is not None
+            and jar_name.endswith(".jar")
             and correct_modloader(versions, jar_name)
             and get_curseforge_file_time(file_data, mod_name) >= old_file_time
         ):
