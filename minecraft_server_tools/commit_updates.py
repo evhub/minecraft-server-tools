@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc7e320f8
+# __coconut_hash__ = 0xdab61e72
 
 # Compiled with Coconut version 3.2.0-post_dev1
 
@@ -140,7 +140,7 @@ def remove_file_with_retry(filepath, max_retries=5, initial_delay=0.2):  #68 (li
 
 
 
-def remove_dir_if_exists(directory, max_retries=10, initial_delay=0.5):  #82 (line in Coconut source)
+def remove_dir_if_exists(directory, max_retries=5, initial_delay=0.1):  #82 (line in Coconut source)
     """Remove a directory if it exists.
 
     Uses a multi-strategy approach for Windows/OneDrive file locking:

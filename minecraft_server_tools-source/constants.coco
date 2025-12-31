@@ -113,6 +113,10 @@ if IS_MOD_SERVER:
 else:
     CLIENT_RAM = SERVER_RAM = "5G"
 
+MODLOADER = "NeoForge"
+WRONG_MODLOADERS = ["Quilt"]
+MAYBE_WRONG_MODLOADERS = ["Forge", "Fabric"]
+
 ALWAYS_USE_LATEST_VERSION_FOR_MODS = [
     "jei",
     "toofast",
@@ -234,10 +238,6 @@ DEDUPLICATE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-deduplicate"
 
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 
-MODLOADER = "NeoForge"
-WRONG_MODLOADERS = ["Fabric", "Quilt"]
-MAYBE_WRONG_MODLOADERS = ["Forge"]
-
 NO_COMPONENT_SPLIT_MODS = [
 ]
 
@@ -271,7 +271,7 @@ NAME_REGEXES_TO_SPACE = [
         r"\)",
         r"%20",
         r"%5[bd]",
-        r"%27",
+        r"%2[7b]",
         r"(neo)?forge\b",
         r"(NEO)?FORGE",
         r"(Neo)?Forge\b",

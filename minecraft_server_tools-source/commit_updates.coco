@@ -79,7 +79,7 @@ def remove_file_with_retry(filepath, max_retries=5, initial_delay=0.2):
     return False
 
 
-def remove_dir_if_exists(directory, max_retries=10, initial_delay=0.5):
+def remove_dir_if_exists(directory, max_retries=5, initial_delay=0.1):
     """Remove a directory if it exists.
 
     Uses a multi-strategy approach for Windows/OneDrive file locking:
