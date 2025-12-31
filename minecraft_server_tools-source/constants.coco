@@ -239,6 +239,9 @@ WRONG_MODLOADERS = ["Fabric", "Quilt"]
 MAYBE_WRONG_MODLOADERS = ["Forge"]
 
 NO_COMPONENT_SPLIT_MODS = [
+]
+
+USE_ALL_COMPONENTS_MODS = [
     "project red",
 ]
 

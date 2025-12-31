@@ -40,6 +40,7 @@ from minecraft_server_tools.constants import (
     AVOID_FILES_PUBLISHED_WITHIN,
     FIX_MOD_NAMES,
     NO_COMPONENT_SPLIT_MODS,
+    USE_ALL_COMPONENTS_MODS,
     ver_join,
     ver_split,
 )
@@ -55,7 +56,7 @@ UPDATE_MODS_DIRS = [
 BEGINNING_OF_TIME = datetime.datetime(1, 1, 1)
 
 
-def get_mod_name(jar_name, silent=None, do_component_splitting=True):
+def get_mod_name(jar_name, silent=None, do_component_splitting=True, use_all_components=False):
     if silent is None:
         silent = not PRINT_DEBUG
 
@@ -76,7 +77,7 @@ def get_mod_name(jar_name, silent=None, do_component_splitting=True):
             is_name_cmpnt = NON_NAME_COMPONENT_REGEX.match(cmpnt.lower()) is None
             if is_name_cmpnt:
                 name_cmpnts.append(cmpnt)
-            elif name_cmpnts:
+            elif name_cmpnts and not use_all_components:
                 break
         if not name_cmpnts:
             if not silent:
@@ -112,6 +113,11 @@ def get_mod_name(jar_name, silent=None, do_component_splitting=True):
         if not silent:
             print(f"Got mod name {mod_name!r}, but it's marked as no component splitting; redoing without component splitting.")
         return get_mod_name(jar_name, do_component_splitting=False)
+
+    if mod_name in USE_ALL_COMPONENTS_MODS and not use_all_components:
+        if not silent:
+            print(f"Got mod name {mod_name!r}, but it's marked as use all components; redoing with all components.")
+        return get_mod_name(jar_name, use_all_components=True)
 
     if not silent:
         print(f"Determined mod name {mod_name!r} for jar {jar_name!r}.")
