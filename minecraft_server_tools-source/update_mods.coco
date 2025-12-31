@@ -56,6 +56,14 @@ UPDATE_MODS_DIRS = [
 BEGINNING_OF_TIME = datetime.datetime(1, 1, 1)
 
 
+class MissingCurseforgeNameError(KeyError):
+    """Exception raised when a CurseForge name mapping is missing."""
+    def __init__(self, mod_name, query):
+        self.mod_name = mod_name
+        self.query = query
+        super().__init__(f"No Curseforge name for mod {mod_name!r}; expecting Claude to search for it and add it to curseforge_names.json (suggested search query: {query!r}).")
+
+
 def get_mod_name(jar_name, silent=None, do_component_splitting=True, use_all_components=False):
     if silent is None:
         silent = not PRINT_DEBUG
@@ -136,7 +144,7 @@ def get_curseforge_name(mod_name, jar_name, google=False):
         mod_page_name_suffix=MOD_PAGE_NAME_SUFFICES[0],
     )
     if not google:
-        raise KeyError(f"No Curseforge name for mod {mod_name!r}; expecting Claude to search for it and add it to curseforge_names.json (automated search query would have been {'site:curseforge.com ' + query!r}).")
+        raise MissingCurseforgeNameError(mod_name, 'site:curseforge.com ' + query)
     try:
         while True:
             search_json = google_api.google(query)
@@ -230,10 +238,15 @@ def save_curseforge_ids_cache(curseforge_ids_cache):
 def get_curseforge_names_for(mod_names_to_jar_names, google=False):
     all_mod_names_to_curseforge_names = load_curseforge_names()
     found_curseforge_names_to_mod_names = {}
+    missing_curseforge_names = []  # collect all missing names first
     try:
         for mod_name in mod_names_to_jar_names:
             if mod_name not in all_mod_names_to_curseforge_names:
-                curseforge_name = get_curseforge_name(mod_name, mod_names_to_jar_names[mod_name], google=google)
+                try:
+                    curseforge_name = get_curseforge_name(mod_name, mod_names_to_jar_names[mod_name], google=google)
+                except MissingCurseforgeNameError as e:
+                    missing_curseforge_names.append((e.mod_name, e.query))
+                    continue
 
                 # do validation
                 if curseforge_name in found_curseforge_names_to_mod_names:
@@ -243,6 +256,17 @@ def get_curseforge_names_for(mod_names_to_jar_names, google=False):
                 all_mod_names_to_curseforge_names[mod_name] = curseforge_name
     finally:
         save_curseforge_names(all_mod_names_to_curseforge_names)
+
+    # raise error with all missing names at once
+    if missing_curseforge_names:
+        print(f"\n{'='*60}")
+        print("MISSING CURSEFORGE NAME MAPPINGS:")
+        print(f"{'='*60}\n")
+        for mod_name, query in missing_curseforge_names:
+            print(f"{mod_name!r}")
+            print(f"\tSuggested search query: {query!r}\n")
+        print(f"{'='*60}\n")
+        raise KeyError(f"Missing {len(missing_curseforge_names)} Curseforge name mappings; expecting Claude to search for them and add them to curseforge_names.json.")
 
     # get nulled mods
     requested_mod_names_to_curseforge_names = {}
