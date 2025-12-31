@@ -11,9 +11,11 @@ This script allows you to either:
 In either case, the -updates and -old folders are deleted afterward.
 """
 import os
+import sys
 import shutil
 import argparse
 import time
+import subprocess
 
 from minecraft_server_tools.constants import (
     UPDATED_MODS_DIR_SUFFIX,
@@ -31,9 +33,14 @@ def get_update_dirs(mods_dir):
 
 
 def has_pending_updates(mods_dir):
-    """Check if a mods directory has pending updates."""
+    """Check if a mods directory has pending update directories (even if empty)."""
     updates_dir, old_dir = get_update_dirs(mods_dir)
     return os.path.exists(updates_dir) or os.path.exists(old_dir)
+
+
+def any_pending_dirs():
+    """Check if any mods directory has pending update directories."""
+    return any(has_pending_updates(d) for d in UPDATE_MODS_DIRS)
 
 
 def list_files(directory):
@@ -58,28 +65,80 @@ def move_files(src_dir, dst_dir):
         shutil.move(src_path, dst_path)
 
 
-def remove_dir_if_exists(directory, max_retries=5, initial_delay=0.5):
+def remove_file_with_retry(filepath, max_retries=5, initial_delay=0.2):
+    """Remove a single file with retry logic for Windows file locking."""
+    delay = initial_delay
+    for attempt in range(max_retries):
+        try:
+            os.remove(filepath)
+            return True
+        except PermissionError:
+            if attempt < max_retries - 1:
+                time.sleep(delay)
+                delay *= 2
+    return False
+
+
+def remove_dir_if_exists(directory, max_retries=10, initial_delay=0.5):
     """Remove a directory if it exists.
 
-    Includes retry logic for Windows file locking issues (e.g., OneDrive sync).
+    Uses a multi-strategy approach for Windows/OneDrive file locking:
+    1. Remove all files individually with retries
+    2. Try os.rmdir() for the empty directory
+    3. Fall back to Windows rmdir command if needed
+    4. Retry with exponential backoff
     """
     if not os.path.exists(directory):
         return
 
+    dir_name = os.path.basename(directory)
+
+    # First, remove all files individually
+    for filename in os.listdir(directory):
+        filepath = os.path.join(directory, filename)
+        if os.path.isfile(filepath):
+            if not remove_file_with_retry(filepath):
+                print(f"  Warning: Could not remove file {filename}")
+
+    # Now try to remove the empty directory with retries
     delay = initial_delay
     for attempt in range(max_retries):
         try:
-            shutil.rmtree(directory)
-            print(f"  Removed directory: {os.path.basename(directory)}")
+            # Check if directory is empty
+            remaining = os.listdir(directory)
+            if remaining:
+                print(f"  Warning: Directory {dir_name} not empty: {remaining}")
+                return
+
+            os.rmdir(directory)
+            print(f"  Removed directory: {dir_name}")
             return
-        except PermissionError as e:
+        except PermissionError:
+            # On Windows, try using rmdir command as fallback
+            if sys.platform == "win32" and attempt == max_retries // 2:
+                try:
+                    subprocess.run(
+                        ["cmd", "/c", "rmdir", "/s", "/q", directory],
+                        check=True,
+                        capture_output=True,
+                    )
+                    if not os.path.exists(directory):
+                        print(f"  Removed directory: {dir_name} (via rmdir)")
+                        return
+                except subprocess.CalledProcessError:
+                    pass
+
             if attempt < max_retries - 1:
-                print(f"  Retry {attempt + 1}/{max_retries}: waiting {delay:.1f}s for {os.path.basename(directory)}...")
                 time.sleep(delay)
-                delay *= 2  # exponential backoff
+                delay = min(delay * 1.5, 5.0)  # cap at 5 seconds
             else:
-                print(f"  Warning: Could not remove {os.path.basename(directory)} after {max_retries} attempts: {e}")
-                print(f"  You may need to manually delete: {directory}")
+                print(f"  Warning: Could not remove {dir_name} - may be locked by OneDrive")
+        except OSError as e:
+            if attempt < max_retries - 1:
+                time.sleep(delay)
+                delay = min(delay * 1.5, 5.0)
+            else:
+                print(f"  Warning: Could not remove {dir_name}: {e}")
 
 
 def show_pending_updates():
@@ -182,11 +241,13 @@ def main():
     if args.command is None or args.command == "status":
         show_pending_updates()
     elif args.command == "commit":
-        if show_pending_updates():
+        has_files = show_pending_updates()
+        if has_files or any_pending_dirs():
             print()
             commit_updates()
     elif args.command == "revert":
-        if show_pending_updates():
+        has_files = show_pending_updates()
+        if has_files or any_pending_dirs():
             print()
             revert_updates()
 
