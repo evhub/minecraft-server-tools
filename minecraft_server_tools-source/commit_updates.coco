@@ -1,0 +1,175 @@
+"""Entry point to commit or trash pending mod updates.
+
+After update_mods.coco runs, it creates:
+- {mods_dir}-updates: Contains newly downloaded mod versions
+- {mods_dir}-old: Contains old mod versions that were replaced
+
+This script allows you to either:
+- commit: Move updates into the main folders (keeping new versions)
+- trash: Move old versions back into main folders (reverting to old versions)
+
+In either case, the -updates and -old folders are deleted afterward.
+"""
+import os
+import sys
+import shutil
+
+from minecraft_server_tools.constants import (
+    UPDATED_MODS_DIR_SUFFIX,
+    OLD_MODS_DIR_SUFFIX,
+)
+from minecraft_server_tools.update_mods import UPDATE_MODS_DIRS
+
+
+def get_update_dirs(mods_dir):
+    """Return (updates_dir, old_dir) paths for a given mods directory."""
+    return (
+        mods_dir + UPDATED_MODS_DIR_SUFFIX,
+        mods_dir + OLD_MODS_DIR_SUFFIX,
+    )
+
+
+def has_pending_updates(mods_dir):
+    """Check if a mods directory has pending updates."""
+    updates_dir, old_dir = get_update_dirs(mods_dir)
+    return os.path.exists(updates_dir) or os.path.exists(old_dir)
+
+
+def list_files(directory):
+    """List all files in a directory."""
+    if not os.path.exists(directory):
+        return []
+    return [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
+
+
+def move_files(src_dir, dst_dir):
+    """Move all files from src_dir to dst_dir."""
+    if not os.path.exists(src_dir):
+        return
+    for filename in list_files(src_dir):
+        src_path = os.path.join(src_dir, filename)
+        dst_path = os.path.join(dst_dir, filename)
+        if os.path.exists(dst_path):
+            print(f"  Overwriting: {filename}")
+            os.remove(dst_path)
+        else:
+            print(f"  Moving: {filename}")
+        shutil.move(src_path, dst_path)
+
+
+def remove_dir_if_exists(directory):
+    """Remove a directory if it exists."""
+    if os.path.exists(directory):
+        shutil.rmtree(directory)
+        print(f"  Removed directory: {os.path.basename(directory)}")
+
+
+def show_pending_updates():
+    """Show all pending updates across all mods directories."""
+    has_any = False
+    for mods_dir in UPDATE_MODS_DIRS:
+        updates_dir, old_dir = get_update_dirs(mods_dir)
+        updates_files = list_files(updates_dir)
+        old_files = list_files(old_dir)
+
+        if updates_files or old_files:
+            has_any = True
+            dir_name = os.path.basename(mods_dir)
+            print(f"\n{dir_name}:")
+            if updates_files:
+                print(f"  New versions ({len(updates_files)} files):")
+                for f in sorted(updates_files):
+                    print(f"    + {f}")
+            if old_files:
+                print(f"  Old versions ({len(old_files)} files):")
+                for f in sorted(old_files):
+                    print(f"    - {f}")
+
+    if not has_any:
+        print("No pending updates found.")
+    return has_any
+
+
+def commit_updates():
+    """Commit all pending updates by moving new versions into main folders."""
+    print("\nCommitting updates...")
+
+    for mods_dir in UPDATE_MODS_DIRS:
+        updates_dir, old_dir = get_update_dirs(mods_dir)
+
+        if not has_pending_updates(mods_dir):
+            continue
+
+        dir_name = os.path.basename(mods_dir)
+        print(f"\n{dir_name}:")
+
+        # Move files from updates into the main folder
+        move_files(updates_dir, mods_dir)
+
+        # Remove both -updates and -old directories
+        remove_dir_if_exists(updates_dir)
+        remove_dir_if_exists(old_dir)
+
+    print("\nUpdates committed successfully.")
+
+
+def trash_updates():
+    """Trash all pending updates by restoring old versions into main folders."""
+    print("\nTrashing updates (reverting to old versions)...")
+
+    for mods_dir in UPDATE_MODS_DIRS:
+        updates_dir, old_dir = get_update_dirs(mods_dir)
+
+        if not has_pending_updates(mods_dir):
+            continue
+
+        dir_name = os.path.basename(mods_dir)
+        print(f"\n{dir_name}:")
+
+        # Move files from old back into the main folder
+        move_files(old_dir, mods_dir)
+
+        # Remove both -updates and -old directories
+        remove_dir_if_exists(updates_dir)
+        remove_dir_if_exists(old_dir)
+
+    print("\nUpdates trashed successfully (reverted to old versions).")
+
+
+def print_usage():
+    print("Usage: python -m minecraft_server_tools.commit_updates <command>")
+    print()
+    print("Commands:")
+    print("  status  - Show pending updates")
+    print("  commit  - Apply updates (keep new versions)")
+    print("  trash   - Discard updates (revert to old versions)")
+
+
+def main():
+    if len(sys.argv) < 2:
+        print_usage()
+        print()
+        show_pending_updates()
+        return
+
+    command = sys.argv[1].lower()
+
+    if command == "status":
+        show_pending_updates()
+    elif command == "commit":
+        if show_pending_updates():
+            print()
+            commit_updates()
+    elif command == "trash":
+        if show_pending_updates():
+            print()
+            trash_updates()
+    else:
+        print(f"Unknown command: {command}")
+        print()
+        print_usage()
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

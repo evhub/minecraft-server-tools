@@ -44,6 +44,13 @@ from minecraft_server_tools.constants import (
 )
 
 
+UPDATE_MODS_DIRS = [
+    sync_mods.EXTRA_CLIENT_MODS_DIR,
+    sync_mods.EXTRA_MODS_DIR,
+    sync_mods.BASE_CLIENT_MODS_DIR,
+    sync_mods.BASE_MODS_DIR,
+]
+
 BEGINNING_OF_TIME = datetime.datetime(1, 1, 1)
 
 
@@ -663,12 +670,7 @@ def main():
     sync_mods.main()
 
     update_all(
-        [
-            sync_mods.EXTRA_CLIENT_MODS_DIR,
-            sync_mods.EXTRA_MODS_DIR,
-            sync_mods.BASE_CLIENT_MODS_DIR,
-            sync_mods.BASE_MODS_DIR,
-        ],
+        UPDATE_MODS_DIRS,
         dry_run="--dry-run" in sys.argv,
         google="--google" in sys.argv,
     )
