@@ -687,7 +687,7 @@ def update_files(updated_mod_names_to_files, updated_mods_dir):
         jar_name = get_jar_name_for_curseforge_file(curseforge_file)
         assert jar_name is not None, f"cannot update using curseforge file: {curseforge_file!r}"
         if jar_name in seen_jar_names:
-            print(f"WARNING: resolved multiple mod names to same jar name {jar_name!r}: {seen_jar_names[jar_name]!r} and {mod_name!r}")
+            print(f"\nWARNING: resolved multiple mod names to same jar name {jar_name!r}: {seen_jar_names[jar_name]!r} and {mod_name!r}\n")
         else:
             seen_jar_names[jar_name] = mod_name
         download_file(curseforge_file, updated_mods_dir, mod_name)

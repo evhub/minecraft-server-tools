@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x48f0d676
+# __coconut_hash__ = 0xfdbddb61
 
 # Compiled with Coconut version 3.2.0-post_dev1
 
@@ -794,7 +794,7 @@ def update_files(updated_mod_names_to_files, updated_mods_dir):  #684 (line in C
         jar_name = get_jar_name_for_curseforge_file(curseforge_file)  #687 (line in Coconut source)
         assert jar_name is not None, "cannot update using curseforge file: {_coconut_format_0!r}".format(_coconut_format_0=(curseforge_file))  #688 (line in Coconut source)
         if jar_name in seen_jar_names:  #689 (line in Coconut source)
-            print("WARNING: resolved multiple mod names to same jar name {_coconut_format_0!r}: {_coconut_format_1!r} and {_coconut_format_2!r}".format(_coconut_format_0=(jar_name), _coconut_format_1=(seen_jar_names[jar_name]), _coconut_format_2=(mod_name)))  #690 (line in Coconut source)
+            print("\nWARNING: resolved multiple mod names to same jar name {_coconut_format_0!r}: {_coconut_format_1!r} and {_coconut_format_2!r}\n".format(_coconut_format_0=(jar_name), _coconut_format_1=(seen_jar_names[jar_name]), _coconut_format_2=(mod_name)))  #690 (line in Coconut source)
         else:  #691 (line in Coconut source)
             seen_jar_names[jar_name] = mod_name  #692 (line in Coconut source)
         download_file(curseforge_file, updated_mods_dir, mod_name)  #693 (line in Coconut source)

@@ -13,6 +13,7 @@ In either case, the -updates and -old folders are deleted afterward.
 import os
 import shutil
 import argparse
+import time
 
 from minecraft_server_tools.constants import (
     UPDATED_MODS_DIR_SUFFIX,
@@ -57,11 +58,28 @@ def move_files(src_dir, dst_dir):
         shutil.move(src_path, dst_path)
 
 
-def remove_dir_if_exists(directory):
-    """Remove a directory if it exists."""
-    if os.path.exists(directory):
-        shutil.rmtree(directory)
-        print(f"  Removed directory: {os.path.basename(directory)}")
+def remove_dir_if_exists(directory, max_retries=5, initial_delay=0.5):
+    """Remove a directory if it exists.
+
+    Includes retry logic for Windows file locking issues (e.g., OneDrive sync).
+    """
+    if not os.path.exists(directory):
+        return
+
+    delay = initial_delay
+    for attempt in range(max_retries):
+        try:
+            shutil.rmtree(directory)
+            print(f"  Removed directory: {os.path.basename(directory)}")
+            return
+        except PermissionError as e:
+            if attempt < max_retries - 1:
+                print(f"  Retry {attempt + 1}/{max_retries}: waiting {delay:.1f}s for {os.path.basename(directory)}...")
+                time.sleep(delay)
+                delay *= 2  # exponential backoff
+            else:
+                print(f"  Warning: Could not remove {os.path.basename(directory)} after {max_retries} attempts: {e}")
+                print(f"  You may need to manually delete: {directory}")
 
 
 def show_pending_updates():
