@@ -8,6 +8,11 @@ Minecraft Server Tools is a Python utility suite for managing Minecraft Forge/Ne
 
 ## Build and Development Commands
 
+**Important:** There are two directories to be aware of:
+- **This repository** (`minecraft-server-tools/`) - Edit source code here, run `make build` to compile
+- **Server directory** (`constants.SERVER_DIR`, typically `~/OneDrive/Minecraft/"1.21 Mod Server"`) - Run operational commands like `make update-mods` and `make update-mod-names` here
+
+### In this repository:
 ```bash
 # Compile Coconut source to Python (required before running)
 make build
@@ -20,6 +25,17 @@ make local-install
 
 # Clean Coconut cache
 make clean
+```
+
+### In the server directory:
+```bash
+cd ~/OneDrive/Minecraft/"1.21 Mod Server"
+
+# Update/download mods from CurseForge
+make update-mods
+
+# Update mod name mappings (dry-run mode)
+make update-mod-names
 ```
 
 ## Architecture
