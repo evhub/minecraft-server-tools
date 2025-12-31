@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xeb2aeb2
+# __coconut_hash__ = 0x45cb92c9
 
 # Compiled with Coconut version 3.2.0-post_dev1
 
@@ -176,7 +176,7 @@ def commit_updates():  #93 (line in Coconut source)
 
 def revert_updates():  #116 (line in Coconut source)
     """Revert all pending updates by restoring old versions into main folders."""  #117 (line in Coconut source)
-    print("\Reverting updates (reverting to old versions)...")  #118 (line in Coconut source)
+    print("\nReverting updates (reverting to old versions)...")  #118 (line in Coconut source)
 
     for mods_dir in UPDATE_MODS_DIRS:  #120 (line in Coconut source)
         updates_dir, old_dir = get_update_dirs(mods_dir)  #121 (line in Coconut source)

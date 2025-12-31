@@ -115,7 +115,7 @@ def commit_updates():
 
 def revert_updates():
     """Revert all pending updates by restoring old versions into main folders."""
-    print("\Reverting updates (reverting to old versions)...")
+    print("\nReverting updates (reverting to old versions)...")
 
     for mods_dir in UPDATE_MODS_DIRS:
         updates_dir, old_dir = get_update_dirs(mods_dir)

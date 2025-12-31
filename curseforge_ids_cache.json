@@ -698,7 +698,6 @@
     "Refined Polymorphism": 943086,
     "Refined Storage Addons": 272302,
     "Regions Unexplored (forge/fabric)": 659110,
-    "Regrowth": 1261370,
     "Reliquary Reincarnations": 241319,
     "Repurposed Structures": 1071336,
     "Resource Chickens": 632145,
@@ -769,7 +768,6 @@
     "spark": 361579,
     "Sparse Structures Reforged": 1336749,
     "Spawn": 1109365,
-    "Spawners+": 1261370,
     "Special Drops": 610711,
     "Stalwart Dungeons": 1340179,
     "StarbuncleMania": 746215,
@@ -922,5 +920,8 @@
     "YUNG's Better Mineshafts (Forge/NeoForge)": 389665,
     "YUNG's Better Ocean Monuments (Forge/NeoForge)": 689238,
     "YUNG's Bridges (Forge/NeoForge)": 536660,
-    "YUNG's Extras (Forge/NeoForge)": 480006
+    "YUNG's Extras (Forge/NeoForge)": 480006,
+    "Balm": 531761,
+    "Caelus API (Forge/NeoForge)": 308989,
+    "Loot Integrations": 580689
 }
