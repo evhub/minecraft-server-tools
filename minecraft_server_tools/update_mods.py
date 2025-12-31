@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2d538d19
+# __coconut_hash__ = 0x82e81a7f
 
 # Compiled with Coconut version 3.2.0
 
@@ -210,7 +210,7 @@ def get_curseforge_name(mod_name, jar_name, google=False):  #121 (line in Coconu
         return None  #123 (line in Coconut source)
     query = GOOGLE_QUERY_TEMPLATE.format(mod_name=mod_name, jar_name=jar_name, modloader=MODLOADER, mc_version=ver_join(MC_VERSION), mc_version_2=ver_join(MC_VERSION[:2]), mod_page_name_suffix=MOD_PAGE_NAME_SUFFICES[0])  #124 (line in Coconut source)
     if not google:  #132 (line in Coconut source)
-        raise KeyError("No Curseforge name for mod {_coconut_format_0!r}; expecting Claude to search for it and add it to curseforge_names.json (automated search query would have been {_coconut_format_1!r}).".format(_coconut_format_0=(mod_name), _coconut_format_1=(query)))  #133 (line in Coconut source)
+        raise KeyError("No Curseforge name for mod {_coconut_format_0!r}; expecting Claude to search for it and add it to curseforge_names.json (automated search query would have been {_coconut_format_1!r}).".format(_coconut_format_0=(mod_name), _coconut_format_1=('site:curseforge.com ' + query)))  #133 (line in Coconut source)
     try:  #134 (line in Coconut source)
         while True:  #135 (line in Coconut source)
             search_json = google_api.google(query)  #136 (line in Coconut source)

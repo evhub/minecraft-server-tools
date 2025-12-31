@@ -500,11 +500,10 @@ class _coconut(object):
         import async_generator
     except ImportError as async_generator_import_err:
         async_generator = _coconut_missing_module(async_generator_import_err)
-    if _coconut_sys.version_info < (3, 14):
-        try:
-            import tstr
-        except ImportError as tstr_import_err:
-            tstr = _coconut_missing_module(tstr_import_err)
+    try:
+        import tstr
+    except ImportError as tstr_import_err:
+        tstr = _coconut_missing_module(tstr_import_err)
     if _coconut_sys.version_info < (3,):
         import cPickle as pickle
     else:
