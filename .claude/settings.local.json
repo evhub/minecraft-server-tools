@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(cat:*)",
+      "Bash(cd:*)",
+      "Bash(ls:*)",
+      "Bash(echo:*)",
+      "Bash(python:*)",
+      "Bash(gh:*)",
+      "Bash(pip:*)",
+      "Bash(make:*)",
+      "WebFetch(domain:www.curseforge.com)"
+    ]
+  }
+}

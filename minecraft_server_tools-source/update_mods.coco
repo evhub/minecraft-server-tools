@@ -110,7 +110,7 @@ def get_mod_name(jar_name, silent=None, do_component_splitting=True):
     return mod_name
 
 
-def get_curseforge_name(mod_name, jar_name):
+def get_curseforge_name(mod_name, jar_name, google=False):
     if mod_name in NON_CURSEFORGE_MODS:
         return None
     query = GOOGLE_QUERY_TEMPLATE.format(
@@ -121,6 +121,9 @@ def get_curseforge_name(mod_name, jar_name):
         mc_version_2=ver_join(MC_VERSION[:2]),
         mod_page_name_suffix=MOD_PAGE_NAME_SUFFICES[0],
     )
+    if not google:
+        print(f"Skipping Google search for mod {mod_name!r}; expecting to defer to Claude instead (automated search query would have been {query!r}).")
+        return None
     try:
         while True:
             search_json = google_api.google(query)
@@ -196,13 +199,13 @@ def save_curseforge_names(mod_names_to_curseforge_names):
         json.dump(mod_names_to_curseforge_names, ids_fobj, indent=4)
 
 
-def get_curseforge_names_for(mod_names_to_jar_names):
+def get_curseforge_names_for(mod_names_to_jar_names, google=False):
     all_mod_names_to_curseforge_names = load_curseforge_names()
     found_curseforge_names_to_mod_names = {}
     try:
         for mod_name in mod_names_to_jar_names:
             if mod_name not in all_mod_names_to_curseforge_names:
-                curseforge_name = get_curseforge_name(mod_name, mod_names_to_jar_names[mod_name])
+                curseforge_name = get_curseforge_name(mod_name, mod_names_to_jar_names[mod_name], google=google)
 
                 # do validation
                 if curseforge_name in found_curseforge_names_to_mod_names:
@@ -616,12 +619,12 @@ def make_dirs(*dirs):
             os.mkdir(d)
 
 
-def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interact=None):
+def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interact=None, google=False):
     if interact is None and not PRINT_DEBUG:
         interact = False
     try:
         mod_names_to_jar_names = get_mod_names_to_jar_names(mods_dir)
-        mod_names_to_curseforge_names, nulled_mods = get_curseforge_names_for(mod_names_to_jar_names)
+        mod_names_to_curseforge_names, nulled_mods = get_curseforge_names_for(mod_names_to_jar_names, google=google)
         if not dry_run:
             mod_names_to_curseforge_ids, missing_ids_mods = get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names)
             mod_names_to_latest_versions, missing_files_mods = get_mod_names_to_latest_versions(mod_names_to_curseforge_ids, mod_names_to_jar_names)
@@ -646,12 +649,12 @@ def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interac
         embed()
 
 
-def update_all(mods_dirs, dry_run=False, interact=None):
+def update_all(mods_dirs, dry_run=False, interact=None, google=False):
     couldnt_update = []
     for mods_dir in mods_dirs:
         updated_mods_dir = mods_dir + UPDATED_MODS_DIR_SUFFIX
         old_mods_dir = mods_dir + OLD_MODS_DIR_SUFFIX
-        couldnt_update += update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=dry_run, interact=interact)
+        couldnt_update += update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=dry_run, interact=interact, google=google)
     for mod_name in couldnt_update:
         print(f"Unable to automatically update mod: {mod_name}")
 
@@ -667,6 +670,7 @@ def main():
             sync_mods.BASE_MODS_DIR,
         ],
         dry_run="--dry-run" in sys.argv,
+        google="--google" in sys.argv,
     )
 
     # from coconut import embed

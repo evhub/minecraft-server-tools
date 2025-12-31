@@ -56,6 +56,12 @@ def bool_env_var(env_var, default):
 
 WINDOWS = os.name == "nt"
 
+OS_NAME = (
+    if WINDOWS then "windows"
+    else if sys.platform == "darwin" then "macos"
+    else "linux"
+)
+
 YES_STRS = [
     "y",
     "yes",
@@ -75,12 +81,14 @@ NO_STRS = [
 
 # Commonly changed constants
 
-MC_VERSION = (1, 20, 1)
-FORGE_VERSION = (47, 3, 0)
+MC_VERSION = (1, 21, 1)
+FORGE_VERSION = (21, 1, 215)
+
+GRAAL_VERSION = 25
 
 SERVER_DIR = first_that_exists([
     os.getenv("MINECRAFT_SERVER_DIR"),
-    "~/OneDrive/Minecraft/1.20 Mod Server",
+    "~/OneDrive/Minecraft/1.21 Mod Server",
 ])
 
 ALT_MOD_ZIP_PATH = fixpath("~/Dropbox/Minecraft Mods/Minecraft Mods.zip")
@@ -162,6 +170,10 @@ PRINT_DEBUG = bool_env_var("MC_DEBUG_PRINT", False)
 JPS_DEBUG = bool_env_var("MC_DEBUG_JPS", False)  # filter jstack: ^(\s*(at java|at jdk|at sun|at net.minecraft|at io.netty)\b)[^\n]*\n*
 LOG4J_DEBUG = bool_env_var("MC_DEBUG_LOG4J", False)
 
+# update from https://neoforged.net/
+FORGE_INSTALLER_JAR = format_vers("neoforge-{forge_version}-installer.jar")
+FORGE_INSTALLER_URL = format_vers("https://maven.neoforged.net/releases/net/neoforged/neoforge/{forge_version}") + f"/{FORGE_INSTALLER_JAR}"
+
 
 # Fix RAMs
 
@@ -222,9 +234,9 @@ DEDUPLICATE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-deduplicate"
 
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 
-MODLOADER = "Forge"
+MODLOADER = "NeoForge"
 WRONG_MODLOADERS = ["Fabric", "Quilt"]
-MAYBE_WRONG_MODLOADERS = ["NeoForge"]
+MAYBE_WRONG_MODLOADERS = ["Forge"]
 
 NO_COMPONENT_SPLIT_MODS = [
     "project red",
@@ -244,7 +256,7 @@ COMPONENT_SEPS = [
 
 NON_NAME_COMPONENT_REGEX = full_regex(
     r"[0-9].*|"
-    + r"(?!cave|a$|ae2|rare|da)((forge|fabric|quilt|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+"
+    + r"(?!cave|a$|ae2|rare|da)(((neo)?forge|fabric|quilt|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+"
 )
 
 NAME_REGEXES_TO_SPACE = [
@@ -346,14 +358,8 @@ CURSEFORGE_API_RETRY_DELAY = 0.1
 USE_GRAAL = not JPS_DEBUG
 USE_LARGE_PAGES = False
 
-OS_NAME = (
-    if WINDOWS then "windows"
-    else if sys.platform == "darwin" then "macos"
-    else "linux"
-)
-
-GRAAL_ZIP_NAME = f"graalvm-jdk-22_{OS_NAME}-x64_bin.zip"
-GRAAL_URL = f"https://download.oracle.com/graalvm/22/latest/{GRAAL_ZIP_NAME}"
+GRAAL_ZIP_NAME = f"graalvm-jdk-{GRAAL_VERSION}_{OS_NAME}-x64_bin.zip"
+GRAAL_URL = f"https://download.oracle.com/graalvm/{GRAAL_VERSION}/latest/{GRAAL_ZIP_NAME}"
 
 GRAAL_BASE_DIR = os.path.join(ROOT_DIR, "graal")
 GRAAL_ZIP_PATH = os.path.join(GRAAL_BASE_DIR, GRAAL_ZIP_NAME)
@@ -504,10 +510,7 @@ if WINDOWS:
 else:
     FORGE_LAUNCH_CMD = ["sh", os.path.join(SERVER_DIR, "run.sh")]
 
-FORGE_INSTALLER_URL = format_vers("https://maven.minecraftforge.net/net/minecraftforge/forge/{mc_version}-{forge_version}/forge-{mc_version}-{forge_version}-installer.jar")
-
-FORGE_INSTALLER_JAR = format_vers("forge-{mc_version}-{forge_version}-installer.jar")
-FORGE_JAR = format_vers("forge-{mc_version}-{forge_version}.jar")
+FORGE_JAR = format_vers("neoforge-{forge_version}.jar")
 
 OLD_JARS_REGEX = full_regex(format_vers(r"(forge-(?!{mc_version}-{forge_version})[0-9.]+-[0-9.]+(-installer)?|minecraft_server\.(?!{mc_version})[0-9.]+)\.jar"))
 
