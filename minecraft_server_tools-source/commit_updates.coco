@@ -11,8 +11,8 @@ This script allows you to either:
 In either case, the -updates and -old folders are deleted afterward.
 """
 import os
-import sys
 import shutil
+import argparse
 
 from minecraft_server_tools.constants import (
     UPDATED_MODS_DIR_SUFFIX,
@@ -136,39 +136,41 @@ def trash_updates():
     print("\nUpdates trashed successfully (reverted to old versions).")
 
 
-def print_usage():
-    print("Usage: python -m minecraft_server_tools.commit_updates <command>")
-    print()
-    print("Commands:")
-    print("  status  - Show pending updates")
-    print("  commit  - Apply updates (keep new versions)")
-    print("  trash   - Discard updates (revert to old versions)")
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Commit or trash pending mod updates.",
+    )
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    subparsers.add_parser(
+        "status",
+        help="Show pending updates",
+    )
+    subparsers.add_parser(
+        "commit",
+        help="Apply updates (keep new versions)",
+    )
+    subparsers.add_parser(
+        "trash",
+        help="Discard updates (revert to old versions)",
+    )
+
+    return parser.parse_args()
 
 
 def main():
-    if len(sys.argv) < 2:
-        print_usage()
-        print()
-        show_pending_updates()
-        return
+    args = parse_args()
 
-    command = sys.argv[1].lower()
-
-    if command == "status":
+    if args.command is None or args.command == "status":
         show_pending_updates()
-    elif command == "commit":
+    elif args.command == "commit":
         if show_pending_updates():
             print()
             commit_updates()
-    elif command == "trash":
+    elif args.command == "trash":
         if show_pending_updates():
             print()
             trash_updates()
-    else:
-        print(f"Unknown command: {command}")
-        print()
-        print_usage()
-        sys.exit(1)
 
 
 if __name__ == "__main__":

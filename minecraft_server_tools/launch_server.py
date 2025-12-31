@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2bf8ddba
+# __coconut_hash__ = 0xfb1533a2
 
 # Compiled with Coconut version 3.2.0
 
@@ -56,9 +56,9 @@ else:
 # Compiled Coconut: -----------------------------------------------------------
 
 import os  #1 (line in Coconut source)
-import sys  #2 (line in Coconut source)
-import subprocess  #3 (line in Coconut source)
-import shutil  #4 (line in Coconut source)
+import subprocess  #2 (line in Coconut source)
+import shutil  #3 (line in Coconut source)
+import argparse  #4 (line in Coconut source)
 try:  #5 (line in Coconut source)
     _coconut_sys_0 = sys  # type: ignore  #5 (line in Coconut source)
 except _coconut.NameError:  #5 (line in Coconut source)
@@ -299,10 +299,19 @@ def start_server(dry_run=False):  #196 (line in Coconut source)
 
 
 
-def main():  #211 (line in Coconut source)
-    start_server(dry_run="--dry-run" in sys.argv)  #212 (line in Coconut source)
+@_coconut_tco  #211 (line in Coconut source)
+def parse_args():  #211 (line in Coconut source)
+    parser = argparse.ArgumentParser(description="Launch the Minecraft server with optimized JVM settings.")  #212 (line in Coconut source)
+    parser.add_argument("--dry-run", action="store_true", help="Prepare server files without actually launching the server")  #215 (line in Coconut source)
+    return _coconut_tail_call(parser.parse_args)  #220 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #215 (line in Coconut source)
-    main()  #216 (line in Coconut source)
+def main():  #223 (line in Coconut source)
+    args = parse_args()  #224 (line in Coconut source)
+    start_server(dry_run=args.dry_run)  #225 (line in Coconut source)
+
+
+
+if __name__ == "__main__":  #228 (line in Coconut source)
+    main()  #229 (line in Coconut source)

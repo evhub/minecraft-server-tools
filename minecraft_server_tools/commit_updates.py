@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7a20aeae
+# __coconut_hash__ = 0x3c212c92
 
 # Compiled with Coconut version 3.2.0
 
@@ -70,8 +70,8 @@ else:
 
 
 import os  #13 (line in Coconut source)
-import sys  #14 (line in Coconut source)
-import shutil  #15 (line in Coconut source)
+import shutil  #14 (line in Coconut source)
+import argparse  #15 (line in Coconut source)
 
 from minecraft_server_tools.constants import UPDATED_MODS_DIR_SUFFIX  #17 (line in Coconut source)
 from minecraft_server_tools.constants import OLD_MODS_DIR_SUFFIX  #17 (line in Coconut source)
@@ -198,42 +198,34 @@ def trash_updates():  #116 (line in Coconut source)
 
 
 
-def print_usage():  #139 (line in Coconut source)
-    print("Usage: python -m minecraft_server_tools.commit_updates <command>")  #140 (line in Coconut source)
-    print()  #141 (line in Coconut source)
-    print("Commands:")  #142 (line in Coconut source)
-    print("  status  - Show pending updates")  #143 (line in Coconut source)
-    print("  commit  - Apply updates (keep new versions)")  #144 (line in Coconut source)
-    print("  trash   - Discard updates (revert to old versions)")  #145 (line in Coconut source)
+@_coconut_tco  #139 (line in Coconut source)
+def parse_args():  #139 (line in Coconut source)
+    parser = argparse.ArgumentParser(description="Commit or trash pending mod updates.")  #140 (line in Coconut source)
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")  #143 (line in Coconut source)
+
+    subparsers.add_parser("status", help="Show pending updates")  #145 (line in Coconut source)
+    subparsers.add_parser("commit", help="Apply updates (keep new versions)")  #149 (line in Coconut source)
+    subparsers.add_parser("trash", help="Discard updates (revert to old versions)")  #153 (line in Coconut source)
+
+    return _coconut_tail_call(parser.parse_args)  #158 (line in Coconut source)
 
 
 
-def main():  #148 (line in Coconut source)
-    if len(sys.argv) < 2:  #149 (line in Coconut source)
-        print_usage()  #150 (line in Coconut source)
-        print()  #151 (line in Coconut source)
-        show_pending_updates()  #152 (line in Coconut source)
-        return  #153 (line in Coconut source)
+def main():  #161 (line in Coconut source)
+    args = parse_args()  #162 (line in Coconut source)
 
-    command = sys.argv[1].lower()  #155 (line in Coconut source)
-
-    if command == "status":  #157 (line in Coconut source)
-        show_pending_updates()  #158 (line in Coconut source)
-    elif command == "commit":  #159 (line in Coconut source)
-        if show_pending_updates():  #160 (line in Coconut source)
-            print()  #161 (line in Coconut source)
-            commit_updates()  #162 (line in Coconut source)
-    elif command == "trash":  #163 (line in Coconut source)
-        if show_pending_updates():  #164 (line in Coconut source)
-            print()  #165 (line in Coconut source)
-            trash_updates()  #166 (line in Coconut source)
-    else:  #167 (line in Coconut source)
-        print("Unknown command: {_coconut_format_0}".format(_coconut_format_0=(command)))  #168 (line in Coconut source)
-        print()  #169 (line in Coconut source)
-        print_usage()  #170 (line in Coconut source)
-        sys.exit(1)  #171 (line in Coconut source)
+    if args.command is None or args.command == "status":  #164 (line in Coconut source)
+        show_pending_updates()  #165 (line in Coconut source)
+    elif args.command == "commit":  #166 (line in Coconut source)
+        if show_pending_updates():  #167 (line in Coconut source)
+            print()  #168 (line in Coconut source)
+            commit_updates()  #169 (line in Coconut source)
+    elif args.command == "trash":  #170 (line in Coconut source)
+        if show_pending_updates():  #171 (line in Coconut source)
+            print()  #172 (line in Coconut source)
+            trash_updates()  #173 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #174 (line in Coconut source)
-    main()  #175 (line in Coconut source)
+if __name__ == "__main__":  #176 (line in Coconut source)
+    main()  #177 (line in Coconut source)

@@ -1,10 +1,10 @@
 import os
-import sys
 import json
 import subprocess
 import traceback
 import datetime
 import time
+import argparse
 from pprint import pprint
 from urllib.parse import unquote
 from collections import defaultdict
@@ -665,17 +665,33 @@ def update_all(mods_dirs, dry_run=False, interact=None, google=False):
         print(f"Unable to automatically update mod: {mod_name}")
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Update mods from CurseForge to their latest versions.",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Only check for missing CurseForge name mappings without downloading updates",
+    )
+    parser.add_argument(
+        "--google",
+        action="store_true",
+        help="Use Google search to find CurseForge names for unknown mods",
+    )
+    return parser.parse_args()
+
+
 def main():
+    args = parse_args()
+
     sync_mods.main()
 
     update_all(
         UPDATE_MODS_DIRS,
-        dry_run="--dry-run" in sys.argv,
-        google="--google" in sys.argv,
+        dry_run=args.dry_run,
+        google=args.google,
     )
-
-    # from coconut import embed
-    # embed()
 
 
 if __name__ == "__main__":

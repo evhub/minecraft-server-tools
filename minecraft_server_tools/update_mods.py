@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x275125a1
+# __coconut_hash__ = 0xee749ace
 
 # Compiled with Coconut version 3.2.0
 
@@ -56,12 +56,12 @@ else:
 # Compiled Coconut: -----------------------------------------------------------
 
 import os  #1 (line in Coconut source)
-import sys  #2 (line in Coconut source)
-import json  #3 (line in Coconut source)
-import subprocess  #4 (line in Coconut source)
-import traceback  #5 (line in Coconut source)
-import datetime  #6 (line in Coconut source)
-import time  #7 (line in Coconut source)
+import json  #2 (line in Coconut source)
+import subprocess  #3 (line in Coconut source)
+import traceback  #4 (line in Coconut source)
+import datetime  #5 (line in Coconut source)
+import time  #6 (line in Coconut source)
+import argparse  #7 (line in Coconut source)
 from pprint import pprint  #8 (line in Coconut source)
 try:  #9 (line in Coconut source)
     _coconut_sys_0 = sys  # type: ignore  #9 (line in Coconut source)
@@ -760,15 +760,23 @@ def update_all(mods_dirs, dry_run=False, interact=None, google=False):  #658 (li
 
 
 
-def main():  #668 (line in Coconut source)
-    sync_mods.main()  #669 (line in Coconut source)
-
-    update_all(UPDATE_MODS_DIRS, dry_run="--dry-run" in sys.argv, google="--google" in sys.argv)  #671 (line in Coconut source)
-
-# from coconut import embed
-# embed()
-
+@_coconut_tco  #668 (line in Coconut source)
+def parse_args():  #668 (line in Coconut source)
+    parser = argparse.ArgumentParser(description="Update mods from CurseForge to their latest versions.")  #669 (line in Coconut source)
+    parser.add_argument("--dry-run", action="store_true", help="Only check for missing CurseForge name mappings without downloading updates")  #672 (line in Coconut source)
+    parser.add_argument("--google", action="store_true", help="Use Google search to find CurseForge names for unknown mods")  #677 (line in Coconut source)
+    return _coconut_tail_call(parser.parse_args)  #682 (line in Coconut source)
 
 
-if __name__ == "__main__":  #681 (line in Coconut source)
-    main()  #682 (line in Coconut source)
+
+def main():  #685 (line in Coconut source)
+    args = parse_args()  #686 (line in Coconut source)
+
+    sync_mods.main()  #688 (line in Coconut source)
+
+    update_all(UPDATE_MODS_DIRS, dry_run=args.dry_run, google=args.google)  #690 (line in Coconut source)
+
+
+
+if __name__ == "__main__":  #697 (line in Coconut source)
+    main()  #698 (line in Coconut source)

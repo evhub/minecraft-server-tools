@@ -1,9 +1,9 @@
 import os
-import sys
 import shutil
 import zipfile
 import tempfile
 import json
+import argparse
 from contextlib import contextmanager
 
 from tqdm import tqdm
@@ -176,7 +176,7 @@ def unzipped_mods():
         yield temp_dir
 
 
-def install_from_dir(source_dir, do_optional=False, do_barrel_roll=True):
+def install_from_dir(source_dir, do_optional=False, do_barrel_roll=True, no_mods=False, no_files=False):
     launch_server.clean_forge_jars(MINECRAFT_DIR)
 
     ensure_forge_client(source_dir)
@@ -186,20 +186,20 @@ def install_from_dir(source_dir, do_optional=False, do_barrel_roll=True):
         if not set_jvm_args():
             raise OSError(f"Failed to automatically install forge; you'll need to run {FORGE_INSTALLER_JAR} manually.")
 
-    if "--no-mods" not in sys.argv:
+    if not no_mods:
         sync_client_mods(source_dir, do_barrel_roll)
-    if "--no-files" not in sys.argv:
+    if not no_files:
         install_extras(source_dir, do_optional)
 
 
-def install_from_server():
+def install_from_server(no_mods=False, no_files=False, no_zip=False):
     """Install from server and return whether or not to install optional files."""
     sync_mods.main()
     launch_server.start_server(dry_run=True)
 
-    install_from_dir(SERVER_DIR, do_optional=True)
+    install_from_dir(SERVER_DIR, do_optional=True, no_mods=no_mods, no_files=no_files)
 
-    if not any(x in sys.argv for x in ("--no-zip", "--no-mods", "--no-files")):
+    if not (no_zip or no_mods or no_files):
         zip_mods()
     return True, True
 
@@ -214,11 +214,11 @@ def ask_question(text, default):
         return default
 
 
-def install_from_zip():
+def install_from_zip(optional=None, barrel_roll=None, no_mods=False, no_files=False):
     """Install from zip and return whether or not to install optional files."""
-    if "--yes-optional" in sys.argv:
+    if optional is True:
         do_optional = True
-    elif "--no-optional" in sys.argv:
+    elif optional is False:
         do_optional = False
     else:
         do_optional = ask_question(f"\nInstall optional files {OPTIONAL_INSTALL_FILES + OPTIONAL_INSTALL_FOLDERS}? [Y/n] ", True)
@@ -229,9 +229,9 @@ def install_from_zip():
 
     if BARREL_ROLL_MOD_PREFIX is None:
         do_barrel_roll = None
-    elif "--yes-barrel-roll" in sys.argv:
+    elif barrel_roll is True:
         do_barrel_roll = True
-    elif "--no-barrel-roll" in sys.argv:
+    elif barrel_roll is False:
         do_barrel_roll = False
     else:
         do_barrel_roll = ask_question("\nDo a barrel roll? [Y/n] ", True)
@@ -241,7 +241,7 @@ def install_from_zip():
         print("Will NOT do a barrel roll.")
 
     with unzipped_mods() as temp_dir:
-        install_from_dir(temp_dir, do_optional=, do_barrel_roll=)
+        install_from_dir(temp_dir, do_optional=do_optional, do_barrel_roll=do_barrel_roll, no_mods=no_mods, no_files=no_files)
     return do_optional, do_barrel_roll
 
 
@@ -255,18 +255,86 @@ def launch_minecraft():
         launch_server.run_cmd(["open", LAUNCHER_FILE])
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Install Minecraft client with mods and configuration files.",
+    )
+    parser.add_argument(
+        "--launch",
+        action="store_true",
+        help="Launch Minecraft after installation",
+    )
+    parser.add_argument(
+        "--no-mods",
+        action="store_true",
+        help="Skip installing mods",
+    )
+    parser.add_argument(
+        "--no-files",
+        action="store_true",
+        help="Skip installing extra files and folders",
+    )
+    parser.add_argument(
+        "--no-zip",
+        action="store_true",
+        help="Skip zipping mods after server install",
+    )
+
+    optional_group = parser.add_mutually_exclusive_group()
+    optional_group.add_argument(
+        "--yes-optional",
+        action="store_true",
+        help="Install optional files without prompting",
+    )
+    optional_group.add_argument(
+        "--no-optional",
+        action="store_true",
+        help="Skip optional files without prompting",
+    )
+
+    barrel_roll_group = parser.add_mutually_exclusive_group()
+    barrel_roll_group.add_argument(
+        "--yes-barrel-roll",
+        action="store_true",
+        help="Install barrel roll mod without prompting",
+    )
+    barrel_roll_group.add_argument(
+        "--no-barrel-roll",
+        action="store_true",
+        help="Skip barrel roll mod without prompting",
+    )
+
+    return parser.parse_args()
+
+
 def main():
+    args = parse_args()
+
+    # Convert mutually exclusive groups to tri-state values
+    optional = True if args.yes_optional else (False if args.no_optional else None)
+    barrel_roll = True if args.yes_barrel_roll else (False if args.no_barrel_roll else None)
+
     if os.path.exists(SERVER_DIR):
         print("\nInstalling from server...")
-        do_optional, do_barrel_roll = install_from_server()
+        do_optional, do_barrel_roll = install_from_server(
+            no_mods=args.no_mods,
+            no_files=args.no_files,
+            no_zip=args.no_zip,
+        )
     elif os.path.exists(MOD_ZIP_PATH):
         if "downloads" in MOD_ZIP_PATH.lower():
             print("WARNING: Using downloaded Minecraft Mods.zip instead of synchronized version; you will not get updates automatically.")
         print("\nInstalling from zipfile...")
-        do_optional, do_barrel_roll = install_from_zip()
+        do_optional, do_barrel_roll = install_from_zip(
+            optional=optional,
+            barrel_roll=barrel_roll,
+            no_mods=args.no_mods,
+            no_files=args.no_files,
+        )
     else:
         raise IOError("Could not find files for install (make sure you have the 'Minecraft Mods' folder in your OneDrive).")
-    if "--launch" in sys.argv:
+
+    if args.launch:
         launch_minecraft()
     return do_optional, do_barrel_roll
 

@@ -63,7 +63,7 @@ Key constants in `constants.coco`:
 
 ## Entry Points
 
-Run as Python modules after building:
+Run as Python modules after building, e.g.:
 ```bash
 python -m minecraft_server_tools.update_mods
 python -m minecraft_server_tools.install_client

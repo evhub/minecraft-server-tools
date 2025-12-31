@@ -1,7 +1,7 @@
 import os
-import sys
 import subprocess
 import shutil
+import argparse
 from urllib.request import urlretrieve
 from urllib.error import HTTPError
 from contextlib import contextmanager
@@ -208,8 +208,21 @@ def start_server(dry_run=False):
         copy_new_world_configs()
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Launch the Minecraft server with optimized JVM settings.",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Prepare server files without actually launching the server",
+    )
+    return parser.parse_args()
+
+
 def main():
-    start_server(dry_run="--dry-run" in sys.argv)
+    args = parse_args()
+    start_server(dry_run=args.dry_run)
 
 
 if __name__ == "__main__":
