@@ -10,9 +10,10 @@
       "Bash(gh:*)",
       "Bash(pip:*)",
       "Bash(make:*)",
+      "Bash(git:*)",
       "WebFetch(domain:www.curseforge.com)",
-      "Bash(git add:*)",
-      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd argparse to all entry points\n\n- update_mods: --dry-run, --google flags\n- commit_updates: status/commit/trash subcommands\n- install_client: --launch, --no-mods, --no-files, --no-zip,\n  --yes-optional/--no-optional, --yes-barrel-roll/--no-barrel-roll\n- launch_server: --dry-run flag\n\nAll modules now support --help for proper documentation.\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+      "WebFetch(domain:www.graalvm.org)",
+      "WebFetch(domain:github.com)"
     ]
   }
 }

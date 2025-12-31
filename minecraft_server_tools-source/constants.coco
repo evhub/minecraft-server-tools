@@ -383,7 +383,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
 
         "-XX:+OptimizeStringConcat",  # default: True
         "-XX:+UseCompressedOops",  # default: True
-        "-XX:+ScavengeBeforeFullGC",  # default: True
+        # "-XX:+ScavengeBeforeFullGC",  # default: True; deprecated by java
         "-XX:+OmitStackTraceInFastThrow",  # default: True
 
         "-XX:+ParallelRefProcEnabled",  # aikar-flags
@@ -397,7 +397,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         "-XX:+EnableDynamicAgentLoading",  # java warning
 
         "-XX:MaxGCPauseMillis=37",  # brucethemoose: 37; atm: 200; default: 200
-        "-XX:NmethodSweepActivity=1",  # brucethemoose: 1
+        # "-XX:NmethodSweepActivity=1",  # brucethemoose: 1; deprecated by java
         "-XX:ThreadPriorityPolicy=1",  # brucethemoose: 1
 
         "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
@@ -439,7 +439,9 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
     elif vm == "graal":
         args += [
             "-XX:+EagerJVMCI",  # brucethemoose
-            "-Dgraal.TuneInlinerExploration=1",  # brucethemoose: 1
+            "-Djdk.graal.TuneInlinerExploration=1",  # brucethemoose: 1
+            "-Djdk.graal.LoopRotation=true",  # claude suggestion
+            "-Djdk.graal.OptWriteMotion=true",  # claude suggestion
         ]
     else:
         raise ValueError(f"unknown java VM {vm!r}")
