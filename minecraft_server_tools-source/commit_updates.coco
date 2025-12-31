@@ -1,4 +1,4 @@
-"""Entry point to commit or trash pending mod updates.
+"""Entry point to commit or revert pending mod updates.
 
 After update_mods.coco runs, it creates:
 - {mods_dir}-updates: Contains newly downloaded mod versions
@@ -6,7 +6,7 @@ After update_mods.coco runs, it creates:
 
 This script allows you to either:
 - commit: Move updates into the main folders (keeping new versions)
-- trash: Move old versions back into main folders (reverting to old versions)
+- revert: Move old versions back into main folders (reverting to old versions)
 
 In either case, the -updates and -old folders are deleted afterward.
 """
@@ -113,9 +113,9 @@ def commit_updates():
     print("\nUpdates committed successfully.")
 
 
-def trash_updates():
-    """Trash all pending updates by restoring old versions into main folders."""
-    print("\nTrashing updates (reverting to old versions)...")
+def revert_updates():
+    """Revert all pending updates by restoring old versions into main folders."""
+    print("\Reverting updates (reverting to old versions)...")
 
     for mods_dir in UPDATE_MODS_DIRS:
         updates_dir, old_dir = get_update_dirs(mods_dir)
@@ -133,12 +133,12 @@ def trash_updates():
         remove_dir_if_exists(updates_dir)
         remove_dir_if_exists(old_dir)
 
-    print("\nUpdates trashed successfully (reverted to old versions).")
+    print("\nUpdates reverted successfully (reverted to old versions).")
 
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Commit or trash pending mod updates.",
+        description="Commit or revert pending mod updates.",
     )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
@@ -151,7 +151,7 @@ def parse_args():
         help="Apply updates (keep new versions)",
     )
     subparsers.add_parser(
-        "trash",
+        "revert",
         help="Discard updates (revert to old versions)",
     )
 
@@ -167,10 +167,10 @@ def main():
         if show_pending_updates():
             print()
             commit_updates()
-    elif args.command == "trash":
+    elif args.command == "revert":
         if show_pending_updates():
             print()
-            trash_updates()
+            revert_updates()
 
 
 if __name__ == "__main__":

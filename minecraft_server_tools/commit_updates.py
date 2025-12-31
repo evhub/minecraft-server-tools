@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x102c852d
+# __coconut_hash__ = 0xeb2aeb2
 
 # Compiled with Coconut version 3.2.0-post_dev1
 
-"""Entry point to commit or trash pending mod updates.
+"""Entry point to commit or revert pending mod updates.
 
 After update_mods.coco runs, it creates:
 - {mods_dir}-updates: Contains newly downloaded mod versions
@@ -12,7 +12,7 @@ After update_mods.coco runs, it creates:
 
 This script allows you to either:
 - commit: Move updates into the main folders (keeping new versions)
-- trash: Move old versions back into main folders (reverting to old versions)
+- revert: Move old versions back into main folders (reverting to old versions)
 
 In either case, the -updates and -old folders are deleted afterward.
 """
@@ -174,9 +174,9 @@ def commit_updates():  #93 (line in Coconut source)
 
 
 
-def trash_updates():  #116 (line in Coconut source)
-    """Trash all pending updates by restoring old versions into main folders."""  #117 (line in Coconut source)
-    print("\nTrashing updates (reverting to old versions)...")  #118 (line in Coconut source)
+def revert_updates():  #116 (line in Coconut source)
+    """Revert all pending updates by restoring old versions into main folders."""  #117 (line in Coconut source)
+    print("\Reverting updates (reverting to old versions)...")  #118 (line in Coconut source)
 
     for mods_dir in UPDATE_MODS_DIRS:  #120 (line in Coconut source)
         updates_dir, old_dir = get_update_dirs(mods_dir)  #121 (line in Coconut source)
@@ -194,18 +194,18 @@ def trash_updates():  #116 (line in Coconut source)
         remove_dir_if_exists(updates_dir)  #133 (line in Coconut source)
         remove_dir_if_exists(old_dir)  #134 (line in Coconut source)
 
-    print("\nUpdates trashed successfully (reverted to old versions).")  #136 (line in Coconut source)
+    print("\nUpdates reverted successfully (reverted to old versions).")  #136 (line in Coconut source)
 
 
 
 @_coconut_tco  #139 (line in Coconut source)
 def parse_args():  #139 (line in Coconut source)
-    parser = argparse.ArgumentParser(description="Commit or trash pending mod updates.")  #140 (line in Coconut source)
+    parser = argparse.ArgumentParser(description="Commit or revert pending mod updates.")  #140 (line in Coconut source)
     subparsers = parser.add_subparsers(dest="command", help="Available commands")  #143 (line in Coconut source)
 
     subparsers.add_parser("status", help="Show pending updates")  #145 (line in Coconut source)
     subparsers.add_parser("commit", help="Apply updates (keep new versions)")  #149 (line in Coconut source)
-    subparsers.add_parser("trash", help="Discard updates (revert to old versions)")  #153 (line in Coconut source)
+    subparsers.add_parser("revert", help="Discard updates (revert to old versions)")  #153 (line in Coconut source)
 
     return _coconut_tail_call(parser.parse_args)  #158 (line in Coconut source)
 
@@ -220,10 +220,10 @@ def main():  #161 (line in Coconut source)
         if show_pending_updates():  #167 (line in Coconut source)
             print()  #168 (line in Coconut source)
             commit_updates()  #169 (line in Coconut source)
-    elif args.command == "trash":  #170 (line in Coconut source)
+    elif args.command == "revert":  #170 (line in Coconut source)
         if show_pending_updates():  #171 (line in Coconut source)
             print()  #172 (line in Coconut source)
-            trash_updates()  #173 (line in Coconut source)
+            revert_updates()  #173 (line in Coconut source)
 
 
 
