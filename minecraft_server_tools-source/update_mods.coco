@@ -537,12 +537,26 @@ def best_release(curseforge_files, mod_name) =
     sort_releases(curseforge_files, mod_name)[0]
 
 
-def get_jar_name_for_curseforge_file(curseforge_file):
+def reconstruct_curseforge_download_url(curseforge_file):
+    """Reconstruct download URL from file ID when downloadUrl is None."""
+    file_id = curseforge_file["id"]
+    filename = curseforge_file["fileName"]
+    first_part = file_id // 1000
+    second_part = file_id % 1000
+    return f"https://edge.forgecdn.net/files/{first_part}/{second_part}/{filename}"
+
+
+def get_curseforge_download_url(curseforge_file):
+    """Get download URL, reconstructing it if necessary."""
     url = curseforge_file["downloadUrl"]
     if url is None:
-        return None
-    else:
-        return url.rsplit("/", 1)[-1]
+        return reconstruct_curseforge_download_url(curseforge_file)
+    return url
+
+
+def get_jar_name_for_curseforge_file(curseforge_file):
+    url = get_curseforge_download_url(curseforge_file)
+    return url.rsplit("/", 1)[-1]
 
 
 def correct_modloader(versions, jar_name):
@@ -650,7 +664,7 @@ def get_updated_mod_names_to_files(mod_names_to_jar_names, mod_names_to_latest_v
 def download_file(curseforge_file, updated_mods_dir, mod_name):
     jar_name = get_jar_name_for_curseforge_file(curseforge_file)
     assert jar_name is not None, f"cannot download from curseforge file: {curseforge_file!r}"
-    url = curseforge_file["downloadUrl"]
+    url = get_curseforge_download_url(curseforge_file)
     new_jar_path = os.path.join(updated_mods_dir, jar_name)
     if os.path.exists(new_jar_path):
         print(f"WARNING: attempting to redownload existing jar {jar_name!r}")
