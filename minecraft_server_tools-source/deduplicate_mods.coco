@@ -1,4 +1,5 @@
 import os
+import argparse
 
 from minecraft_server_tools import sync_mods, update_mods
 from minecraft_server_tools.constants import (
@@ -36,6 +37,15 @@ def get_all_mod_names(mods_dirs):
     return all_mod_names
 
 
+def get_all_jar_names(mods_dirs):
+    """Get all jar names (not mod names) from the given directories."""
+    all_jar_names = set()
+    for dirname in mods_dirs:
+        if os.path.exists(dirname):
+            all_jar_names.update(sync_mods.get_location_table_for(dirname).keys())
+    return all_jar_names
+
+
 def add_new_mods(new_mods_dir, to_mods_dir, all_mod_names):
     to_mods_dir_mod_names = silent_mod_names_to_jar_names(to_mods_dir)
     made_changes = False
@@ -60,16 +70,30 @@ def add_new_mods(new_mods_dir, to_mods_dir, all_mod_names):
 
 
 def deduplicate_mods(new_mods_dir, all_mod_names, warn_only=False):
+    """Deduplicate by mod name (loose matching)."""
     if os.path.exists(new_mods_dir):
         print(f"\nDeduplicating mods in: {new_mods_dir}")
-        for mod_name, all_jar_names in update_mods.get_mod_names_to_all_jar_names(new_mods_dir, silent=True).items():
-            for jar_name in all_jar_names:
+        for mod_name, all_jar_names_for_mod in update_mods.get_mod_names_to_all_jar_names(new_mods_dir, silent=True).items():
+            for jar_name in all_jar_names_for_mod:
                 from_path = os.path.join(new_mods_dir, jar_name)
                 if mod_name in all_mod_names:
                     if warn_only:
                         print(f"\tFound duplicate mod: {from_path}")
                     else:
                         sync_mods.rm_mod(from_path)
+
+
+def deduplicate_mods_strict(new_mods_dir, all_jar_names, warn_only=False):
+    """Deduplicate by exact jar name (strict matching)."""
+    if os.path.exists(new_mods_dir):
+        print(f"\nDeduplicating mods (strict) in: {new_mods_dir}")
+        for jar_name in sync_mods.get_location_table_for(new_mods_dir):
+            from_path = os.path.join(new_mods_dir, jar_name)
+            if jar_name in all_jar_names:
+                if warn_only:
+                    print(f"\tFound duplicate jar: {from_path}")
+                else:
+                    sync_mods.rm_mod(from_path)
 
 
 def fix_deduplicate_mods():
@@ -87,19 +111,40 @@ def warn_duplicate_mods():
         deduplicate_mods(mods_dir, other_mod_names, warn_only=True)
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Deduplicate mods by removing duplicates from deduplicate directories.",
+    )
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Only deduplicate exact matching jar names instead of matching by mod name",
+    )
+    return parser.parse_args()
+
+
 def main():
+    args = parse_args()
+
     fix_deduplicate_mods()
 
-    all_mod_names = get_all_mod_names([
+    all_dirs = [
         sync_mods.MODS_DIR,
         sync_mods.CLIENT_MODS_DIR,
         sync_mods.REMOVED_MODS_DIR,
         sync_mods.REMOVED_CLIENT_MODS_DIR,
         sync_mods.STAGING_MODS_DIR,
         sync_mods.STAGING_CLIENT_MODS_DIR,
-    ])
-    deduplicate_mods(DEDUPLICATE_CLIENT_MODS_DIR, all_mod_names)
-    deduplicate_mods(DEDUPLICATE_MODS_DIR, all_mod_names)
+    ]
+
+    if args.strict:
+        all_jar_names = get_all_jar_names(all_dirs)
+        deduplicate_mods_strict(DEDUPLICATE_CLIENT_MODS_DIR, all_jar_names)
+        deduplicate_mods_strict(DEDUPLICATE_MODS_DIR, all_jar_names)
+    else:
+        all_mod_names = get_all_mod_names(all_dirs)
+        deduplicate_mods(DEDUPLICATE_CLIENT_MODS_DIR, all_mod_names)
+        deduplicate_mods(DEDUPLICATE_MODS_DIR, all_mod_names)
 
 
 if __name__ == "__main__":
