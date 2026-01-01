@@ -1,8 +1,8 @@
-"""Entry point to commit or revert pending mod updates.
+"""Entry point to commit or revert pending mod/datapack updates.
 
 After update_mods.coco runs, it creates:
-- {mods_dir}-updates: Contains newly downloaded mod versions
-- {mods_dir}-old: Contains old mod versions that were replaced
+- {mods_dir}-updates: Contains newly downloaded mod/datapack versions
+- {mods_dir}-old: Contains old mod/datapack versions that were replaced
 
 This script allows you to either:
 - commit: Move updates into the main folders (keeping new versions)
@@ -21,7 +21,11 @@ from minecraft_server_tools.constants import (
     UPDATED_MODS_DIR_SUFFIX,
     OLD_MODS_DIR_SUFFIX,
 )
-from minecraft_server_tools.update_mods import UPDATE_MODS_DIRS
+from minecraft_server_tools.update_mods import UPDATE_MODS_DIRS, UPDATE_DATAPACK_DIRS
+from minecraft_server_tools.sync_mods import get_location_table_for, display_mod_path
+
+# Combined list of all directories to check for pending updates
+ALL_UPDATE_DIRS = UPDATE_MODS_DIRS + UPDATE_DATAPACK_DIRS
 
 
 def get_update_dirs(mods_dir):
@@ -39,30 +43,31 @@ def has_pending_updates(mods_dir):
 
 
 def any_pending_dirs():
-    """Check if any mods directory has pending update directories."""
-    return any(has_pending_updates(d) for d in UPDATE_MODS_DIRS)
+    """Check if any mods/datapack directory has pending update directories."""
+    return any(has_pending_updates(d) for d in ALL_UPDATE_DIRS)
 
 
-def list_files(directory):
-    """List all files in a directory."""
-    if not os.path.exists(directory):
-        return []
-    return [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
+def move_mod(from_path, to_path):
+    """Move a single file with nice printing."""
+    print("  Moving {mod} from {src}...".format(
+        mod=display_mod_path(to_path),
+        src=display_mod_path(from_path),
+    ))
+    os.makedirs(os.path.dirname(to_path), exist_ok=True)
+    if os.path.exists(to_path):
+        os.remove(to_path)
+    shutil.move(from_path, to_path)
 
 
-def move_files(src_dir, dst_dir):
-    """Move all files from src_dir to dst_dir."""
-    if not os.path.exists(src_dir):
-        return
-    for filename in list_files(src_dir):
-        src_path = os.path.join(src_dir, filename)
-        dst_path = os.path.join(dst_dir, filename)
-        if os.path.exists(dst_path):
-            print(f"  Overwriting: {filename}")
-            os.remove(dst_path)
-        else:
-            print(f"  Moving: {filename}")
-        shutil.move(src_path, dst_path)
+def move_mods_from_to(source_table, dest_dir):
+    """Move all files from source locations to dest_dir."""
+    dest_table = get_location_table_for(dest_dir)
+    for name, src_path in source_table.items():
+        new_path = os.path.join(dest_dir, name)
+        if name in dest_table:
+            print(f"  Overwriting: {name}")
+            os.remove(dest_table[name])
+        move_mod(src_path, new_path)
 
 
 def remove_file_with_retry(filepath, max_retries=5, initial_delay=0.2):
@@ -142,24 +147,24 @@ def remove_dir_if_exists(directory, max_retries=5, initial_delay=0.1):
 
 
 def show_pending_updates():
-    """Show all pending updates across all mods directories."""
+    """Show all pending updates across all mods/datapack directories."""
     has_any = False
-    for mods_dir in UPDATE_MODS_DIRS:
+    for mods_dir in ALL_UPDATE_DIRS:
         updates_dir, old_dir = get_update_dirs(mods_dir)
-        updates_files = list_files(updates_dir)
-        old_files = list_files(old_dir)
+        updates_table = get_location_table_for(updates_dir)
+        old_table = get_location_table_for(old_dir)
 
-        if updates_files or old_files:
+        if updates_table or old_table:
             has_any = True
             dir_name = os.path.basename(mods_dir)
             print(f"\n{dir_name}:")
-            if updates_files:
-                print(f"  New versions ({len(updates_files)} files):")
-                for f in sorted(updates_files):
+            if updates_table:
+                print(f"  New versions ({len(updates_table)} files):")
+                for f in sorted(updates_table.keys()):
                     print(f"    + {f}")
-            if old_files:
-                print(f"  Old versions ({len(old_files)} files):")
-                for f in sorted(old_files):
+            if old_table:
+                print(f"  Old versions ({len(old_table)} files):")
+                for f in sorted(old_table.keys()):
                     print(f"    - {f}")
 
     if not has_any:
@@ -171,7 +176,7 @@ def commit_updates():
     """Commit all pending updates by moving new versions into main folders."""
     print("\nCommitting updates...")
 
-    for mods_dir in UPDATE_MODS_DIRS:
+    for mods_dir in ALL_UPDATE_DIRS:
         updates_dir, old_dir = get_update_dirs(mods_dir)
 
         if not has_pending_updates(mods_dir):
@@ -181,7 +186,9 @@ def commit_updates():
         print(f"\n{dir_name}:")
 
         # Move files from updates into the main folder
-        move_files(updates_dir, mods_dir)
+        updates_table = get_location_table_for(updates_dir)
+        if updates_table:
+            move_mods_from_to(updates_table, mods_dir)
 
         # Remove both -updates and -old directories
         remove_dir_if_exists(updates_dir)
@@ -194,7 +201,7 @@ def revert_updates():
     """Revert all pending updates by restoring old versions into main folders."""
     print("\nReverting updates (reverting to old versions)...")
 
-    for mods_dir in UPDATE_MODS_DIRS:
+    for mods_dir in ALL_UPDATE_DIRS:
         updates_dir, old_dir = get_update_dirs(mods_dir)
 
         if not has_pending_updates(mods_dir):
@@ -204,7 +211,9 @@ def revert_updates():
         print(f"\n{dir_name}:")
 
         # Move files from old back into the main folder
-        move_files(old_dir, mods_dir)
+        old_table = get_location_table_for(old_dir)
+        if old_table:
+            move_mods_from_to(old_table, mods_dir)
 
         # Remove both -updates and -old directories
         remove_dir_if_exists(updates_dir)
@@ -215,7 +224,7 @@ def revert_updates():
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Commit or revert pending mod updates.",
+        description="Commit or revert pending mod/datapack updates.",
     )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 

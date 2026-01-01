@@ -8,7 +8,7 @@ import time
 import argparse
 from pprint import pprint
 from urllib.parse import unquote
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 
 # Fix Windows console encoding for unicode characters
 if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
@@ -48,6 +48,10 @@ from minecraft_server_tools.constants import (
     FIX_MOD_NAMES,
     NO_COMPONENT_SPLIT_MODS,
     USE_ALL_COMPONENTS_MODS,
+    CURSEFORGE_CLASS_ID_MODS,
+    CURSEFORGE_CLASS_ID_DATAPACKS,
+    CURSEFORGE_CLASS_ID_RESOURCE_PACKS,
+    DATAPACK_FOLDER_PATHS,
     ver_join,
     ver_split,
 )
@@ -60,7 +64,31 @@ UPDATE_MODS_DIRS = [
     sync_mods.BASE_MODS_DIR,
 ]
 
+UPDATE_DATAPACK_DIRS = DATAPACK_FOLDER_PATHS
+
 BEGINNING_OF_TIME = datetime.datetime(1, 1, 1)
+
+# Configuration for different content types (mods vs datapacks)
+ContentTypeConfig = namedtuple('ContentTypeConfig', [
+    'name',                    # "mod" or "datapack"
+    'file_extension',          # ".jar" or ".zip"
+    'curseforge_class_ids',    # list of CurseForge classIds to search
+    'use_modloader',           # whether to filter by modloader
+])
+
+MOD_CONFIG = ContentTypeConfig(
+    name="mod",
+    file_extension=".jar",
+    curseforge_class_ids=[CURSEFORGE_CLASS_ID_MODS],
+    use_modloader=True,
+)
+
+DATAPACK_CONFIG = ContentTypeConfig(
+    name="datapack",
+    file_extension=".zip",
+    curseforge_class_ids=[CURSEFORGE_CLASS_ID_DATAPACKS, CURSEFORGE_CLASS_ID_RESOURCE_PACKS],
+    use_modloader=False,
+)
 
 
 class MissingCurseforgeNameError(KeyError):
@@ -71,11 +99,11 @@ class MissingCurseforgeNameError(KeyError):
         super().__init__(f"No Curseforge name for mod {mod_name!r}; expecting Claude to search for it and add it to curseforge_names.json (suggested search query: {query!r}).")
 
 
-def get_mod_name(jar_name, silent=None, do_component_splitting=True, use_all_components=False):
+def get_mod_name(jar_name, silent=None, do_component_splitting=True, use_all_components=False, file_extension=".jar"):
     if silent is None:
         silent = not PRINT_DEBUG
 
-    base_name = jar_name.removesuffix(".jar")
+    base_name = jar_name.removesuffix(file_extension)
 
     if do_component_splitting:
         for sep, min_count in COMPONENT_SEPS:
@@ -108,7 +136,7 @@ def get_mod_name(jar_name, silent=None, do_component_splitting=True, use_all_com
     if not mod_name:
         if not silent:
             print(f"Got empty mod name for jar {jar_name!r}; falling back to no component splitting.")
-        return get_mod_name(jar_name, do_component_splitting=False)
+        return get_mod_name(jar_name, do_component_splitting=False, file_extension=file_extension)
 
     camel_case_parts = [mod_name[0]]
     prev_is_lower = mod_name[0].islower()
@@ -127,12 +155,12 @@ def get_mod_name(jar_name, silent=None, do_component_splitting=True, use_all_com
     if mod_name in NO_COMPONENT_SPLIT_MODS:
         if not silent:
             print(f"Got mod name {mod_name!r}, but it's marked as no component splitting; redoing without component splitting.")
-        return get_mod_name(jar_name, do_component_splitting=False)
+        return get_mod_name(jar_name, do_component_splitting=False, file_extension=file_extension)
 
     if mod_name in USE_ALL_COMPONENTS_MODS and not use_all_components:
         if not silent:
             print(f"Got mod name {mod_name!r}, but it's marked as use all components; redoing with all components.")
-        return get_mod_name(jar_name, use_all_components=True)
+        return get_mod_name(jar_name, use_all_components=True, file_extension=file_extension)
 
     if not silent:
         print(f"Determined mod name {mod_name!r} for jar {jar_name!r}.")
@@ -288,32 +316,34 @@ def get_curseforge_names_for(mod_names_to_jar_names, google=False):
     return requested_mod_names_to_curseforge_names, nulled_mods
 
 
-def get_jar_names(mods_dir):
+def get_jar_names(mods_dir, file_extension=".jar"):
     for fname in os.listdir(mods_dir):
-        if fname.endswith(".jar"):
+        if fname.endswith(file_extension):
             yield fname
 
 
-def get_mod_names_to_all_jar_names(mods_dir, **kwargs):
+def get_mod_names_to_all_jar_names(mods_dir, file_extension=".jar", **kwargs):
     mod_names_to_all_jar_names = defaultdict(list)
-    for jar_name in get_jar_names(mods_dir):
-        mod_name = get_mod_name(jar_name, **kwargs)
+    for jar_name in get_jar_names(mods_dir, file_extension=file_extension):
+        mod_name = get_mod_name(jar_name, file_extension=file_extension, **kwargs)
         mod_names_to_all_jar_names[mod_name] += [jar_name]
     return mod_names_to_all_jar_names
 
 
-def get_mod_names_to_jar_names(mods_dir, **kwargs):
+def get_mod_names_to_jar_names(mods_dir, file_extension=".jar", **kwargs):
     mod_names_to_jar_names = {}
-    for jar_name in get_jar_names(mods_dir):
-        mod_name = get_mod_name(jar_name, **kwargs)
+    for jar_name in get_jar_names(mods_dir, file_extension=file_extension):
+        mod_name = get_mod_name(jar_name, file_extension=file_extension, **kwargs)
         if mod_name in mod_names_to_jar_names:
             raise ValueError(f"resolved multiple jars to name {mod_name!r}: {mod_names_to_jar_names[mod_name]} and {jar_name}")
         mod_names_to_jar_names[mod_name] = jar_name
     return mod_names_to_jar_names
 
 
-def run_curseforge_api_cmd(cmd):
+def run_curseforge_api_cmd(cmd, class_id=None):
     cmd = [str(x) for x in cmd]
+    if class_id is not None:
+        cmd.append(str(class_id))
     for _ in range(CURSEFORGE_API_RETRIES):
         print(f"Executing curseforge api cmd: {cmd!r}")
         cmd_result = subprocess.run(["node", CURSEFORGE_API_FILE] + cmd, capture_output=True)
@@ -394,72 +424,78 @@ def log_curseforge_results(results, verbose=False):
 get_core_name = get_mod_name$(silent=True)
 
 
-def get_curseforge_mod(curseforge_name, mod_name):
+def get_curseforge_mod(curseforge_name, mod_name, config=None):
+    if config is None:
+        config = MOD_CONFIG
     core_curseforge_name = get_core_name(curseforge_name)
 
-    seen_queries = set()
-    for query_template in CURSEFORGE_QUERY_TEMPLATES:
-        query = query_template.format(
-            curseforge_name=curseforge_name,
-            core_curseforge_name=core_curseforge_name,
-            mod_name=mod_name,
-        )
-        if query in seen_queries:
-            continue
-        seen_queries.add(query)
+    # Try each classId in the config
+    for class_id in config.curseforge_class_ids:
+        seen_queries = set()
+        for query_template in CURSEFORGE_QUERY_TEMPLATES:
+            query = query_template.format(
+                curseforge_name=curseforge_name,
+                core_curseforge_name=core_curseforge_name,
+                mod_name=mod_name,
+            )
+            if query in seen_queries:
+                continue
+            seen_queries.add(query)
 
-        modloader_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION), MODLOADER])
-        mod = get_matching_mod(modloader_version_results, curseforge_name, mod_name)
-        if mod is not None:
-            return mod
-        if PRINT_DEBUG:
-            print(f"\tCould not find mod {curseforge_name!r} in modloader-version-specific results for query {query!r}.")
+            if config.use_modloader:
+                modloader_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION), MODLOADER], class_id=class_id)
+                mod = get_matching_mod(modloader_version_results, curseforge_name, mod_name)
+                if mod is not None:
+                    return mod
+                if PRINT_DEBUG:
+                    print(f"\tCould not find mod {curseforge_name!r} in modloader-version-specific results for query {query!r}.")
 
-        modloader_compatible_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION[:2]), MODLOADER])
-        mod = get_matching_mod(modloader_compatible_version_results, curseforge_name, mod_name)
-        if mod is not None:
-            return mod
-        if PRINT_DEBUG:
-            print(f"\tCould not find mod {curseforge_name!r} in modloader-compatibly-versioned results for query {query!r}.")
+                modloader_compatible_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION[:2]), MODLOADER], class_id=class_id)
+                mod = get_matching_mod(modloader_compatible_version_results, curseforge_name, mod_name)
+                if mod is not None:
+                    return mod
+                if PRINT_DEBUG:
+                    print(f"\tCould not find mod {curseforge_name!r} in modloader-compatibly-versioned results for query {query!r}.")
 
-        version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION)])
-        mod = get_matching_mod(version_results, curseforge_name, mod_name)
-        if mod is not None:
-            return mod
-        if PRINT_DEBUG:
-            print(f"\tCould not find mod {curseforge_name!r} in version-specific results for query {query!r}.")
+            version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION), ""], class_id=class_id)
+            mod = get_matching_mod(version_results, curseforge_name, mod_name)
+            if mod is not None:
+                return mod
+            if PRINT_DEBUG:
+                print(f"\tCould not find mod {curseforge_name!r} in version-specific results for query {query!r}.")
 
-        compatible_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION[:2])])
-        mod = get_matching_mod(compatible_version_results, curseforge_name, mod_name)
-        if mod is not None:
-            return mod
-        if PRINT_DEBUG:
-            print(f"\tCould not find mod {curseforge_name!r} in compatibly-versioned results for query {query!r}.")
+            compatible_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION[:2]), ""], class_id=class_id)
+            mod = get_matching_mod(compatible_version_results, curseforge_name, mod_name)
+            if mod is not None:
+                return mod
+            if PRINT_DEBUG:
+                print(f"\tCould not find mod {curseforge_name!r} in compatibly-versioned results for query {query!r}.")
 
-        modloader_results = run_curseforge_api_cmd(["search", query, MODLOADER])
-        mod = get_matching_mod(modloader_results, curseforge_name, mod_name)
-        if mod is not None:
-            return mod
-        if PRINT_DEBUG:
-            print(f"\tCould not find mod {curseforge_name!r} in modloader-versioned results for query {query!r}.")
+            if config.use_modloader:
+                modloader_results = run_curseforge_api_cmd(["search", query, "", MODLOADER], class_id=class_id)
+                mod = get_matching_mod(modloader_results, curseforge_name, mod_name)
+                if mod is not None:
+                    return mod
+                if PRINT_DEBUG:
+                    print(f"\tCould not find mod {curseforge_name!r} in modloader-versioned results for query {query!r}.")
 
-        versionless_results = run_curseforge_api_cmd(["search", query])
-        mod = get_matching_mod(versionless_results, curseforge_name, mod_name)
-        if mod is not None:
-            return mod
-        if PRINT_DEBUG:
-            print(f"\tCould not find mod {curseforge_name!r} in version-less results for query {query!r}.")
+            versionless_results = run_curseforge_api_cmd(["search", query, "", ""], class_id=class_id)
+            mod = get_matching_mod(versionless_results, curseforge_name, mod_name)
+            if mod is not None:
+                return mod
+            if PRINT_DEBUG:
+                print(f"\tCould not find mod {curseforge_name!r} in version-less results for query {query!r}.")
 
     print(f"\nERROR: Failed to find mod {curseforge_name!r} in any results.\n")
 
 
-def get_curseforge_id(curseforge_name, mod_name):
-    mod = get_curseforge_mod(curseforge_name, mod_name)
+def get_curseforge_id(curseforge_name, mod_name, config=None):
+    mod = get_curseforge_mod(curseforge_name, mod_name, config=config)
     if mod is not None:
         return mod["id"]
 
 
-def get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names):
+def get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names, config=None):
     curseforge_ids_cache = load_curseforge_ids_cache()
     mod_names_to_curseforge_ids = {}
     missing_mods = []
@@ -470,7 +506,7 @@ def get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names):
                 curseforge_id = curseforge_ids_cache[curseforge_name]
                 print(f"Using cached CurseForge ID for {curseforge_name!r}.")
             else:
-                curseforge_id = get_curseforge_id(curseforge_name, mod_name)
+                curseforge_id = get_curseforge_id(curseforge_name, mod_name, config=config)
                 if curseforge_id is not None:
                     curseforge_ids_cache[curseforge_name] = curseforge_id
 
@@ -584,7 +620,9 @@ def find_curseforge_file_for_jar(curseforge_files, find_jar_name):
     return None
 
 
-def get_latest_version(mod_name, curseforge_id, old_jar_name):
+def get_latest_version(mod_name, curseforge_id, old_jar_name, config=None):
+    if config is None:
+        config = MOD_CONFIG
     curseforge_files = get_curseforge_files(curseforge_id)
 
     old_curseforge_file = find_curseforge_file_for_jar(curseforge_files, old_jar_name)
@@ -596,10 +634,12 @@ def get_latest_version(mod_name, curseforge_id, old_jar_name):
     for file_data in curseforge_files:
         versions = file_data["gameVersions"]
         jar_name = get_jar_name_for_curseforge_file(file_data)
+        # Check modloader only if config requires it
+        modloader_ok = correct_modloader(versions, jar_name) if config.use_modloader else True
         if (
             jar_name is not None
-            and jar_name.endswith(".jar")
-            and correct_modloader(versions, jar_name)
+            and jar_name.endswith(config.file_extension)
+            and modloader_ok
             and get_curseforge_file_time(file_data, mod_name) >= old_file_time
         ):
             curseforge_files_and_versions.append((file_data, versions))
@@ -641,12 +681,12 @@ def are_same_jar(jar_name_1, jar_name_2) =
     jar_name_1.replace(" ", "+") == jar_name_2.replace(" ", "+")
 
 
-def get_mod_names_to_latest_versions(mod_names_to_curseforge_ids, mod_names_to_jar_names):
+def get_mod_names_to_latest_versions(mod_names_to_curseforge_ids, mod_names_to_jar_names, config=None):
     mod_names_to_latest_versions = {}
     missing_mods = []
     for mod_name, curseforge_id in mod_names_to_curseforge_ids.items():
         jar_name = mod_names_to_jar_names[mod_name]
-        latest_version = get_latest_version(mod_name, curseforge_id, jar_name)
+        latest_version = get_latest_version(mod_name, curseforge_id, jar_name, config=config)
         if latest_version is None:
             missing_mods.append(mod_name)
         else:
@@ -707,15 +747,17 @@ def make_dirs(*dirs):
             os.mkdir(d)
 
 
-def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interact=None, google=False):
+def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interact=None, google=False, config=None):
+    if config is None:
+        config = MOD_CONFIG
     if interact is None and not PRINT_DEBUG:
         interact = False
     try:
-        mod_names_to_jar_names = get_mod_names_to_jar_names(mods_dir)
+        mod_names_to_jar_names = get_mod_names_to_jar_names(mods_dir, file_extension=config.file_extension)
         mod_names_to_curseforge_names, nulled_mods = get_curseforge_names_for(mod_names_to_jar_names, google=google)
         if not dry_run:
-            mod_names_to_curseforge_ids, missing_ids_mods = get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names)
-            mod_names_to_latest_versions, missing_files_mods = get_mod_names_to_latest_versions(mod_names_to_curseforge_ids, mod_names_to_jar_names)
+            mod_names_to_curseforge_ids, missing_ids_mods = get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names, config=config)
+            mod_names_to_latest_versions, missing_files_mods = get_mod_names_to_latest_versions(mod_names_to_curseforge_ids, mod_names_to_jar_names, config=config)
             updated_mod_names_to_files = get_updated_mod_names_to_files(mod_names_to_jar_names, mod_names_to_latest_versions)
             if updated_mod_names_to_files:
                 make_dirs(updated_mods_dir, old_mods_dir)
@@ -737,19 +779,23 @@ def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interac
         embed()
 
 
-def update_all(mods_dirs, dry_run=False, interact=None, google=False):
+def update_all(mods_dirs, dry_run=False, interact=None, google=False, config=None):
     couldnt_update = []
     for mods_dir in mods_dirs:
+        if not os.path.exists(mods_dir):
+            print(f"Skipping non-existent directory: {mods_dir}")
+            continue
         updated_mods_dir = mods_dir + UPDATED_MODS_DIR_SUFFIX
         old_mods_dir = mods_dir + OLD_MODS_DIR_SUFFIX
-        couldnt_update += update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=dry_run, interact=interact, google=google)
+        couldnt_update += update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=dry_run, interact=interact, google=google, config=config)
+    config_name = config.name if config is not None else "mod"
     for mod_name in couldnt_update:
-        print(f"Unable to automatically update mod: {mod_name}")
+        print(f"Unable to automatically update {config_name}: {mod_name}")
 
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Update mods from CurseForge to their latest versions.",
+        description="Update mods and datapacks from CurseForge to their latest versions.",
     )
     parser.add_argument(
         "--dry-run",
@@ -761,6 +807,16 @@ def parse_args():
         action="store_true",
         help="Use Google search to find CurseForge names for unknown mods",
     )
+    parser.add_argument(
+        "--mods-only",
+        action="store_true",
+        help="Only update mods, skip datapacks",
+    )
+    parser.add_argument(
+        "--datapacks-only",
+        action="store_true",
+        help="Only update datapacks, skip mods",
+    )
     return parser.parse_args()
 
 
@@ -769,11 +825,29 @@ def main():
 
     sync_mods.main()
 
-    update_all(
-        UPDATE_MODS_DIRS,
-        dry_run=args.dry_run,
-        google=args.google,
-    )
+    # Update mods (unless --datapacks-only)
+    if not args.datapacks_only:
+        print("\n" + "="*60)
+        print("UPDATING MODS")
+        print("="*60 + "\n")
+        update_all(
+            UPDATE_MODS_DIRS,
+            dry_run=args.dry_run,
+            google=args.google,
+            config=MOD_CONFIG,
+        )
+
+    # Update datapacks (unless --mods-only)
+    if not args.mods_only:
+        print("\n" + "="*60)
+        print("UPDATING DATAPACKS")
+        print("="*60 + "\n")
+        update_all(
+            UPDATE_DATAPACK_DIRS,
+            dry_run=args.dry_run,
+            google=args.google,
+            config=DATAPACK_CONFIG,
+        )
 
 
 if __name__ == "__main__":

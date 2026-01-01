@@ -16,11 +16,14 @@ if (args[0] === "search" || args[0] === "bigsearch") {
     if (args.length >= 3) {
         options["gameVersion"] = args[2];
     }
-    if (args.length >= 4) {
+    if (args.length >= 4 && args[3]) {
         options["modLoaderType"] = args[3];
     }
-    if (args.length >= 5) {
-        throw "invalid extra arguments to search: " + args.slice(4);
+    if (args.length >= 5 && args[4]) {
+        options["classId"] = parseInt(args[4]);
+    }
+    if (args.length >= 6) {
+        throw "invalid extra arguments to search: " + args.slice(5);
     }
     cf.get_game("minecraft").then((mc) => {
         cf.search_mods(mc, options).then((mods) => {

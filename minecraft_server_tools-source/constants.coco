@@ -135,25 +135,28 @@ NON_CURSEFORGE_MODS = [
     "memoryleakfix",
 ]
 
+DATAPACK_INSTALL_FOLDERS = [
+    "resourcepacks",
+    "datapacks",
+    "global_data_packs",
+    "global_resource_packs",
+    "global_packs",
+    "moonlight-global-datapacks",
+]
+
 EXTRA_INSTALL_FOLDERS = [
     "config",
     "defaultconfigs",
     "kubejs",
-    "resourcepacks",
-    "datapacks",
     "scripts",
-    "global_data_packs",
-    "global_resource_packs",
     "paintings",
     "shrines-data",
     "packmenu",
-    "global_packs",
     "patchouli_books",
     "modernfix",
     "configureddefaults",
     "blueprints",
-    "moonlight-global-datapacks",
-]
+] + DATAPACK_INSTALL_FOLDERS
 
 EXTRA_INSTALL_FILES = [
     "patchouli_data.json",
@@ -165,11 +168,14 @@ OPTIONAL_INSTALL_FILES = [
     "optionsshaders.txt",
 ]
 
+DATAPACK_OPTIONAL_INSTALL_FOLDERS = [
+    "shaderpacks",
+]
+
 OPTIONAL_INSTALL_FOLDERS = [
     os.path.join("journeymap", "config"),
-    "shaderpacks",
     "ESM",
-]
+] + DATAPACK_OPTIONAL_INSTALL_FOLDERS
 
 PRINT_DEBUG = bool_env_var("MC_DEBUG_PRINT", False)
 JPS_DEBUG = bool_env_var("MC_DEBUG_JPS", False)  # filter jstack: ^(\s*(at java|at jdk|at sun|at net.minecraft|at io.netty)\b)[^\n]*\n*
@@ -360,6 +366,15 @@ MAX_DEBUG_RESULTS = 2
 
 CURSEFORGE_API_RETRIES = 3
 CURSEFORGE_API_RETRY_DELAY = 0.1
+
+# CurseForge class IDs for filtering search results
+CURSEFORGE_CLASS_ID_MODS = 6
+CURSEFORGE_CLASS_ID_DATAPACKS = 6945
+CURSEFORGE_CLASS_ID_RESOURCE_PACKS = 12
+
+# Datapack folder paths (full paths from folder names)
+DATAPACK_FOLDERS = DATAPACK_INSTALL_FOLDERS + DATAPACK_OPTIONAL_INSTALL_FOLDERS
+DATAPACK_FOLDER_PATHS = [os.path.join(SERVER_DIR, folder) for folder in DATAPACK_FOLDERS]
 
 
 # Server start constants
