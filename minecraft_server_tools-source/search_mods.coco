@@ -1,0 +1,56 @@
+import os
+import webbrowser
+import urllib.parse
+
+from minecraft_server_tools import update_mods
+from minecraft_server_tools.constants import (
+    SERVER_DIR,
+    DEDUPLICATE_MODS_NAME,
+    DEDUPLICATE_CLIENT_MODS_NAME,
+    MODLOADER,
+    MC_VERSION,
+    ver_join,
+)
+
+
+DEDUPLICATE_MODS_DIR = os.path.join(SERVER_DIR, DEDUPLICATE_MODS_NAME)
+DEDUPLICATE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, DEDUPLICATE_CLIENT_MODS_NAME)
+
+SEARCH_QUERY_TEMPLATE = '{mod_name} {modloader} {mc_version} curseforge minecraft mod'
+
+
+def get_search_url(mod_name):
+    query = SEARCH_QUERY_TEMPLATE.format(
+        mod_name=mod_name,
+        modloader=MODLOADER,
+        mc_version=ver_join(MC_VERSION[:2]),
+    )
+    return "https://www.google.com/search?" + urllib.parse.urlencode({"q": query})
+
+
+def search_mods_in_dir(mods_dir):
+    if not os.path.exists(mods_dir):
+        print(f"Directory does not exist: {mods_dir}")
+        return
+
+    mod_names_to_jar_names = update_mods.get_mod_names_to_jar_names(mods_dir, silent=True)
+    if not mod_names_to_jar_names:
+        print(f"No mods found in: {mods_dir}")
+        return
+
+    print(f"\nOpening searches for {len(mod_names_to_jar_names)} mods in: {mods_dir}")
+    for mod_name, jar_name in mod_names_to_jar_names.items():
+        url = get_search_url(mod_name)
+        print(f"  Searching for: {mod_name} ({jar_name})")
+        webbrowser.open(url)
+
+
+def main():
+    print("Searching for mods in deduplicate directories...")
+    search_mods_in_dir(DEDUPLICATE_CLIENT_MODS_DIR)
+    search_mods_in_dir(DEDUPLICATE_MODS_DIR)
+    print("\nDone!")
+
+
+if __name__ == "__main__":
+    main()
