@@ -343,9 +343,9 @@ MOD_PAGE_NAME_SUFFICES = (
 )
 
 # must start with {mod_name} {modloader}
-GOOGLE_QUERY_TEMPLATE = 'site:curseforge.com {mod_name} {modloader} {mc_version_2} "Minecraft Mods" -Modpacks'
+GOOGLE_QUERY_TEMPLATE = 'site:curseforge.com {mod_name} {modloader} {mc_version_2}'
 
-MAX_BROWSER_SEARCHES = 5
+MAX_BROWSER_SEARCHES = 10
 
 CURSEFORGE_NAMES_FILE = os.path.join(ROOT_DIR, "curseforge_names.json")
 CURSEFORGE_IDS_CACHE_FILE = os.path.join(ROOT_DIR, "curseforge_ids_cache.json")
