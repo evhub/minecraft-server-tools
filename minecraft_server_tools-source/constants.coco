@@ -152,6 +152,7 @@ EXTRA_INSTALL_FOLDERS = [
     "modernfix",
     "configureddefaults",
     "blueprints",
+    "moonlight-global-datapacks",
 ]
 
 EXTRA_INSTALL_FILES = [
@@ -272,9 +273,12 @@ NAME_REGEXES_TO_SPACE = [
         r"%20",
         r"%5[bd]",
         r"%2[7b]",
-        r"(neo)?forge\b",
-        r"(NEO)?FORGE",
-        r"(Neo)?Forge\b",
+        r"\bneo",
+        r"NEO",
+        r"\bNeo",
+        r"forge\b",
+        r"FORGE",
+        r"Forge\b",
         r"fabric\b",
         r"FABRIC",
         r"Fabric\b",
@@ -292,16 +296,17 @@ NAME_REGEXES_TO_SPACE = [
         r"MC",
         r"\bmc\b",
         r"1\.\d+",
-        r"[.vVf]0",
-        r"[.vVf]1",
-        r"[.vVf]2",
-        r"[.vVf]3",
-        r"[.vVf]4",
-        r"[.vVf]5",
-        r"[.vVf]6",
-        r"[.vVf]7",
-        r"[.vVf]8",
-        r"[.vVf]9",
+        r"[.vVf]0+",
+        r"[.vVf]1+",
+        r"[.vVf]2+",
+        r"[.vVf]3+",
+        r"[.vVf]4+",
+        r"[.vVf]5+",
+        r"[.vVf]6+",
+        r"[.vVf]7+",
+        r"[.vVf]8+",
+        r"[.vVf]9+",
+        r"\bv\b",
         r"\.",
         r" / ",
         r" \| ",
@@ -390,7 +395,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         # "-XX:+ScavengeBeforeFullGC",  # default: True; deprecated by java
         "-XX:+OmitStackTraceInFastThrow",  # default: True
 
-        "-XX:+ParallelRefProcEnabled",  # aikar-flags
+        "-XX:+ParallelRefProcEnabled",  # aikar-flags, atm
         # "-XX:+UseStringDeduplication",  # brucethemoose: False
         # "-XX:+UseLargePagesInMetaspace",  # OLD
         # "-XX:-UseBiasedLocking",  # hilltty-flags, deprecated by java
@@ -425,7 +430,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
     ]
     if not JPS_DEBUG:
         args += [
-            "-XX:+PerfDisableSharedMem",  # aikar-flags, brucethemoose
+            "-XX:+PerfDisableSharedMem",  # aikar-flags, brucethemoose, atm
         ]
     if large_pages:
         args += [

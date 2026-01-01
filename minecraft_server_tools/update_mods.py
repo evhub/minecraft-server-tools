@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfdbddb61
+# __coconut_hash__ = 0x291e7bac
 
 # Compiled with Coconut version 3.2.0-post_dev1
 
@@ -576,7 +576,7 @@ def get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names):  #462 (line 
 # Check cache first
             if curseforge_name in curseforge_ids_cache:  #469 (line in Coconut source)
                 curseforge_id = curseforge_ids_cache[curseforge_name]  #470 (line in Coconut source)
-                print("\tUsing cached CurseForge ID for {_coconut_format_0!r}.".format(_coconut_format_0=(curseforge_name)))  #471 (line in Coconut source)
+                print("Using cached CurseForge ID for {_coconut_format_0!r}.".format(_coconut_format_0=(curseforge_name)))  #471 (line in Coconut source)
             else:  #472 (line in Coconut source)
                 curseforge_id = get_curseforge_id(curseforge_name, mod_name)  #473 (line in Coconut source)
                 if curseforge_id is not None:  #474 (line in Coconut source)

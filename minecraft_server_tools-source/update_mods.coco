@@ -468,7 +468,7 @@ def get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names):
             # Check cache first
             if curseforge_name in curseforge_ids_cache:
                 curseforge_id = curseforge_ids_cache[curseforge_name]
-                print(f"\tUsing cached CurseForge ID for {curseforge_name!r}.")
+                print(f"Using cached CurseForge ID for {curseforge_name!r}.")
             else:
                 curseforge_id = get_curseforge_id(curseforge_name, mod_name)
                 if curseforge_id is not None:
