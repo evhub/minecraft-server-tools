@@ -179,7 +179,7 @@ def get_curseforge_name(mod_name, jar_name, google=False):
         mod_page_name_suffix=MOD_PAGE_NAME_SUFFICES[0],
     )
     if not google:
-        raise MissingCurseforgeNameError(mod_name, 'site:curseforge.com ' + query)
+        raise MissingCurseforgeNameError(mod_name, query)
     try:
         while True:
             search_json = google_api.google(query)

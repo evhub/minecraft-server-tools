@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8c0e519e
+# __coconut_hash__ = 0x5e1b8d4d
 
 # Compiled with Coconut version 3.2.0-post_dev1
 
@@ -83,46 +83,70 @@ from minecraft_server_tools.constants import DEDUPLICATE_MODS_NAME  #6 (line in 
 from minecraft_server_tools.constants import DEDUPLICATE_CLIENT_MODS_NAME  #6 (line in Coconut source)
 from minecraft_server_tools.constants import MODLOADER  #6 (line in Coconut source)
 from minecraft_server_tools.constants import MC_VERSION  #6 (line in Coconut source)
+from minecraft_server_tools.constants import GOOGLE_QUERY_TEMPLATE  #6 (line in Coconut source)
+from minecraft_server_tools.constants import MAX_BROWSER_SEARCHES  #6 (line in Coconut source)
 from minecraft_server_tools.constants import ver_join  #6 (line in Coconut source)
 
 
-DEDUPLICATE_MODS_DIR = os.path.join(SERVER_DIR, DEDUPLICATE_MODS_NAME)  #16 (line in Coconut source)
-DEDUPLICATE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, DEDUPLICATE_CLIENT_MODS_NAME)  #17 (line in Coconut source)
-
-SEARCH_QUERY_TEMPLATE = '{mod_name} {modloader} {mc_version} curseforge minecraft mod'  #19 (line in Coconut source)
+DEDUPLICATE_MODS_DIR = os.path.join(SERVER_DIR, DEDUPLICATE_MODS_NAME)  #18 (line in Coconut source)
+DEDUPLICATE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, DEDUPLICATE_CLIENT_MODS_NAME)  #19 (line in Coconut source)
 
 
 def get_search_url(mod_name):  #22 (line in Coconut source)
-    query = SEARCH_QUERY_TEMPLATE.format(mod_name=mod_name, modloader=MODLOADER, mc_version=ver_join(MC_VERSION[:2]))  #23 (line in Coconut source)
+    query = GOOGLE_QUERY_TEMPLATE.format(mod_name=mod_name, modloader=MODLOADER, mc_version_2=ver_join(MC_VERSION[:2]))  #23 (line in Coconut source)
     return "https://www.google.com/search?" + urllib.parse.urlencode(_coconut.dict((("q", query),)))  #28 (line in Coconut source)
 
 
 
-def search_mods_in_dir(mods_dir):  #31 (line in Coconut source)
-    if not os.path.exists(mods_dir):  #32 (line in Coconut source)
-        print("Directory does not exist: {_coconut_format_0}".format(_coconut_format_0=(mods_dir)))  #33 (line in Coconut source)
-        return  #34 (line in Coconut source)
-
-    mod_names_to_jar_names = update_mods.get_mod_names_to_jar_names(mods_dir, silent=True)  #36 (line in Coconut source)
-    if not mod_names_to_jar_names:  #37 (line in Coconut source)
-        print("No mods found in: {_coconut_format_0}".format(_coconut_format_0=(mods_dir)))  #38 (line in Coconut source)
-        return  #39 (line in Coconut source)
-
-    print("\nOpening searches for {_coconut_format_0} mods in: {_coconut_format_1}".format(_coconut_format_0=(len(mod_names_to_jar_names)), _coconut_format_1=(mods_dir)))  #41 (line in Coconut source)
-    for mod_name, jar_name in mod_names_to_jar_names.items():  #42 (line in Coconut source)
-        url = get_search_url(mod_name)  #43 (line in Coconut source)
-        print("  Searching for: {_coconut_format_0} ({_coconut_format_1})".format(_coconut_format_0=(mod_name), _coconut_format_1=(jar_name)))  #44 (line in Coconut source)
-        webbrowser.open(url)  #45 (line in Coconut source)
+@_coconut_tco  #31 (line in Coconut source)
+def get_mods_in_dir(mods_dir):  #31 (line in Coconut source)
+    """Get mod names to jar names dict for a directory, or empty dict if doesn't exist."""  #32 (line in Coconut source)
+    if not os.path.exists(mods_dir):  #33 (line in Coconut source)
+        return _coconut_tail_call(_coconut.dict)  #34 (line in Coconut source)
+    return _coconut_tail_call(update_mods.get_mod_names_to_jar_names, mods_dir, silent=True)  #35 (line in Coconut source)
 
 
 
-def main():  #48 (line in Coconut source)
-    print("Searching for mods in deduplicate directories...")  #49 (line in Coconut source)
-    search_mods_in_dir(DEDUPLICATE_CLIENT_MODS_DIR)  #50 (line in Coconut source)
-    search_mods_in_dir(DEDUPLICATE_MODS_DIR)  #51 (line in Coconut source)
-    print("\nDone!")  #52 (line in Coconut source)
+def search_mods(mod_names_to_jar_names, mods_dir, limit=MAX_BROWSER_SEARCHES):  #38 (line in Coconut source)
+    """Open browser searches for mods, up to limit."""  #39 (line in Coconut source)
+    if not mod_names_to_jar_names:  #40 (line in Coconut source)
+        print("No mods found in: {_coconut_format_0}".format(_coconut_format_0=(mods_dir)))  #41 (line in Coconut source)
+        return 0  #42 (line in Coconut source)
+
+    items = list(mod_names_to_jar_names.items())[:limit]  #44 (line in Coconut source)
+    total = len(mod_names_to_jar_names)  #45 (line in Coconut source)
+    showing = len(items)  #46 (line in Coconut source)
+
+    if showing < total:  #48 (line in Coconut source)
+        print("\nOpening searches for first {_coconut_format_0} of {_coconut_format_1} mods in: {_coconut_format_2}".format(_coconut_format_0=(showing), _coconut_format_1=(total), _coconut_format_2=(mods_dir)))  #49 (line in Coconut source)
+    else:  #50 (line in Coconut source)
+        print("\nOpening searches for {_coconut_format_0} mods in: {_coconut_format_1}".format(_coconut_format_0=(showing), _coconut_format_1=(mods_dir)))  #51 (line in Coconut source)
+
+    for mod_name, jar_name in items:  #53 (line in Coconut source)
+        url = get_search_url(mod_name)  #54 (line in Coconut source)
+        print("  Searching for: {_coconut_format_0} ({_coconut_format_1})".format(_coconut_format_0=(mod_name), _coconut_format_1=(jar_name)))  #55 (line in Coconut source)
+        webbrowser.open(url)  #56 (line in Coconut source)
+
+    return showing  #58 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #55 (line in Coconut source)
-    main()  #56 (line in Coconut source)
+def main():  #61 (line in Coconut source)
+    print("Searching for mods in deduplicate directories...")  #62 (line in Coconut source)
+
+# Try client mods first
+    client_mods = get_mods_in_dir(DEDUPLICATE_CLIENT_MODS_DIR)  #65 (line in Coconut source)
+    if client_mods:  #66 (line in Coconut source)
+        search_mods(client_mods, DEDUPLICATE_CLIENT_MODS_DIR)  #67 (line in Coconut source)
+    else:  #68 (line in Coconut source)
+# Only search non-client mods if client mods is empty
+        print("No client mods to deduplicate, checking server mods...")  #70 (line in Coconut source)
+        server_mods = get_mods_in_dir(DEDUPLICATE_MODS_DIR)  #71 (line in Coconut source)
+        search_mods(server_mods, DEDUPLICATE_MODS_DIR)  #72 (line in Coconut source)
+
+    print("\nDone!")  #74 (line in Coconut source)
+
+
+
+if __name__ == "__main__":  #77 (line in Coconut source)
+    main()  #78 (line in Coconut source)

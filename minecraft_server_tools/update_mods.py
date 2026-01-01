@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7b3c3bef
+# __coconut_hash__ = 0x34ac9e86
 
 # Compiled with Coconut version 3.2.0-post_dev1
 
@@ -131,7 +131,7 @@ UPDATE_DATAPACK_DIRS = DATAPACK_FOLDER_PATHS  #67 (line in Coconut source)
 BEGINNING_OF_TIME = datetime.datetime(1, 1, 1)  #69 (line in Coconut source)
 
 # Configuration for different content types (mods vs datapacks)
-ContentTypeConfig = namedtuple('ContentTypeConfig', ['name', 'file_extension', 'curseforge_class_ids', 'use_modloader'])  # ".jar" or ".zip"  # "mod" or "datapack"  # whether to filter by modloader  # list of CurseForge classIds to search  #72 (line in Coconut source)
+ContentTypeConfig = namedtuple('ContentTypeConfig', ['name', 'file_extension', 'curseforge_class_ids', 'use_modloader'])  # "mod" or "datapack"  # whether to filter by modloader  # list of CurseForge classIds to search  # ".jar" or ".zip"  #72 (line in Coconut source)
 
 MOD_CONFIG = ContentTypeConfig(name="mod", file_extension=".jar", curseforge_class_ids=[CURSEFORGE_CLASS_ID_MODS,], use_modloader=True)  #79 (line in Coconut source)
 
@@ -260,7 +260,7 @@ def get_curseforge_name(mod_name, jar_name, google=False):  #170 (line in Coconu
         return None  #172 (line in Coconut source)
     query = GOOGLE_QUERY_TEMPLATE.format(mod_name=mod_name, jar_name=jar_name, modloader=MODLOADER, mc_version=ver_join(MC_VERSION), mc_version_2=ver_join(MC_VERSION[:2]), mod_page_name_suffix=MOD_PAGE_NAME_SUFFICES[0])  #173 (line in Coconut source)
     if not google:  #181 (line in Coconut source)
-        raise MissingCurseforgeNameError(mod_name, 'site:curseforge.com ' + query)  #182 (line in Coconut source)
+        raise MissingCurseforgeNameError(mod_name, query)  #182 (line in Coconut source)
     try:  #183 (line in Coconut source)
         while True:  #184 (line in Coconut source)
             search_json = google_api.google(query)  #185 (line in Coconut source)
