@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x109479be
+# __coconut_hash__ = 0x4a6466f8
 
 # Compiled with Coconut version 3.2.0-post_dev1
 
@@ -56,262 +56,338 @@ else:
 # Compiled Coconut: -----------------------------------------------------------
 
 import os  #1 (line in Coconut source)
-import subprocess  #2 (line in Coconut source)
-import shutil  #3 (line in Coconut source)
-import argparse  #4 (line in Coconut source)
-try:  #5 (line in Coconut source)
-    _coconut_sys_0 = sys  # type: ignore  #5 (line in Coconut source)
-except _coconut.NameError:  #5 (line in Coconut source)
-    _coconut_sys_0 = _coconut_sentinel  #5 (line in Coconut source)
-sys = _coconut_sys  #5 (line in Coconut source)
-if sys.version_info >= (3,):  #5 (line in Coconut source)
-    from urllib.request import urlretrieve  #5 (line in Coconut source)
-else:  #5 (line in Coconut source)
-    from urllib2 import urlretrieve  #5 (line in Coconut source)
-if _coconut_sys_0 is not _coconut_sentinel:  #5 (line in Coconut source)
-    sys = _coconut_sys_0  #5 (line in Coconut source)
-try:  #6 (line in Coconut source)
-    _coconut_sys_1 = sys  # type: ignore  #6 (line in Coconut source)
-except _coconut.NameError:  #6 (line in Coconut source)
-    _coconut_sys_1 = _coconut_sentinel  #6 (line in Coconut source)
-sys = _coconut_sys  #6 (line in Coconut source)
-if sys.version_info >= (3,):  #6 (line in Coconut source)
-    from urllib.error import HTTPError  #6 (line in Coconut source)
-else:  #6 (line in Coconut source)
-    from urllib2 import HTTPError  #6 (line in Coconut source)
-if _coconut_sys_1 is not _coconut_sentinel:  #6 (line in Coconut source)
-    sys = _coconut_sys_1  #6 (line in Coconut source)
-from contextlib import contextmanager  #7 (line in Coconut source)
-
-import requests  #9 (line in Coconut source)
-
-from minecraft_server_tools.constants import WINDOWS  #11 (line in Coconut source)
-from minecraft_server_tools.constants import SERVER_RAM  #11 (line in Coconut source)
-from minecraft_server_tools.constants import FORGE_ARGS  #11 (line in Coconut source)
-from minecraft_server_tools.constants import FORGE_INSTALLER_URL  #11 (line in Coconut source)
-from minecraft_server_tools.constants import OLD_JARS_REGEX  #11 (line in Coconut source)
-from minecraft_server_tools.constants import SERVER_DIR  #11 (line in Coconut source)
-from minecraft_server_tools.constants import FORGE_JAR  #11 (line in Coconut source)
-from minecraft_server_tools.constants import FORGE_INSTALLER_JAR  #11 (line in Coconut source)
-from minecraft_server_tools.constants import JVM_ARGS_FILE  #11 (line in Coconut source)
-from minecraft_server_tools.constants import FORGE_LAUNCH_CMD  #11 (line in Coconut source)
-from minecraft_server_tools.constants import FML_ARGS  #11 (line in Coconut source)
-from minecraft_server_tools.constants import CLIENT_RAM  #11 (line in Coconut source)
-from minecraft_server_tools.constants import SERVER_GC  #11 (line in Coconut source)
-from minecraft_server_tools.constants import CLIENT_GC  #11 (line in Coconut source)
-from minecraft_server_tools.constants import DOWNLOADS_PATH  #11 (line in Coconut source)
-from minecraft_server_tools.constants import USE_GRAAL  #11 (line in Coconut source)
-from minecraft_server_tools.constants import GRAAL_URL  #11 (line in Coconut source)
-from minecraft_server_tools.constants import GRAAL_ZIP_PATH  #11 (line in Coconut source)
-from minecraft_server_tools.constants import GRAAL_BASE_DIR  #11 (line in Coconut source)
-from minecraft_server_tools.constants import get_jvm_args  #11 (line in Coconut source)
-from minecraft_server_tools.constants import MODPACK_NAME  #11 (line in Coconut source)
-from minecraft_server_tools.constants import START_ARGS  #11 (line in Coconut source)
-from minecraft_server_tools.constants import WORLD_CONFIG_DIR  #11 (line in Coconut source)
-from minecraft_server_tools.constants import DEFAULTCONFIGS_DIR  #11 (line in Coconut source)
-
-FORGE_JAR_PATH = os.path.join(SERVER_DIR, FORGE_JAR)  #38 (line in Coconut source)
-FORGE_INSTALLER_JAR_PATH = os.path.join(SERVER_DIR, FORGE_INSTALLER_JAR)  #39 (line in Coconut source)
-DOWNLOADED_INSTALLER_PATH = os.path.join(DOWNLOADS_PATH, FORGE_INSTALLER_JAR)  #40 (line in Coconut source)
-
-
-@_coconut_tco  #43 (line in Coconut source)
-def run_cmd(cmd, check=True, shell=False, get_output=False, quiet=False):  #43 (line in Coconut source)
-    if not quiet:  #44 (line in Coconut source)
-        print("> " + " ".join((str(x) for x in cmd)))  #45 (line in Coconut source)
-    kwargs = _coconut.dict()  #46 (line in Coconut source)
-    if get_output:  #47 (line in Coconut source)
-        kwargs["stdout"] = kwargs["stderr"] = subprocess.PIPE  #48 (line in Coconut source)
-    return _coconut_tail_call(subprocess.run, cmd, check=check, shell=shell, **kwargs)  #49 (line in Coconut source)
-
-
-
-@_coconut_tco  #52 (line in Coconut source)
-def run_high_priority(cmd, name=MODPACK_NAME):  #52 (line in Coconut source)
-    if WINDOWS:  #53 (line in Coconut source)
-        return _coconut_tail_call(run_cmd, ["START", name, "/WAIT"] + START_ARGS + cmd, shell=True)  #54 (line in Coconut source)
-    else:  #55 (line in Coconut source)
-        return _coconut_tail_call(run_cmd, cmd)  #56 (line in Coconut source)
-
-
-
-def run_java(cmd):  #59 (line in Coconut source)
-    with using_graal_java():  #60 (line in Coconut source)
-        return run_high_priority(["java",] + cmd)  #61 (line in Coconut source)
-
-
-
-def download_file(url, path):  #64 (line in Coconut source)
-    dirname = os.path.dirname(path)  #65 (line in Coconut source)
-    if not os.path.exists(dirname):  #66 (line in Coconut source)
-        os.makedirs(dirname)  #67 (line in Coconut source)
-    got = requests.get(url)  #68 (line in Coconut source)
-    with open(path, "wb") as fobj:  #69 (line in Coconut source)
-        fobj.write(got.content)  #70 (line in Coconut source)
-
-
-
-@contextmanager  #73 (line in Coconut source)
-def using_graal_java():  #74 (line in Coconut source)
-    if USE_GRAAL:  #75 (line in Coconut source)
-        if not os.path.exists(GRAAL_ZIP_PATH):  #76 (line in Coconut source)
-            print("Downloading Java GraalVM...")  #77 (line in Coconut source)
-            download_file(GRAAL_URL, GRAAL_ZIP_PATH)  #78 (line in Coconut source)
-            shutil.unpack_archive(GRAAL_ZIP_PATH, GRAAL_BASE_DIR)  #79 (line in Coconut source)
+import sys  #2 (line in Coconut source)
+import subprocess  #3 (line in Coconut source)
+import shutil  #4 (line in Coconut source)
+import argparse  #5 (line in Coconut source)
+import time  #6 (line in Coconut source)
+try:  #7 (line in Coconut source)
+    _coconut_sys_0 = sys  # type: ignore  #7 (line in Coconut source)
+except _coconut.NameError:  #7 (line in Coconut source)
+    _coconut_sys_0 = _coconut_sentinel  #7 (line in Coconut source)
+sys = _coconut_sys  #7 (line in Coconut source)
+if sys.version_info >= (3,):  #7 (line in Coconut source)
+    from urllib.request import urlretrieve  #7 (line in Coconut source)
+else:  #7 (line in Coconut source)
+    from urllib2 import urlretrieve  #7 (line in Coconut source)
+if _coconut_sys_0 is not _coconut_sentinel:  #7 (line in Coconut source)
+    sys = _coconut_sys_0  #7 (line in Coconut source)
+try:  #8 (line in Coconut source)
+    _coconut_sys_1 = sys  # type: ignore  #8 (line in Coconut source)
+except _coconut.NameError:  #8 (line in Coconut source)
+    _coconut_sys_1 = _coconut_sentinel  #8 (line in Coconut source)
+sys = _coconut_sys  #8 (line in Coconut source)
+if sys.version_info >= (3,):  #8 (line in Coconut source)
+    from urllib.error import HTTPError  #8 (line in Coconut source)
+else:  #8 (line in Coconut source)
+    from urllib2 import HTTPError  #8 (line in Coconut source)
+if _coconut_sys_1 is not _coconut_sentinel:  #8 (line in Coconut source)
+    sys = _coconut_sys_1  #8 (line in Coconut source)
+from contextlib import contextmanager  #9 (line in Coconut source)
+
+import requests  #11 (line in Coconut source)
+
+from minecraft_server_tools.constants import WINDOWS  #13 (line in Coconut source)
+from minecraft_server_tools.constants import SERVER_RAM  #13 (line in Coconut source)
+from minecraft_server_tools.constants import FORGE_ARGS  #13 (line in Coconut source)
+from minecraft_server_tools.constants import FORGE_INSTALLER_URL  #13 (line in Coconut source)
+from minecraft_server_tools.constants import OLD_JARS_REGEX  #13 (line in Coconut source)
+from minecraft_server_tools.constants import SERVER_DIR  #13 (line in Coconut source)
+from minecraft_server_tools.constants import FORGE_JAR  #13 (line in Coconut source)
+from minecraft_server_tools.constants import FORGE_INSTALLER_JAR  #13 (line in Coconut source)
+from minecraft_server_tools.constants import JVM_ARGS_FILE  #13 (line in Coconut source)
+from minecraft_server_tools.constants import FORGE_LAUNCH_CMD  #13 (line in Coconut source)
+from minecraft_server_tools.constants import FML_ARGS  #13 (line in Coconut source)
+from minecraft_server_tools.constants import CLIENT_RAM  #13 (line in Coconut source)
+from minecraft_server_tools.constants import SERVER_GC  #13 (line in Coconut source)
+from minecraft_server_tools.constants import CLIENT_GC  #13 (line in Coconut source)
+from minecraft_server_tools.constants import DOWNLOADS_PATH  #13 (line in Coconut source)
+from minecraft_server_tools.constants import USE_GRAAL  #13 (line in Coconut source)
+from minecraft_server_tools.constants import GRAAL_URL  #13 (line in Coconut source)
+from minecraft_server_tools.constants import GRAAL_ZIP_PATH  #13 (line in Coconut source)
+from minecraft_server_tools.constants import GRAAL_BASE_DIR  #13 (line in Coconut source)
+from minecraft_server_tools.constants import get_jvm_args  #13 (line in Coconut source)
+from minecraft_server_tools.constants import MODPACK_NAME  #13 (line in Coconut source)
+from minecraft_server_tools.constants import START_ARGS  #13 (line in Coconut source)
+from minecraft_server_tools.constants import WORLD_CONFIG_DIR  #13 (line in Coconut source)
+from minecraft_server_tools.constants import DEFAULTCONFIGS_DIR  #13 (line in Coconut source)
+
+FORGE_JAR_PATH = os.path.join(SERVER_DIR, FORGE_JAR)  #40 (line in Coconut source)
+FORGE_INSTALLER_JAR_PATH = os.path.join(SERVER_DIR, FORGE_INSTALLER_JAR)  #41 (line in Coconut source)
+DOWNLOADED_INSTALLER_PATH = os.path.join(DOWNLOADS_PATH, FORGE_INSTALLER_JAR)  #42 (line in Coconut source)
+
+
+def remove_file_with_retry(filepath, max_retries=5, initial_delay=0.2):  #45 (line in Coconut source)
+    """Remove a single file with retry logic for Windows file locking."""  #46 (line in Coconut source)
+    delay = initial_delay  #47 (line in Coconut source)
+    for attempt in range(max_retries):  #48 (line in Coconut source)
+        try:  #49 (line in Coconut source)
+            os.remove(filepath)  #50 (line in Coconut source)
+            return True  #51 (line in Coconut source)
+        except PermissionError:  #52 (line in Coconut source)
+            if attempt < max_retries - 1:  #53 (line in Coconut source)
+                time.sleep(delay)  #54 (line in Coconut source)
+                delay *= 2  #55 (line in Coconut source)
+    return False  #56 (line in Coconut source)
+
+
+
+def remove_dir_if_exists(directory, max_retries=5, initial_delay=0.1):  #59 (line in Coconut source)
+    """Remove a directory if it exists.
+
+    Uses a multi-strategy approach for Windows/OneDrive file locking:
+    1. Remove all files individually with retries
+    2. Try os.rmdir() for the empty directory
+    3. Fall back to Windows rmdir command if needed
+    4. Retry with exponential backoff
+    """  #67 (line in Coconut source)
+    if not os.path.exists(directory):  #68 (line in Coconut source)
+        return  #69 (line in Coconut source)
+
+    dir_name = os.path.basename(directory)  #71 (line in Coconut source)
+
+# First, remove all files individually
+    for filename in os.listdir(directory):  #74 (line in Coconut source)
+        filepath = os.path.join(directory, filename)  #75 (line in Coconut source)
+        if os.path.isfile(filepath):  #76 (line in Coconut source)
+            if not remove_file_with_retry(filepath):  #77 (line in Coconut source)
+                print("  Warning: Could not remove file {_coconut_format_0}".format(_coconut_format_0=(filename)))  #78 (line in Coconut source)
+
+# Now try to remove the empty directory with retries
+    delay = initial_delay  #81 (line in Coconut source)
+    for attempt in range(max_retries):  #82 (line in Coconut source)
+        try:  #83 (line in Coconut source)
+# Check if directory is empty
+            remaining = os.listdir(directory)  #85 (line in Coconut source)
+            if remaining:  #86 (line in Coconut source)
+                print("  Warning: Directory {_coconut_format_0} not empty: {_coconut_format_1}".format(_coconut_format_0=(dir_name), _coconut_format_1=(remaining)))  #87 (line in Coconut source)
+                return  #88 (line in Coconut source)
+
+            os.rmdir(directory)  #90 (line in Coconut source)
+            print("  Removed directory: {_coconut_format_0}".format(_coconut_format_0=(dir_name)))  #91 (line in Coconut source)
+            return  #92 (line in Coconut source)
+        except PermissionError:  #93 (line in Coconut source)
+# On Windows, try using rmdir command as fallback
+            if sys.platform == "win32" and attempt == max_retries // 2:  #95 (line in Coconut source)
+                try:  #96 (line in Coconut source)
+                    subprocess.run(["cmd", "/c", "rmdir", "/s", "/q", directory], check=True, capture_output=True)  #97 (line in Coconut source)
+                    if not os.path.exists(directory):  #102 (line in Coconut source)
+                        print("  Removed directory: {_coconut_format_0} (via rmdir)".format(_coconut_format_0=(dir_name)))  #103 (line in Coconut source)
+                        return  #104 (line in Coconut source)
+                except subprocess.CalledProcessError:  #105 (line in Coconut source)
+                    pass  #106 (line in Coconut source)
 
-        graal_bin_dir = None  #81 (line in Coconut source)
-        graal_bin_dir_time = 0  #82 (line in Coconut source)
-        for entry in os.scandir(GRAAL_BASE_DIR):  #83 (line in Coconut source)
-            if entry.is_dir():  #84 (line in Coconut source)
-                modified_time = entry.stat().st_mtime  #85 (line in Coconut source)
-                if modified_time > graal_bin_dir_time:  #86 (line in Coconut source)
-                    graal_bin_dir = os.path.join(entry.path, "bin")  #87 (line in Coconut source)
-                    graal_bin_dir_time = modified_time  #88 (line in Coconut source)
+            if attempt < max_retries - 1:  #108 (line in Coconut source)
+                time.sleep(delay)  #109 (line in Coconut source)
+                delay = min(delay * 1.5, 5.0)  # cap at 5 seconds  #110 (line in Coconut source)
+            else:  #111 (line in Coconut source)
+                print("  Warning: Could not remove {_coconut_format_0} - may be locked by OneDrive".format(_coconut_format_0=(dir_name)))  #112 (line in Coconut source)
+        except OSError as e:  #113 (line in Coconut source)
+            if attempt < max_retries - 1:  #114 (line in Coconut source)
+                time.sleep(delay)  #115 (line in Coconut source)
+                delay = min(delay * 1.5, 5.0)  #116 (line in Coconut source)
+            else:  #117 (line in Coconut source)
+                print("  Warning: Could not remove {_coconut_format_0}: {_coconut_format_1}".format(_coconut_format_0=(dir_name), _coconut_format_1=(e)))  #118 (line in Coconut source)
+
+
+
+@_coconut_tco  #121 (line in Coconut source)
+def run_cmd(cmd, check=True, shell=False, get_output=False, quiet=False):  #121 (line in Coconut source)
+    if not quiet:  #122 (line in Coconut source)
+        print("> " + " ".join((str(x) for x in cmd)))  #123 (line in Coconut source)
+    kwargs = _coconut.dict()  #124 (line in Coconut source)
+    if get_output:  #125 (line in Coconut source)
+        kwargs["stdout"] = kwargs["stderr"] = subprocess.PIPE  #126 (line in Coconut source)
+    return _coconut_tail_call(subprocess.run, cmd, check=check, shell=shell, **kwargs)  #127 (line in Coconut source)
 
-        print("(using GraalVM at: {_coconut_format_0!r})".format(_coconut_format_0=(graal_bin_dir)))  #90 (line in Coconut source)
-        old_path = os.environ["PATH"]  #91 (line in Coconut source)
-        os.environ["PATH"] = graal_bin_dir + ";" + os.environ["PATH"]  #92 (line in Coconut source)
-        try:  #93 (line in Coconut source)
-            yield  #94 (line in Coconut source)
-        finally:  #95 (line in Coconut source)
-            os.environ["PATH"] = old_path  #96 (line in Coconut source)
-    else:  #97 (line in Coconut source)
-        yield  #98 (line in Coconut source)
 
 
+@_coconut_tco  #130 (line in Coconut source)
+def run_high_priority(cmd, name=MODPACK_NAME):  #130 (line in Coconut source)
+    if WINDOWS:  #131 (line in Coconut source)
+        return _coconut_tail_call(run_cmd, ["START", name, "/WAIT"] + START_ARGS + cmd, shell=True)  #132 (line in Coconut source)
+    else:  #133 (line in Coconut source)
+        return _coconut_tail_call(run_cmd, cmd)  #134 (line in Coconut source)
 
-@_coconut_tco  #101 (line in Coconut source)
-def get_cmd_output(cmd, quiet=True):  #101 (line in Coconut source)
-    out = run_cmd(cmd, get_output=True, quiet=quiet)  #102 (line in Coconut source)
-    return _coconut_tail_call((out.stdout.decode("utf-8") + "\n" + out.stderr.decode("utf-8")).strip)  #103 (line in Coconut source)
 
 
+def run_java(cmd):  #137 (line in Coconut source)
+    with using_graal_java():  #138 (line in Coconut source)
+        return run_high_priority(["java",] + cmd)  #139 (line in Coconut source)
 
-def install_forge_server():  #106 (line in Coconut source)
-    print("Installing forge from installer {_coconut_format_0}...".format(_coconut_format_0=(FORGE_INSTALLER_JAR_PATH)))  #107 (line in Coconut source)
-    run_java(["-jar", FORGE_INSTALLER_JAR_PATH, "--installServer"])  #108 (line in Coconut source)
 
 
+def download_file(url, path):  #142 (line in Coconut source)
+    dirname = os.path.dirname(path)  #143 (line in Coconut source)
+    if not os.path.exists(dirname):  #144 (line in Coconut source)
+        os.makedirs(dirname)  #145 (line in Coconut source)
+    got = requests.get(url)  #146 (line in Coconut source)
+    with open(path, "wb") as fobj:  #147 (line in Coconut source)
+        fobj.write(got.content)  #148 (line in Coconut source)
 
-def move_forge_installer():  #111 (line in Coconut source)
-    if not os.path.exists(DOWNLOADED_INSTALLER_PATH):  #112 (line in Coconut source)
-        return False  #113 (line in Coconut source)
-    os.rename(DOWNLOADED_INSTALLER_PATH, FORGE_INSTALLER_JAR_PATH)  #114 (line in Coconut source)
-    return True  #115 (line in Coconut source)
 
 
+@contextmanager  #151 (line in Coconut source)
+def using_graal_java():  #152 (line in Coconut source)
+    if USE_GRAAL:  #153 (line in Coconut source)
+        if not os.path.exists(GRAAL_ZIP_PATH):  #154 (line in Coconut source)
+            print("Downloading Java GraalVM...")  #155 (line in Coconut source)
+            download_file(GRAAL_URL, GRAAL_ZIP_PATH)  #156 (line in Coconut source)
+            shutil.unpack_archive(GRAAL_ZIP_PATH, GRAAL_BASE_DIR)  #157 (line in Coconut source)
 
-def ensure_forge_server():  #118 (line in Coconut source)
-    if not os.path.exists(FORGE_INSTALLER_JAR_PATH):  #119 (line in Coconut source)
-        print("Downloading forge installer {_coconut_format_0}...".format(_coconut_format_0=(FORGE_INSTALLER_JAR_PATH)))  #120 (line in Coconut source)
-        if not move_forge_installer():  #121 (line in Coconut source)
-            try:  #122 (line in Coconut source)
-                urlretrieve(FORGE_INSTALLER_URL, FORGE_INSTALLER_JAR_PATH)  #123 (line in Coconut source)
-            except HTTPError:  #124 (line in Coconut source)
-                print("Automatic download failed; please download from: {_coconut_format_0}".format(_coconut_format_0=(FORGE_INSTALLER_URL)))  #125 (line in Coconut source)
-                input("Press Enter to continue.")  #126 (line in Coconut source)
-                assert move_forge_installer()  #127 (line in Coconut source)
-        install_forge_server()  #128 (line in Coconut source)
+        graal_bin_dir = None  #159 (line in Coconut source)
+        graal_bin_dir_time = 0  #160 (line in Coconut source)
+        for entry in os.scandir(GRAAL_BASE_DIR):  #161 (line in Coconut source)
+            if entry.is_dir():  #162 (line in Coconut source)
+                modified_time = entry.stat().st_mtime  #163 (line in Coconut source)
+                if modified_time > graal_bin_dir_time:  #164 (line in Coconut source)
+                    graal_bin_dir = os.path.join(entry.path, "bin")  #165 (line in Coconut source)
+                    graal_bin_dir_time = modified_time  #166 (line in Coconut source)
 
+        print("(using GraalVM at: {_coconut_format_0!r})".format(_coconut_format_0=(graal_bin_dir)))  #168 (line in Coconut source)
+        old_path = os.environ["PATH"]  #169 (line in Coconut source)
+        os.environ["PATH"] = graal_bin_dir + ";" + os.environ["PATH"]  #170 (line in Coconut source)
+        try:  #171 (line in Coconut source)
+            yield  #172 (line in Coconut source)
+        finally:  #173 (line in Coconut source)
+            os.environ["PATH"] = old_path  #174 (line in Coconut source)
+    else:  #175 (line in Coconut source)
+        yield  #176 (line in Coconut source)
 
 
-def clean_forge_jars(dir_to_clean=SERVER_DIR):  #131 (line in Coconut source)
-    for fname in os.listdir(dir_to_clean):  #132 (line in Coconut source)
-        if OLD_JARS_REGEX.match(fname) is not None:  #133 (line in Coconut source)
-            print("Removing old jar {_coconut_format_0}...".format(_coconut_format_0=(fname)))  #134 (line in Coconut source)
-            os.remove(os.path.join(dir_to_clean, fname))  #135 (line in Coconut source)
 
+@_coconut_tco  #179 (line in Coconut source)
+def get_cmd_output(cmd, quiet=True):  #179 (line in Coconut source)
+    out = run_cmd(cmd, get_output=True, quiet=quiet)  #180 (line in Coconut source)
+    return _coconut_tail_call((out.stdout.decode("utf-8") + "\n" + out.stderr.decode("utf-8")).strip)  #181 (line in Coconut source)
 
 
-def check_if_graal(java="java"):  #138 (line in Coconut source)
-    try:  #139 (line in Coconut source)
-        return "GraalVM" in get_cmd_output([java, "-version"])  #140 (line in Coconut source)
-    except FileNotFoundError:  #141 (line in Coconut source)
-        return None  #142 (line in Coconut source)
 
+def install_forge_server():  #184 (line in Coconut source)
+    print("Installing forge from installer {_coconut_format_0}...".format(_coconut_format_0=(FORGE_INSTALLER_JAR_PATH)))  #185 (line in Coconut source)
+    run_java(["-jar", FORGE_INSTALLER_JAR_PATH, "--installServer"])  #186 (line in Coconut source)
 
 
-def get_java_args(client=False):  #145 (line in Coconut source)
-    graal = check_if_graal()  #146 (line in Coconut source)
-    if graal != USE_GRAAL:  #147 (line in Coconut source)
-        print("WARNING: Should be using GraalVM={_coconut_format_0} but got GraalVM={_coconut_format_1}.".format(_coconut_format_0=(USE_GRAAL), _coconut_format_1=(graal)))  #148 (line in Coconut source)
-    if client:  #149 (line in Coconut source)
-        ram = CLIENT_RAM  #150 (line in Coconut source)
-        gc = CLIENT_GC  #151 (line in Coconut source)
-    else:  #152 (line in Coconut source)
-        ram = SERVER_RAM  #153 (line in Coconut source)
-        gc = SERVER_GC  #154 (line in Coconut source)
-    java_args = (["-Xmx" + ram, "-Xms" + ram] + get_jvm_args(gc=gc, vm="graal" if graal else "java") + FML_ARGS)  #155 (line in Coconut source)
-    print("\tUsing JVM args: {_coconut_format_0}".format(_coconut_format_0=(' '.join(java_args))))  #160 (line in Coconut source)
-    return java_args  #161 (line in Coconut source)
 
+def move_forge_installer():  #189 (line in Coconut source)
+    if not os.path.exists(DOWNLOADED_INSTALLER_PATH):  #190 (line in Coconut source)
+        return False  #191 (line in Coconut source)
+    os.rename(DOWNLOADED_INSTALLER_PATH, FORGE_INSTALLER_JAR_PATH)  #192 (line in Coconut source)
+    return True  #193 (line in Coconut source)
 
 
-def fix_run_bat():  #164 (line in Coconut source)
-    with open(os.path.join(SERVER_DIR, "run.bat"), "r+") as run_bat:  #165 (line in Coconut source)
-        content = run_bat.read()  #166 (line in Coconut source)
-        run_bat.seek(0)  #167 (line in Coconut source)
-        run_bat.truncate()  #168 (line in Coconut source)
-        run_bat.write(content.replace("pause", "exit"))  #169 (line in Coconut source)
 
+def ensure_forge_server():  #196 (line in Coconut source)
+    if not os.path.exists(FORGE_INSTALLER_JAR_PATH):  #197 (line in Coconut source)
+        print("Downloading forge installer {_coconut_format_0}...".format(_coconut_format_0=(FORGE_INSTALLER_JAR_PATH)))  #198 (line in Coconut source)
+        if not move_forge_installer():  #199 (line in Coconut source)
+            try:  #200 (line in Coconut source)
+                urlretrieve(FORGE_INSTALLER_URL, FORGE_INSTALLER_JAR_PATH)  #201 (line in Coconut source)
+            except HTTPError:  #202 (line in Coconut source)
+                print("Automatic download failed; please download from: {_coconut_format_0}".format(_coconut_format_0=(FORGE_INSTALLER_URL)))  #203 (line in Coconut source)
+                input("Press Enter to continue.")  #204 (line in Coconut source)
+                assert move_forge_installer()  #205 (line in Coconut source)
+        install_forge_server()  #206 (line in Coconut source)
 
 
-def write_jvm_args():  #172 (line in Coconut source)
-    with open(JVM_ARGS_FILE, "w") as jvm_args_file:  #173 (line in Coconut source)
-        jvm_args_file.write("\n".join(get_java_args()) + "\n")  #174 (line in Coconut source)
 
+def clean_forge_jars(dir_to_clean=SERVER_DIR):  #209 (line in Coconut source)
+    for fname in os.listdir(dir_to_clean):  #210 (line in Coconut source)
+        if OLD_JARS_REGEX.match(fname) is not None:  #211 (line in Coconut source)
+            print("Removing old jar {_coconut_format_0}...".format(_coconut_format_0=(fname)))  #212 (line in Coconut source)
+            os.remove(os.path.join(dir_to_clean, fname))  #213 (line in Coconut source)
 
 
-def clean_world_configs():  #177 (line in Coconut source)
-    if os.path.exists(WORLD_CONFIG_DIR):  #178 (line in Coconut source)
-        print("Deleting {_coconut_format_0!r}...".format(_coconut_format_0=(WORLD_CONFIG_DIR)))  #179 (line in Coconut source)
-        shutil.rmtree(WORLD_CONFIG_DIR)  #180 (line in Coconut source)
-    else:  #181 (line in Coconut source)
-        print("WARNING: Couldn't find {_coconut_format_0!r}.".format(_coconut_format_0=(WORLD_CONFIG_DIR)))  #182 (line in Coconut source)
 
+def check_if_graal(java="java"):  #216 (line in Coconut source)
+    try:  #217 (line in Coconut source)
+        return "GraalVM" in get_cmd_output([java, "-version"])  #218 (line in Coconut source)
+    except FileNotFoundError:  #219 (line in Coconut source)
+        return None  #220 (line in Coconut source)
 
 
-def copy_new_world_configs():  #185 (line in Coconut source)
-    if os.path.exists(WORLD_CONFIG_DIR):  #186 (line in Coconut source)
-        print("\nLooking for new configs...")  #187 (line in Coconut source)
-        for fname in os.listdir(WORLD_CONFIG_DIR):  #188 (line in Coconut source)
-            defaultconfigs_path = os.path.join(DEFAULTCONFIGS_DIR, fname)  #189 (line in Coconut source)
-            if not os.path.exists(defaultconfigs_path):  #190 (line in Coconut source)
-                world_path = os.path.join(WORLD_CONFIG_DIR, fname)  #191 (line in Coconut source)
-                print("\tCopying {_coconut_format_0!r} to {_coconut_format_1!r}...".format(_coconut_format_0=(world_path), _coconut_format_1=(defaultconfigs_path)))  #192 (line in Coconut source)
-                shutil.copy(world_path, defaultconfigs_path)  #193 (line in Coconut source)
 
+def get_java_args(client=False):  #223 (line in Coconut source)
+    graal = check_if_graal()  #224 (line in Coconut source)
+    if graal != USE_GRAAL:  #225 (line in Coconut source)
+        print("WARNING: Should be using GraalVM={_coconut_format_0} but got GraalVM={_coconut_format_1}.".format(_coconut_format_0=(USE_GRAAL), _coconut_format_1=(graal)))  #226 (line in Coconut source)
+    if client:  #227 (line in Coconut source)
+        ram = CLIENT_RAM  #228 (line in Coconut source)
+        gc = CLIENT_GC  #229 (line in Coconut source)
+    else:  #230 (line in Coconut source)
+        ram = SERVER_RAM  #231 (line in Coconut source)
+        gc = SERVER_GC  #232 (line in Coconut source)
+    java_args = (["-Xmx" + ram, "-Xms" + ram] + get_jvm_args(gc=gc, vm="graal" if graal else "java") + FML_ARGS)  #233 (line in Coconut source)
+    print("\tUsing JVM args: {_coconut_format_0}".format(_coconut_format_0=(' '.join(java_args))))  #238 (line in Coconut source)
+    return java_args  #239 (line in Coconut source)
 
 
-def start_server(dry_run=False):  #196 (line in Coconut source)
-    clean_forge_jars()  #197 (line in Coconut source)
-    ensure_forge_server()  #198 (line in Coconut source)
-    fix_run_bat()  #199 (line in Coconut source)
-    if not dry_run:  #200 (line in Coconut source)
-        clean_world_configs()  #201 (line in Coconut source)
-        with using_graal_java():  #202 (line in Coconut source)
-            write_jvm_args()  #203 (line in Coconut source)
-            if os.path.exists(FORGE_JAR_PATH):  #204 (line in Coconut source)
-                run_java(get_java_args() + [FORGE_JAR_PATH,] + FORGE_ARGS)  #205 (line in Coconut source)
-            else:  #206 (line in Coconut source)
-                run_high_priority(FORGE_LAUNCH_CMD + FORGE_ARGS)  #207 (line in Coconut source)
-        copy_new_world_configs()  #208 (line in Coconut source)
 
+def fix_run_bat():  #242 (line in Coconut source)
+    with open(os.path.join(SERVER_DIR, "run.bat"), "r+") as run_bat:  #243 (line in Coconut source)
+        content = run_bat.read()  #244 (line in Coconut source)
+        run_bat.seek(0)  #245 (line in Coconut source)
+        run_bat.truncate()  #246 (line in Coconut source)
+        run_bat.write(content.replace("pause", "exit"))  #247 (line in Coconut source)
 
 
-@_coconut_tco  #211 (line in Coconut source)
-def parse_args():  #211 (line in Coconut source)
-    parser = argparse.ArgumentParser(description="Launch the Minecraft server with optimized JVM settings.")  #212 (line in Coconut source)
-    parser.add_argument("--dry-run", action="store_true", help="Prepare server files without actually launching the server")  #215 (line in Coconut source)
-    return _coconut_tail_call(parser.parse_args)  #220 (line in Coconut source)
 
+def write_jvm_args():  #250 (line in Coconut source)
+    with open(JVM_ARGS_FILE, "w") as jvm_args_file:  #251 (line in Coconut source)
+        jvm_args_file.write("\n".join(get_java_args()) + "\n")  #252 (line in Coconut source)
 
 
-def main():  #223 (line in Coconut source)
-    args = parse_args()  #224 (line in Coconut source)
-    start_server(dry_run=args.dry_run)  #225 (line in Coconut source)
 
+def clean_world_configs():  #255 (line in Coconut source)
+    if os.path.exists(WORLD_CONFIG_DIR):  #256 (line in Coconut source)
+        print("Deleting {_coconut_format_0!r}...".format(_coconut_format_0=(WORLD_CONFIG_DIR)))  #257 (line in Coconut source)
+        remove_dir_if_exists(WORLD_CONFIG_DIR)  #258 (line in Coconut source)
+    else:  #259 (line in Coconut source)
+        print("WARNING: Couldn't find {_coconut_format_0!r}.".format(_coconut_format_0=(WORLD_CONFIG_DIR)))  #260 (line in Coconut source)
 
 
-if __name__ == "__main__":  #228 (line in Coconut source)
-    main()  #229 (line in Coconut source)
+
+def copy_new_world_configs():  #263 (line in Coconut source)
+    if os.path.exists(WORLD_CONFIG_DIR):  #264 (line in Coconut source)
+        print("\nLooking for new configs...")  #265 (line in Coconut source)
+        for fname in os.listdir(WORLD_CONFIG_DIR):  #266 (line in Coconut source)
+            defaultconfigs_path = os.path.join(DEFAULTCONFIGS_DIR, fname)  #267 (line in Coconut source)
+            if not os.path.exists(defaultconfigs_path):  #268 (line in Coconut source)
+                world_path = os.path.join(WORLD_CONFIG_DIR, fname)  #269 (line in Coconut source)
+                print("\tCopying {_coconut_format_0!r} to {_coconut_format_1!r}...".format(_coconut_format_0=(world_path), _coconut_format_1=(defaultconfigs_path)))  #270 (line in Coconut source)
+                shutil.copy(world_path, defaultconfigs_path)  #271 (line in Coconut source)
+
+
+
+def start_server(dry_run=False):  #274 (line in Coconut source)
+    clean_forge_jars()  #275 (line in Coconut source)
+    ensure_forge_server()  #276 (line in Coconut source)
+    fix_run_bat()  #277 (line in Coconut source)
+    if not dry_run:  #278 (line in Coconut source)
+        clean_world_configs()  #279 (line in Coconut source)
+        with using_graal_java():  #280 (line in Coconut source)
+            write_jvm_args()  #281 (line in Coconut source)
+            if os.path.exists(FORGE_JAR_PATH):  #282 (line in Coconut source)
+                run_java(get_java_args() + [FORGE_JAR_PATH,] + FORGE_ARGS)  #283 (line in Coconut source)
+            else:  #284 (line in Coconut source)
+                run_high_priority(FORGE_LAUNCH_CMD + FORGE_ARGS)  #285 (line in Coconut source)
+        copy_new_world_configs()  #286 (line in Coconut source)
+
+
+
+@_coconut_tco  #289 (line in Coconut source)
+def parse_args():  #289 (line in Coconut source)
+    parser = argparse.ArgumentParser(description="Launch the Minecraft server with optimized JVM settings.")  #290 (line in Coconut source)
+    parser.add_argument("--dry-run", action="store_true", help="Prepare server files without actually launching the server")  #293 (line in Coconut source)
+    return _coconut_tail_call(parser.parse_args)  #298 (line in Coconut source)
+
+
+
+def main():  #301 (line in Coconut source)
+    args = parse_args()  #302 (line in Coconut source)
+    start_server(dry_run=args.dry_run)  #303 (line in Coconut source)
+
+
+
+if __name__ == "__main__":  #306 (line in Coconut source)
+    main()  #307 (line in Coconut source)
