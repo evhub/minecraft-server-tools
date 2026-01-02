@@ -109,7 +109,7 @@ IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 
 if IS_MOD_SERVER:
     CLIENT_RAM = "29G"
-    SERVER_RAM = "20G" #TODO(after testing revert back to): "29G"
+    SERVER_RAM = "29G"
 else:
     CLIENT_RAM = SERVER_RAM = "5G"
 
@@ -193,6 +193,8 @@ max_client_ram = psutil.virtual_memory().total // GB - 1
 max_server_ram = psutil.virtual_memory().total // GB - 1  # - 3 for AWS
 
 if int(CLIENT_RAM[:-1]) > max_client_ram:
+    if max_client_ram <= 8:
+        raise IOError("Insufficient RAM: try to run again on whatever the best gaming PC is that you have.")
     print(f"\nWARNING: Reducing client RAM from {CLIENT_RAM} to {max_client_ram}G.")
     CLIENT_RAM = str(max_client_ram) + "G"
 
@@ -552,6 +554,7 @@ else:
     MINECRAFT_DIR = fixpath("~/.minecraft")
 
 PROFILES_FILE = os.path.join(MINECRAFT_DIR, "launcher_profiles.json")
+FORGE_PROFILE_NAME = "NeoForge"
 
 README_FILE = "README.txt"
 
@@ -568,6 +571,7 @@ BARREL_ROLL_MOD_PREFIX = "do_a_barrel_roll"
 LAUNCHER_FILE = first_that_exists([
     "~/Applications/Minecraft.app",
     "/Applications/Minecraft.app",
+    r"C:\XboxGames\Minecraft Launcher\Content\Minecraft.exe",
     r"C:\Program Files (x86)\Minecraft Launcher\MinecraftLauncher.exe",
     r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Minecraft Launcher\Minecraft Launcher.ink",
     r"C:\Users\Public\Desktop\Minecraft Launcher.ink",

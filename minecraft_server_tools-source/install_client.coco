@@ -30,6 +30,8 @@ from minecraft_server_tools.constants import (
     START_ARGS,
     LAUNCHER_FILE,
     BARREL_ROLL_MOD_PREFIX,
+    FORGE_PROFILE_NAME,
+    USE_GRAAL,
 )
 
 MINECRAFT_MODS_DIR = os.path.join(MINECRAFT_DIR, MODS_NAME)
@@ -117,6 +119,11 @@ def zip_mods():
 
 
 def get_javaw_path():
+    if USE_GRAAL:
+        graal_bin_dir = launch_server.get_graal_bin_dir()
+        javaw_path = os.path.join(graal_bin_dir, "javaw.exe" if WINDOWS else "javaw")
+        if os.path.exists(javaw_path):
+            return javaw_path
     for where_cmd in ("which", "where"):
         try:
             paths = launch_server.get_cmd_output([where_cmd, "javaw"])
@@ -142,9 +149,9 @@ def set_jvm_args():
         with open(PROFILES_FILE, "r+") as profiles_file:
             top_level_json = json.load(profiles_file)
             profiles = top_level_json["profiles"]
-            if "forge" not in profiles:
+            if FORGE_PROFILE_NAME not in profiles:
                 return False
-            forge_profile = profiles["forge"]
+            forge_profile = profiles[FORGE_PROFILE_NAME]
             forge_profile["name"] = MODPACK_NAME
             forge_profile["javaArgs"] = java_args
             if java_path:

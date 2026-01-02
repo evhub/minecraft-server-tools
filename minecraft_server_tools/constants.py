@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x43afd393
+# __coconut_hash__ = 0x8636455e
 
 # Compiled with Coconut version 3.2.0-post_dev1
 
@@ -150,7 +150,7 @@ IS_MOD_SERVER = "mod" in SERVER_DIR.lower()  #108 (line in Coconut source)
 
 if IS_MOD_SERVER:  #110 (line in Coconut source)
     CLIENT_RAM = "29G"  #111 (line in Coconut source)
-    SERVER_RAM = "20G"  #TODO(after testing revert back to): "29G"  #112 (line in Coconut source)
+    SERVER_RAM = "29G"  #112 (line in Coconut source)
 else:  #113 (line in Coconut source)
     CLIENT_RAM = SERVER_RAM = "5G"  #114 (line in Coconut source)
 
@@ -189,202 +189,205 @@ max_client_ram = psutil.virtual_memory().total // GB - 1  #192 (line in Coconut 
 max_server_ram = psutil.virtual_memory().total // GB - 1  # - 3 for AWS  #193 (line in Coconut source)
 
 if int(CLIENT_RAM[:-1]) > max_client_ram:  #195 (line in Coconut source)
-    print("\nWARNING: Reducing client RAM from {_coconut_format_0} to {_coconut_format_1}G.".format(_coconut_format_0=(CLIENT_RAM), _coconut_format_1=(max_client_ram)))  #196 (line in Coconut source)
-    CLIENT_RAM = str(max_client_ram) + "G"  #197 (line in Coconut source)
+    if max_client_ram <= 8:  #196 (line in Coconut source)
+        raise IOError("Insufficient RAM: try to run again on whatever the best gaming PC is that you have.")  #197 (line in Coconut source)
+    print("\nWARNING: Reducing client RAM from {_coconut_format_0} to {_coconut_format_1}G.".format(_coconut_format_0=(CLIENT_RAM), _coconut_format_1=(max_client_ram)))  #198 (line in Coconut source)
+    CLIENT_RAM = str(max_client_ram) + "G"  #199 (line in Coconut source)
 
-if int(SERVER_RAM[:-1]) > max_server_ram:  #199 (line in Coconut source)
-    print("\nWARNING: Reducing server RAM from {_coconut_format_0} to {_coconut_format_1}G.".format(_coconut_format_0=(SERVER_RAM), _coconut_format_1=(max_server_ram)))  #200 (line in Coconut source)
-    SERVER_RAM = str(max_server_ram) + "G"  #201 (line in Coconut source)
+if int(SERVER_RAM[:-1]) > max_server_ram:  #201 (line in Coconut source)
+    print("\nWARNING: Reducing server RAM from {_coconut_format_0} to {_coconut_format_1}G.".format(_coconut_format_0=(SERVER_RAM), _coconut_format_1=(max_server_ram)))  #202 (line in Coconut source)
+    SERVER_RAM = str(max_server_ram) + "G"  #203 (line in Coconut source)
 
 
 # Load secrets
 
-SECRETS_FILE = os.path.join(SERVER_DIR, "secrets.json")  #206 (line in Coconut source)
+SECRETS_FILE = os.path.join(SERVER_DIR, "secrets.json")  #208 (line in Coconut source)
 
 
-def load_json(filename, default=None):  #209 (line in Coconut source)
-    assert COMMENT_JSON is not None, "loading json requires JsonComment"  #210 (line in Coconut source)
-    try:  #211 (line in Coconut source)
-        with open(filename, "r") as fp:  #212 (line in Coconut source)
-            return COMMENT_JSON.load(fp)  #213 (line in Coconut source)
-    except (FileNotFoundError, ValueError):  #214 (line in Coconut source)
-        return default  #215 (line in Coconut source)
+def load_json(filename, default=None):  #211 (line in Coconut source)
+    assert COMMENT_JSON is not None, "loading json requires JsonComment"  #212 (line in Coconut source)
+    try:  #213 (line in Coconut source)
+        with open(filename, "r") as fp:  #214 (line in Coconut source)
+            return COMMENT_JSON.load(fp)  #215 (line in Coconut source)
+    except (FileNotFoundError, ValueError):  #216 (line in Coconut source)
+        return default  #217 (line in Coconut source)
 
 
 
-if JsonComment is None:  #218 (line in Coconut source)
-    COMMENT_JSON = SECRETS = None  #219 (line in Coconut source)
-else:  #220 (line in Coconut source)
-    COMMENT_JSON = JsonComment()  #221 (line in Coconut source)
-    SECRETS = load_json(SECRETS_FILE, _coconut.dict())  #222 (line in Coconut source)
-    if SECRETS:  #223 (line in Coconut source)
-        os.environ["CURSEFORGE_API_KEY"] = SECRETS["curseforge_api_key"]  #224 (line in Coconut source)
+if JsonComment is None:  #220 (line in Coconut source)
+    COMMENT_JSON = SECRETS = None  #221 (line in Coconut source)
+else:  #222 (line in Coconut source)
+    COMMENT_JSON = JsonComment()  #223 (line in Coconut source)
+    SECRETS = load_json(SECRETS_FILE, _coconut.dict())  #224 (line in Coconut source)
+    if SECRETS:  #225 (line in Coconut source)
+        os.environ["CURSEFORGE_API_KEY"] = SECRETS["curseforge_api_key"]  #226 (line in Coconut source)
 
 
 # Mod sync constants
 
-MODS_NAME = "mods"  #229 (line in Coconut source)
-BASE_MODS_NAME = MODS_NAME + "-base"  #230 (line in Coconut source)
-EXTRA_MODS_NAME = MODS_NAME + "-extra"  #231 (line in Coconut source)
-REMOVED_MODS_NAME = MODS_NAME + "-removed"  #232 (line in Coconut source)
-STAGING_MODS_NAME = MODS_NAME + "-staging"  #233 (line in Coconut source)
-DEDUPLICATE_MODS_NAME = MODS_NAME + "-deduplicate"  #234 (line in Coconut source)
+MODS_NAME = "mods"  #231 (line in Coconut source)
+BASE_MODS_NAME = MODS_NAME + "-base"  #232 (line in Coconut source)
+EXTRA_MODS_NAME = MODS_NAME + "-extra"  #233 (line in Coconut source)
+REMOVED_MODS_NAME = MODS_NAME + "-removed"  #234 (line in Coconut source)
+STAGING_MODS_NAME = MODS_NAME + "-staging"  #235 (line in Coconut source)
+DEDUPLICATE_MODS_NAME = MODS_NAME + "-deduplicate"  #236 (line in Coconut source)
 
-CLIENT_MODS_NAME = "client_mods"  #236 (line in Coconut source)
-BASE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-base"  #237 (line in Coconut source)
-EXTRA_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-extra"  #238 (line in Coconut source)
-REMOVED_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-removed"  #239 (line in Coconut source)
-STAGING_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-staging"  #240 (line in Coconut source)
-DEDUPLICATE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-deduplicate"  #241 (line in Coconut source)
+CLIENT_MODS_NAME = "client_mods"  #238 (line in Coconut source)
+BASE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-base"  #239 (line in Coconut source)
+EXTRA_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-extra"  #240 (line in Coconut source)
+REMOVED_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-removed"  #241 (line in Coconut source)
+STAGING_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-staging"  #242 (line in Coconut source)
+DEDUPLICATE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-deduplicate"  #243 (line in Coconut source)
 
 
 # Auto updater Constants
 
-ROOT_DIR = os.path.dirname(os.path.dirname(__file__))  #246 (line in Coconut source)
+ROOT_DIR = os.path.dirname(os.path.dirname(__file__))  #248 (line in Coconut source)
 
-NO_COMPONENT_SPLIT_MODS = []  #248 (line in Coconut source)
+NO_COMPONENT_SPLIT_MODS = []  #250 (line in Coconut source)
 
-USE_ALL_COMPONENTS_MODS = ["project red",]  #251 (line in Coconut source)
+USE_ALL_COMPONENTS_MODS = ["project red",]  #253 (line in Coconut source)
 
-COMPONENT_SEPS = [("-", 2), ("(", 1), ("+", 2), (" ", 2), ("-", 1), ("_", 2), ("+", 1), ("_", 1), (" ", 1)]  #255 (line in Coconut source)
+COMPONENT_SEPS = [("-", 2), ("(", 1), ("+", 2), (" ", 2), ("-", 1), ("_", 2), ("+", 1), ("_", 1), (" ", 1)]  #257 (line in Coconut source)
 
-NON_NAME_COMPONENT_REGEX = full_regex(r"[0-9].*|" + r"(?!cave|a$|ae2|rare|da|cfm)((neo|forge|fabric|quilt|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r|f|pre)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+")  #267 (line in Coconut source)
+NON_NAME_COMPONENT_REGEX = full_regex(r"[0-9].*|" + r"(?!cave|a$|ae2|rare|da|cfm)((neo|forge|fabric|quilt|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r|f|pre)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+")  #269 (line in Coconut source)
 
-NAME_REGEXES_TO_SPACE = [regex(r) for r in (r"-", r"\+", r"_", r"\(", r"\)", r"%20", r"%5[bd]", r"%2[7b]", r"\bneo", r"NEO", r"\bNeo", r"forge\b", r"FORGE", r"Forge\b", r"fabric\b", r"FABRIC", r"Fabric\b", r"quilt\b", r"QUILT", r"Quilt\b", r"\bdist(ro)?", r"release", r"\balpha\b", r"\bALPHA\b", r"\bAlpha\b", r"\bbeta\b", r"\bBETA\b", r"\bBeta\b", r"MC", r"\bmc\b", r"1\.\d+", r"[.vVf]0+", r"[.vVf]1+", r"[.vVf]2+", r"[.vVf]3+", r"[.vVf]4+", r"[.vVf]5+", r"[.vVf]6+", r"[.vVf]7+", r"[.vVf]8+", r"[.vVf]9+", r"\bv\b", r"\.", r" / ", r" \| ", r"   ", r"  ", r" / ", r"\[ \]", r"  ")]  #272 (line in Coconut source)
+NAME_REGEXES_TO_SPACE = [regex(r) for r in (r"-", r"\+", r"_", r"\(", r"\)", r"%20", r"%5[bd]", r"%2[7b]", r"\bneo", r"NEO", r"\bNeo", r"forge\b", r"FORGE", r"Forge\b", r"fabric\b", r"FABRIC", r"Fabric\b", r"quilt\b", r"QUILT", r"Quilt\b", r"\bdist(ro)?", r"release", r"\balpha\b", r"\bALPHA\b", r"\bAlpha\b", r"\bbeta\b", r"\bBETA\b", r"\bBeta\b", r"MC", r"\bmc\b", r"1\.\d+", r"[.vVf]0+", r"[.vVf]1+", r"[.vVf]2+", r"[.vVf]3+", r"[.vVf]4+", r"[.vVf]5+", r"[.vVf]6+", r"[.vVf]7+", r"[.vVf]8+", r"[.vVf]9+", r"\bv\b", r"\.", r" / ", r" \| ", r"   ", r"  ", r" / ", r"\[ \]", r"  ")]  #274 (line in Coconut source)
 
-CURSEFORGE_NAME_ELEMS_TO_STRIP = ["-", "Download", "Files", "Mods", "Minecraft", "Curseforge", "..."]  #327 (line in Coconut source)
+CURSEFORGE_NAME_ELEMS_TO_STRIP = ["-", "Download", "Files", "Mods", "Minecraft", "Curseforge", "..."]  #329 (line in Coconut source)
 
-AVOID_FILES_PUBLISHED_WITHIN = timedelta(days=7)  #337 (line in Coconut source)
+AVOID_FILES_PUBLISHED_WITHIN = timedelta(days=7)  #339 (line in Coconut source)
 
-MOD_PAGE_NAME_SUFFICES = (" - Files - Minecraft Mods - Curseforge", " - Comments - Minecraft Mods - Curseforge", " - Minecraft Mods - CurseForge")  #339 (line in Coconut source)
+MOD_PAGE_NAME_SUFFICES = (" - Files - Minecraft Mods - Curseforge", " - Comments - Minecraft Mods - Curseforge", " - Minecraft Mods - CurseForge")  #341 (line in Coconut source)
 
 # must start with {mod_name} {modloader}
-GOOGLE_QUERY_TEMPLATE = 'site:curseforge.com {mod_name} {modloader} {mc_version_2}'  #346 (line in Coconut source)
+GOOGLE_QUERY_TEMPLATE = 'site:curseforge.com {mod_name} {modloader} {mc_version_2}'  #348 (line in Coconut source)
 
-MAX_BROWSER_SEARCHES = 10  #348 (line in Coconut source)
+MAX_BROWSER_SEARCHES = 10  #350 (line in Coconut source)
 
-CURSEFORGE_NAMES_FILE = os.path.join(ROOT_DIR, "curseforge_names.json")  #350 (line in Coconut source)
-CURSEFORGE_IDS_CACHE_FILE = os.path.join(ROOT_DIR, "curseforge_ids_cache.json")  #351 (line in Coconut source)
-FIX_MOD_NAMES = False  #352 (line in Coconut source)
+CURSEFORGE_NAMES_FILE = os.path.join(ROOT_DIR, "curseforge_names.json")  #352 (line in Coconut source)
+CURSEFORGE_IDS_CACHE_FILE = os.path.join(ROOT_DIR, "curseforge_ids_cache.json")  #353 (line in Coconut source)
+FIX_MOD_NAMES = False  #354 (line in Coconut source)
 
-CURSEFORGE_API_FILE = os.path.join(ROOT_DIR, "curseforge_api.js")  #354 (line in Coconut source)
+CURSEFORGE_API_FILE = os.path.join(ROOT_DIR, "curseforge_api.js")  #356 (line in Coconut source)
 
-CURSEFORGE_QUERY_TEMPLATES = ['"{curseforge_name}"', "{core_curseforge_name}", "{mod_name}"]  #356 (line in Coconut source)
+CURSEFORGE_QUERY_TEMPLATES = ['"{curseforge_name}"', "{core_curseforge_name}", "{mod_name}"]  #358 (line in Coconut source)
 
-TIMESTAMP_FORMAT_REGEX = full_regex(r"(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)\.?(\d+)?Z")  #362 (line in Coconut source)
+TIMESTAMP_FORMAT_REGEX = full_regex(r"(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)\.?(\d+)?Z")  #364 (line in Coconut source)
 
-UPDATED_MODS_DIR_SUFFIX = "-updates"  #364 (line in Coconut source)
-OLD_MODS_DIR_SUFFIX = "-old"  #365 (line in Coconut source)
+UPDATED_MODS_DIR_SUFFIX = "-updates"  #366 (line in Coconut source)
+OLD_MODS_DIR_SUFFIX = "-old"  #367 (line in Coconut source)
 
-MAX_DEBUG_RESULTS = 2  #367 (line in Coconut source)
+MAX_DEBUG_RESULTS = 2  #369 (line in Coconut source)
 
-CURSEFORGE_API_RETRIES = 3  #369 (line in Coconut source)
-CURSEFORGE_API_RETRY_DELAY = 0.1  #370 (line in Coconut source)
+CURSEFORGE_API_RETRIES = 3  #371 (line in Coconut source)
+CURSEFORGE_API_RETRY_DELAY = 0.1  #372 (line in Coconut source)
 
 # CurseForge class IDs for filtering search results
-CURSEFORGE_CLASS_ID_MODS = 6  #373 (line in Coconut source)
-CURSEFORGE_CLASS_ID_DATAPACKS = 6945  #374 (line in Coconut source)
-CURSEFORGE_CLASS_ID_RESOURCE_PACKS = 12  #375 (line in Coconut source)
+CURSEFORGE_CLASS_ID_MODS = 6  #375 (line in Coconut source)
+CURSEFORGE_CLASS_ID_DATAPACKS = 6945  #376 (line in Coconut source)
+CURSEFORGE_CLASS_ID_RESOURCE_PACKS = 12  #377 (line in Coconut source)
 
 # Datapack folder paths (full paths from folder names)
-DATAPACK_FOLDERS = DATAPACK_INSTALL_FOLDERS + DATAPACK_OPTIONAL_INSTALL_FOLDERS  #378 (line in Coconut source)
-DATAPACK_FOLDER_PATHS = [os.path.join(SERVER_DIR, folder) for folder in DATAPACK_FOLDERS]  #379 (line in Coconut source)
+DATAPACK_FOLDERS = DATAPACK_INSTALL_FOLDERS + DATAPACK_OPTIONAL_INSTALL_FOLDERS  #380 (line in Coconut source)
+DATAPACK_FOLDER_PATHS = [os.path.join(SERVER_DIR, folder) for folder in DATAPACK_FOLDERS]  #381 (line in Coconut source)
 
 
 # Server start constants
 
-USE_GRAAL = not JPS_DEBUG  #384 (line in Coconut source)
-USE_LARGE_PAGES = False  #385 (line in Coconut source)
+USE_GRAAL = not JPS_DEBUG  #386 (line in Coconut source)
+USE_LARGE_PAGES = False  #387 (line in Coconut source)
 
-GRAAL_ZIP_NAME = "graalvm-jdk-{_coconut_format_0}_{_coconut_format_1}-x64_bin.zip".format(_coconut_format_0=(GRAAL_VERSION), _coconut_format_1=(OS_NAME))  #387 (line in Coconut source)
-GRAAL_URL = "https://download.oracle.com/graalvm/{_coconut_format_0}/latest/{_coconut_format_1}".format(_coconut_format_0=(GRAAL_VERSION), _coconut_format_1=(GRAAL_ZIP_NAME))  #388 (line in Coconut source)
+GRAAL_ZIP_NAME = "graalvm-jdk-{_coconut_format_0}_{_coconut_format_1}-x64_bin.zip".format(_coconut_format_0=(GRAAL_VERSION), _coconut_format_1=(OS_NAME))  #389 (line in Coconut source)
+GRAAL_URL = "https://download.oracle.com/graalvm/{_coconut_format_0}/latest/{_coconut_format_1}".format(_coconut_format_0=(GRAAL_VERSION), _coconut_format_1=(GRAAL_ZIP_NAME))  #390 (line in Coconut source)
 
-GRAAL_BASE_DIR = os.path.join(ROOT_DIR, "graal")  #390 (line in Coconut source)
-GRAAL_ZIP_PATH = os.path.join(GRAAL_BASE_DIR, GRAAL_ZIP_NAME)  #391 (line in Coconut source)
+GRAAL_BASE_DIR = os.path.join(ROOT_DIR, "graal")  #392 (line in Coconut source)
+GRAAL_ZIP_PATH = os.path.join(GRAAL_BASE_DIR, GRAAL_ZIP_NAME)  #393 (line in Coconut source)
 
-CLIENT_GC = "Z" if psutil.cpu_count(logical=False) > 8 else "G1"  # brucethemoose: G1, Shenandoah, or ZGenerational  #393 (line in Coconut source)
-SERVER_GC = "Z"  # brucethemoose: G1 or Z  #394 (line in Coconut source)
+CLIENT_GC = "Z" if psutil.cpu_count(logical=False) > 8 else "G1"  # brucethemoose: G1, Shenandoah, or ZGenerational  #395 (line in Coconut source)
+SERVER_GC = "Z"  # brucethemoose: G1 or Z  #396 (line in Coconut source)
 
-def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):  #396 (line in Coconut source)
-    code_cache_mul = 2 if gc == "G1" else 1  #397 (line in Coconut source)
-    args = ["-server", "-Xss4M", "-XX:+UnlockExperimentalVMOptions", "-XX:+UnlockDiagnosticVMOptions", "-XX:+AlwaysPreTouch", "-XX:+DisableExplicitGC", "-XX:+OptimizeStringConcat", "-XX:+UseCompressedOops", "-XX:+OmitStackTraceInFastThrow", "-XX:+ParallelRefProcEnabled", "-XX:+AlwaysActAsServerClassMachine", "-XX:-DontCompileHugeMethods", "-XX:+UseFastUnorderedTimeStamps", "-XX:+UseCriticalJavaThreadPriority", "-XX:+EnableDynamicAgentLoading", "-XX:MaxGCPauseMillis=37", "-XX:ThreadPriorityPolicy=1", "-XX:MaxMetaspaceExpansion=64M", "-XX:ReservedCodeCacheSize={_coconut_format_0}M".format(_coconut_format_0=(400 * code_cache_mul)), "-XX:NonNMethodCodeHeapSize={_coconut_format_0}M".format(_coconut_format_0=(12 * code_cache_mul)), "-XX:ProfiledCodeHeapSize={_coconut_format_0}M".format(_coconut_format_0=(194 * code_cache_mul)), "-XX:NonProfiledCodeHeapSize={_coconut_format_0}M".format(_coconut_format_0=(194 * code_cache_mul)), "-XX:InitialCodeCacheSize={_coconut_format_0}M".format(_coconut_format_0=(200 * code_cache_mul)), "-XX:CodeCacheExpansionSize={_coconut_format_0}M".format(_coconut_format_0=(1 * code_cache_mul)), "-XX:ParallelGCThreads={_coconut_format_0}".format(_coconut_format_0=(psutil.cpu_count(logical=False))), "-XX:ConcGCThreads={_coconut_format_0}".format(_coconut_format_0=(max(min(psutil.cpu_count(logical=False) - 2, 6), psutil.cpu_count(logical=False) // 4, psutil.cpu_count() * 5 // 8 // 4)))]  # aikar-flags, atm  # default: True  # brucethemoose: 12M  # java warning  # default: 5M  # brucethemoose  # always  # brucethemoose: default; default: virtual * 5/8  # always  # brucethemoose: 194M  # brucethemoose: 37; atm: 200; default: 200  # brucethemoose  # default: 64K  # default: 160K  # brucethemoose: 1  # brucethemoose: 194M  # brucethemoose: real - 2; default: ParallelGCThreads / 4  # brucethemoose  # brucethemoose  # always  # default: True  # brucethemoose: 400M  # brucethemoose  # default: True  # default: True  #398 (line in Coconut source)
-    if not JPS_DEBUG:  #448 (line in Coconut source)
-        args += ["-XX:+PerfDisableSharedMem",]  # aikar-flags, brucethemoose, atm  #449 (line in Coconut source)
-    if large_pages:  #452 (line in Coconut source)
-        args += ["-XX:+UseLargePages", "-XX:LargePageSizeInBytes=2M"]  # hilltty-flags, brucethemoose  # hilltty-flags, brucethemoose  #453 (line in Coconut source)
+def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):  #398 (line in Coconut source)
+    code_cache_mul = 2 if gc == "G1" else 1  #399 (line in Coconut source)
+    args = ["-server", "-Xss4M", "-XX:+UnlockExperimentalVMOptions", "-XX:+UnlockDiagnosticVMOptions", "-XX:+AlwaysPreTouch", "-XX:+DisableExplicitGC", "-XX:+OptimizeStringConcat", "-XX:+UseCompressedOops", "-XX:+OmitStackTraceInFastThrow", "-XX:+ParallelRefProcEnabled", "-XX:+AlwaysActAsServerClassMachine", "-XX:-DontCompileHugeMethods", "-XX:+UseFastUnorderedTimeStamps", "-XX:+UseCriticalJavaThreadPriority", "-XX:+EnableDynamicAgentLoading", "-XX:MaxGCPauseMillis=37", "-XX:ThreadPriorityPolicy=1", "-XX:MaxMetaspaceExpansion=64M", "-XX:ReservedCodeCacheSize={_coconut_format_0}M".format(_coconut_format_0=(400 * code_cache_mul)), "-XX:NonNMethodCodeHeapSize={_coconut_format_0}M".format(_coconut_format_0=(12 * code_cache_mul)), "-XX:ProfiledCodeHeapSize={_coconut_format_0}M".format(_coconut_format_0=(194 * code_cache_mul)), "-XX:NonProfiledCodeHeapSize={_coconut_format_0}M".format(_coconut_format_0=(194 * code_cache_mul)), "-XX:InitialCodeCacheSize={_coconut_format_0}M".format(_coconut_format_0=(200 * code_cache_mul)), "-XX:CodeCacheExpansionSize={_coconut_format_0}M".format(_coconut_format_0=(1 * code_cache_mul)), "-XX:ParallelGCThreads={_coconut_format_0}".format(_coconut_format_0=(psutil.cpu_count(logical=False))), "-XX:ConcGCThreads={_coconut_format_0}".format(_coconut_format_0=(max(min(psutil.cpu_count(logical=False) - 2, 6), psutil.cpu_count(logical=False) // 4, psutil.cpu_count() * 5 // 8 // 4)))]  # brucethemoose: 194M  # brucethemoose: 1  # always  # always  # brucethemoose: default; default: virtual * 5/8  # brucethemoose: 194M  # default: True  # default: True  # aikar-flags, atm  # brucethemoose  # java warning  # brucethemoose: 37; atm: 200; default: 200  # always  # brucethemoose  # brucethemoose  # brucethemoose  # brucethemoose: 12M  # default: 160K  # brucethemoose: real - 2; default: ParallelGCThreads / 4  # default: True  # default: True  # brucethemoose: 400M  # default: 5M  # default: 64K  # brucethemoose  #400 (line in Coconut source)
+    if not JPS_DEBUG:  #450 (line in Coconut source)
+        args += ["-XX:+PerfDisableSharedMem",]  # aikar-flags, brucethemoose, atm  #451 (line in Coconut source)
+    if large_pages:  #454 (line in Coconut source)
+        args += ["-XX:+UseLargePages", "-XX:LargePageSizeInBytes=2M"]  # hilltty-flags, brucethemoose  # hilltty-flags, brucethemoose  #455 (line in Coconut source)
 
-    if vm == "java":  #458 (line in Coconut source)
-        args += ["-XX:+UseNUMA", "-XX:+UseVectorCmov", "-XX:MaxNodeLimit=240000", "-XX:NodeLimitFudgeFactor=8000"]  # brucethemoose: 240000  # brucethemoose  # brucethemoose: 8000  # hilltty-flags, brucethemoose: True; mukul1127: False  #459 (line in Coconut source)
-    elif vm == "graal":  #465 (line in Coconut source)
-        args += ["-XX:+EagerJVMCI", "-Djdk.graal.TuneInlinerExploration=1", "-Djdk.graal.LoopRotation=true"]  # brucethemoose: 1  # brucethemoose  # claude suggestion  #466 (line in Coconut source)
-    else:  #471 (line in Coconut source)
-        raise ValueError("unknown java VM {_coconut_format_0!r}".format(_coconut_format_0=(vm)))  #472 (line in Coconut source)
+    if vm == "java":  #460 (line in Coconut source)
+        args += ["-XX:+UseNUMA", "-XX:+UseVectorCmov", "-XX:MaxNodeLimit=240000", "-XX:NodeLimitFudgeFactor=8000"]  # brucethemoose: 240000  # brucethemoose  # brucethemoose: 8000  # hilltty-flags, brucethemoose: True; mukul1127: False  #461 (line in Coconut source)
+    elif vm == "graal":  #467 (line in Coconut source)
+        args += ["-XX:+EagerJVMCI", "-Djdk.graal.TuneInlinerExploration=1", "-Djdk.graal.LoopRotation=true"]  # brucethemoose  # claude suggestion  # brucethemoose: 1  #468 (line in Coconut source)
+    else:  #473 (line in Coconut source)
+        raise ValueError("unknown java VM {_coconut_format_0!r}".format(_coconut_format_0=(vm)))  #474 (line in Coconut source)
 
-    if gc == "G1":  #474 (line in Coconut source)
-        args += ["-XX:+UseG1GC", "-XX:AllocatePrefetchStyle=3", "-XX:SurvivorRatio=32", "-XX:InitiatingHeapOccupancyPercent=10", "-XX:MaxTenuringThreshold=1", "-XX:G1ReservePercent=20", "-XX:G1NewSizePercent=23", "-XX:G1HeapRegionSize=32M", "-XX:G1MixedGCCountTarget=3", "-XX:G1RSetUpdatingPauseTimePercent=0", "-XX:G1HeapWastePercent=20", "-XX:G1SATBBufferEnqueueingThresholdPercent=30", "-XX:G1ConcMarkStepDurationMillis=5.0", "-XX:GCTimeRatio=99", "-XX:G1ConcRSHotCardLimit=16", "-XX:G1ConcRefinementServiceIntervalMillis=150"]  # brucethemoose: 23; atm: 30; aikar: 40  # brucethemoose: 3; default: 1  # brucethemoose: 16  # brucethemoose: 150  # brucethemoose: 1; atm: 1; default: 15  # brucethemoose: 99; default: 12  # brucethemoose: 20; atm: 20; aikar: 15  # brucethemoose: 10; atm: 15; aikar: 20; default: 45  # atm: 32; brucethemoose: 32; default: 8  # brucethemoose: 20; atm: 5; default: 5  # brucethemoose: 0; atm: 5; default: 10  # brucethemoose: 16M; atm: 8M; aikar: 16M  # brucethemoose: 30; default: 60  # brucethemoose: 5; default: 10  # brucethemoose: 3; atm: 4; default: 8  #475 (line in Coconut source)
-    elif gc == "Shenandoah":  #496 (line in Coconut source)
-        assert vm != "graal", "graal doesn't yet support Shenandoah"  #497 (line in Coconut source)
-        args += ["-XX:+UseShenandoahGC", "-XX:AllocatePrefetchStyle=1", "-XX:ShenandoahGCMode=iu", "-XX:ShenandoahGuaranteedGCInterval=1000000"]  # brucethemoose: 1; default: 1  # hilltty-flags  # brucethemoose: 1000000  #498 (line in Coconut source)
-    elif gc == "Z":  #504 (line in Coconut source)
-        args += ["-XX:+UseZGC", "-XX:AllocatePrefetchStyle=1", "-XX:-ZProactive"]  # brucethemoose: 1; default: 1  # brucethemoose (incompatible with +ZGenerational)  #505 (line in Coconut source)
-    else:  #512 (line in Coconut source)
-        raise ValueError("unknown java GC {_coconut_format_0!r}".format(_coconut_format_0=(gc)))  #513 (line in Coconut source)
+    if gc == "G1":  #476 (line in Coconut source)
+        args += ["-XX:+UseG1GC", "-XX:AllocatePrefetchStyle=3", "-XX:SurvivorRatio=32", "-XX:InitiatingHeapOccupancyPercent=10", "-XX:MaxTenuringThreshold=1", "-XX:G1ReservePercent=20", "-XX:G1NewSizePercent=23", "-XX:G1HeapRegionSize=32M", "-XX:G1MixedGCCountTarget=3", "-XX:G1RSetUpdatingPauseTimePercent=0", "-XX:G1HeapWastePercent=20", "-XX:G1SATBBufferEnqueueingThresholdPercent=30", "-XX:G1ConcMarkStepDurationMillis=5.0", "-XX:GCTimeRatio=99", "-XX:G1ConcRSHotCardLimit=16", "-XX:G1ConcRefinementServiceIntervalMillis=150"]  # brucethemoose: 5; default: 10  # brucethemoose: 3; default: 1  # brucethemoose: 20; atm: 20; aikar: 15  # brucethemoose: 10; atm: 15; aikar: 20; default: 45  # brucethemoose: 1; atm: 1; default: 15  # brucethemoose: 16  # brucethemoose: 16M; atm: 8M; aikar: 16M  # atm: 32; brucethemoose: 32; default: 8  # brucethemoose: 20; atm: 5; default: 5  # brucethemoose: 23; atm: 30; aikar: 40  # brucethemoose: 99; default: 12  # brucethemoose: 0; atm: 5; default: 10  # brucethemoose: 150  # brucethemoose: 3; atm: 4; default: 8  # brucethemoose: 30; default: 60  #477 (line in Coconut source)
+    elif gc == "Shenandoah":  #498 (line in Coconut source)
+        assert vm != "graal", "graal doesn't yet support Shenandoah"  #499 (line in Coconut source)
+        args += ["-XX:+UseShenandoahGC", "-XX:AllocatePrefetchStyle=1", "-XX:ShenandoahGCMode=iu", "-XX:ShenandoahGuaranteedGCInterval=1000000"]  # hilltty-flags  # brucethemoose: 1; default: 1  # brucethemoose: 1000000  #500 (line in Coconut source)
+    elif gc == "Z":  #506 (line in Coconut source)
+        args += ["-XX:+UseZGC", "-XX:AllocatePrefetchStyle=1", "-XX:-ZProactive"]  # brucethemoose (incompatible with +ZGenerational)  # brucethemoose: 1; default: 1  #507 (line in Coconut source)
+    else:  #514 (line in Coconut source)
+        raise ValueError("unknown java GC {_coconut_format_0!r}".format(_coconut_format_0=(gc)))  #515 (line in Coconut source)
 
-    return args  #515 (line in Coconut source)
+    return args  #517 (line in Coconut source)
 
 
-LOG4J_CONFIG_FILE = os.path.join(SERVER_DIR, "log4jconfig.xml")  #517 (line in Coconut source)
-FML_ARGS = ["-Dfml.queryResult=confirm", "-Dfml.readTimeout=900", "-Dfml.ignoreInvalidMinecraftCertificates=true"] + (['-Dlog4j.configurationFile="' + LOG4J_CONFIG_FILE + '"',] if LOG4J_DEBUG and os.path.exists(LOG4J_CONFIG_FILE) else [])  #518 (line in Coconut source)
+LOG4J_CONFIG_FILE = os.path.join(SERVER_DIR, "log4jconfig.xml")  #519 (line in Coconut source)
+FML_ARGS = ["-Dfml.queryResult=confirm", "-Dfml.readTimeout=900", "-Dfml.ignoreInvalidMinecraftCertificates=true"] + (['-Dlog4j.configurationFile="' + LOG4J_CONFIG_FILE + '"',] if LOG4J_DEBUG and os.path.exists(LOG4J_CONFIG_FILE) else [])  #520 (line in Coconut source)
 
-FORGE_ARGS = ["nogui",]  #527 (line in Coconut source)
+FORGE_ARGS = ["nogui",]  #529 (line in Coconut source)
 
-START_ARGS = ["/HIGH", "/B", "/I"]  #529 (line in Coconut source)
+START_ARGS = ["/HIGH", "/B", "/I"]  #531 (line in Coconut source)
 
-JVM_ARGS_FILE = os.path.join(SERVER_DIR, "user_jvm_args.txt")  #531 (line in Coconut source)
-WORLD_CONFIG_DIR = os.path.join(SERVER_DIR, "world", "serverconfig")  #532 (line in Coconut source)
-DEFAULTCONFIGS_DIR = os.path.join(SERVER_DIR, "defaultconfigs")  #533 (line in Coconut source)
+JVM_ARGS_FILE = os.path.join(SERVER_DIR, "user_jvm_args.txt")  #533 (line in Coconut source)
+WORLD_CONFIG_DIR = os.path.join(SERVER_DIR, "world", "serverconfig")  #534 (line in Coconut source)
+DEFAULTCONFIGS_DIR = os.path.join(SERVER_DIR, "defaultconfigs")  #535 (line in Coconut source)
 
-if WINDOWS:  #535 (line in Coconut source)
-    FORGE_LAUNCH_CMD = [os.path.join(SERVER_DIR, "run.bat"),]  #536 (line in Coconut source)
-else:  #537 (line in Coconut source)
-    FORGE_LAUNCH_CMD = ["sh", os.path.join(SERVER_DIR, "run.sh")]  #538 (line in Coconut source)
+if WINDOWS:  #537 (line in Coconut source)
+    FORGE_LAUNCH_CMD = [os.path.join(SERVER_DIR, "run.bat"),]  #538 (line in Coconut source)
+else:  #539 (line in Coconut source)
+    FORGE_LAUNCH_CMD = ["sh", os.path.join(SERVER_DIR, "run.sh")]  #540 (line in Coconut source)
 
-FORGE_JAR = format_vers("neoforge-{forge_version}.jar")  #540 (line in Coconut source)
+FORGE_JAR = format_vers("neoforge-{forge_version}.jar")  #542 (line in Coconut source)
 
-OLD_JARS_REGEX = full_regex(format_vers(r"(forge-(?!{mc_version}-{forge_version})[0-9.]+-[0-9.]+(-installer)?|minecraft_server\.(?!{mc_version})[0-9.]+)\.jar"))  #542 (line in Coconut source)
+OLD_JARS_REGEX = full_regex(format_vers(r"(forge-(?!{mc_version}-{forge_version})[0-9.]+-[0-9.]+(-installer)?|minecraft_server\.(?!{mc_version})[0-9.]+)\.jar"))  #544 (line in Coconut source)
 
 
 # Client install constants
 
-if sys.platform.startswith("win"):  #547 (line in Coconut source)
-    MINECRAFT_DIR = fixpath("~/AppData/Roaming/.minecraft")  #548 (line in Coconut source)
-elif sys.platform.startswith("darwin"):  #549 (line in Coconut source)
-    MINECRAFT_DIR = fixpath("~/Library/Application Support/minecraft")  #550 (line in Coconut source)
-else:  #551 (line in Coconut source)
-    MINECRAFT_DIR = fixpath("~/.minecraft")  #552 (line in Coconut source)
+if sys.platform.startswith("win"):  #549 (line in Coconut source)
+    MINECRAFT_DIR = fixpath("~/AppData/Roaming/.minecraft")  #550 (line in Coconut source)
+elif sys.platform.startswith("darwin"):  #551 (line in Coconut source)
+    MINECRAFT_DIR = fixpath("~/Library/Application Support/minecraft")  #552 (line in Coconut source)
+else:  #553 (line in Coconut source)
+    MINECRAFT_DIR = fixpath("~/.minecraft")  #554 (line in Coconut source)
 
-PROFILES_FILE = os.path.join(MINECRAFT_DIR, "launcher_profiles.json")  #554 (line in Coconut source)
+PROFILES_FILE = os.path.join(MINECRAFT_DIR, "launcher_profiles.json")  #556 (line in Coconut source)
+FORGE_PROFILE_NAME = "NeoForge"  #557 (line in Coconut source)
 
-README_FILE = "README.txt"  #556 (line in Coconut source)
+README_FILE = "README.txt"  #559 (line in Coconut source)
 
-EXTRA_INSTALL_FILES += [README_FILE, FORGE_INSTALLER_JAR]  #558 (line in Coconut source)
+EXTRA_INSTALL_FILES += [README_FILE, FORGE_INSTALLER_JAR]  #561 (line in Coconut source)
 
-BARREL_ROLL_MOD_PREFIX = "do_a_barrel_roll"  #563 (line in Coconut source)
+BARREL_ROLL_MOD_PREFIX = "do_a_barrel_roll"  #566 (line in Coconut source)
 
 
 # Make launcher constants
 
-LAUNCHER_FILE = first_that_exists(["~/Applications/Minecraft.app", "/Applications/Minecraft.app", r"C:\Program Files (x86)\Minecraft Launcher\MinecraftLauncher.exe", r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Minecraft Launcher\Minecraft Launcher.ink", r"C:\Users\Public\Desktop\Minecraft Launcher.ink"])  #568 (line in Coconut source)
+LAUNCHER_FILE = first_that_exists(["~/Applications/Minecraft.app", "/Applications/Minecraft.app", r"C:\XboxGames\Minecraft Launcher\Content\Minecraft.exe", r"C:\Program Files (x86)\Minecraft Launcher\MinecraftLauncher.exe", r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Minecraft Launcher\Minecraft Launcher.ink", r"C:\Users\Public\Desktop\Minecraft Launcher.ink"])  #571 (line in Coconut source)
 
-MODPACK_NAME = "Evan's Modded Minecraft"  #576 (line in Coconut source)
+MODPACK_NAME = "Evan's Modded Minecraft"  #580 (line in Coconut source)
 
 
 # Searchable mods constants
 
-SEARCHABLE_MODS_NAME = MODS_NAME + "-searchable"  #581 (line in Coconut source)
-SEARCHABLE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-searchable"  #582 (line in Coconut source)
+SEARCHABLE_MODS_NAME = MODS_NAME + "-searchable"  #585 (line in Coconut source)
+SEARCHABLE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-searchable"  #586 (line in Coconut source)
 
 
 # Binary search constants
 
-BINARY_SEARCH_FILE = os.path.join(SERVER_DIR, "binary_search.json")  #587 (line in Coconut source)
+BINARY_SEARCH_FILE = os.path.join(SERVER_DIR, "binary_search.json")  #591 (line in Coconut source)

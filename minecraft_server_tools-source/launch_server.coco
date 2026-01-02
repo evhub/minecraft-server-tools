@@ -148,22 +148,28 @@ def download_file(url, path):
         fobj.write(got.content)
 
 
+def get_graal_bin_dir():
+    if not os.path.exists(GRAAL_ZIP_PATH):
+        print("Downloading Java GraalVM...")
+        download_file(GRAAL_URL, GRAAL_ZIP_PATH)
+        shutil.unpack_archive(GRAAL_ZIP_PATH, GRAAL_BASE_DIR)
+
+    graal_bin_dir = None
+    graal_bin_dir_time = 0
+    for entry in os.scandir(GRAAL_BASE_DIR):
+        if entry.is_dir():
+            modified_time = entry.stat().st_mtime
+            if modified_time > graal_bin_dir_time:
+                graal_bin_dir = os.path.join(entry.path, "bin")
+                graal_bin_dir_time = modified_time
+
+    return graal_bin_dir
+
+
 @contextmanager
 def using_graal_java():
     if USE_GRAAL:
-        if not os.path.exists(GRAAL_ZIP_PATH):
-            print("Downloading Java GraalVM...")
-            download_file(GRAAL_URL, GRAAL_ZIP_PATH)
-            shutil.unpack_archive(GRAAL_ZIP_PATH, GRAAL_BASE_DIR)
-
-        graal_bin_dir = None
-        graal_bin_dir_time = 0
-        for entry in os.scandir(GRAAL_BASE_DIR):
-            if entry.is_dir():
-                modified_time = entry.stat().st_mtime
-                if modified_time > graal_bin_dir_time:
-                    graal_bin_dir = os.path.join(entry.path, "bin")
-                    graal_bin_dir_time = modified_time
+        graal_bin_dir = get_graal_bin_dir()
 
         print(f"(using GraalVM at: {graal_bin_dir!r})")
         old_path = os.environ["PATH"]
