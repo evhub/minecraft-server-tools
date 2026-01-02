@@ -42,12 +42,16 @@ FORGE_INSTALLER_JAR_PATH = os.path.join(SERVER_DIR, FORGE_INSTALLER_JAR)
 DOWNLOADED_INSTALLER_PATH = os.path.join(DOWNLOADS_PATH, FORGE_INSTALLER_JAR)
 
 
-def remove_file_with_retry(filepath, max_retries=5, initial_delay=0.2):
-    """Remove a single file with retry logic for Windows file locking."""
+def remove_with_retry(filepath, max_retries=5, initial_delay=0.2):
+    """Remove a file or dir with retry logic for Windows file locking."""
     delay = initial_delay
+    is_dir = os.path.isdir(filepath)
     for attempt in range(max_retries):
         try:
-            os.remove(filepath)
+            if is_dir:
+                os.rmdir(filepath)
+            else:
+                os.remove(filepath)
             return True
         except PermissionError:
             if attempt < max_retries - 1:
@@ -56,66 +60,43 @@ def remove_file_with_retry(filepath, max_retries=5, initial_delay=0.2):
     return False
 
 
-def remove_dir_if_exists(directory, max_retries=5, initial_delay=0.1):
-    """Remove a directory if it exists.
-
-    Uses a multi-strategy approach for Windows/OneDrive file locking:
-    1. Remove all files individually with retries
-    2. Try os.rmdir() for the empty directory
-    3. Fall back to Windows rmdir command if needed
-    4. Retry with exponential backoff
-    """
+def remove_dir_if_exists(directory):
+    """Remove a directory if it exists by any means necessary."""
     if not os.path.exists(directory):
         return
 
-    dir_name = os.path.basename(directory)
+    # First, try shutil.rmtree as a fast path
+    try:
+        shutil.rmtree(directory)
+        return
+    except PermissionError:
+        pass
 
-    # First, remove all files individually
+    # Remove all remaining contents (files and subdirectories)
     for filename in os.listdir(directory):
         filepath = os.path.join(directory, filename)
-        if os.path.isfile(filepath):
-            if not remove_file_with_retry(filepath):
-                print(f"  Warning: Could not remove file {filename}")
+        if os.path.isdir(filepath):
+            # Recursively remove subdirectories
+            remove_dir_if_exists(filepath)
+        else:
+            os.remove(filepath)
 
     # Now try to remove the empty directory with retries
-    delay = initial_delay
-    for attempt in range(max_retries):
-        try:
-            # Check if directory is empty
-            remaining = os.listdir(directory)
-            if remaining:
-                print(f"  Warning: Directory {dir_name} not empty: {remaining}")
-                return
-
-            os.rmdir(directory)
-            print(f"  Removed directory: {dir_name}")
-            return
-        except PermissionError:
-            # On Windows, try using rmdir command as fallback
-            if sys.platform == "win32" and attempt == max_retries // 2:
-                try:
-                    subprocess.run(
-                        ["cmd", "/c", "rmdir", "/s", "/q", directory],
-                        check=True,
-                        capture_output=True,
-                    )
-                    if not os.path.exists(directory):
-                        print(f"  Removed directory: {dir_name} (via rmdir)")
-                        return
-                except subprocess.CalledProcessError:
-                    pass
-
-            if attempt < max_retries - 1:
-                time.sleep(delay)
-                delay = min(delay * 1.5, 5.0)  # cap at 5 seconds
-            else:
-                print(f"  Warning: Could not remove {dir_name} - may be locked by OneDrive")
-        except OSError as e:
-            if attempt < max_retries - 1:
-                time.sleep(delay)
-                delay = min(delay * 1.5, 5.0)
-            else:
-                print(f"  Warning: Could not remove {dir_name}: {e}")
+    try:
+        os.rmdir(directory)
+        return
+    except PermissionError:
+        # On Windows, try using rmdir command as fallback
+        if sys.platform == "win32":
+            subprocess.run(
+                ["cmd", "/c", "rmdir", "/s", "/q", directory],
+                check=True,
+                capture_output=True,
+            )
+            if os.path.exists(directory):
+                raise
+        else:
+            raise
 
 
 def run_cmd(cmd, check=True, shell=False, get_output=False, quiet=False):
