@@ -51,6 +51,9 @@ from minecraft_server_tools.constants import (
     CURSEFORGE_CLASS_ID_DATAPACKS,
     CURSEFORGE_CLASS_ID_RESOURCE_PACKS,
     DATAPACK_FOLDER_PATHS,
+    SERVER_DIR,
+    DEDUPLICATE_MODS_NAME,
+    DEDUPLICATE_CLIENT_MODS_NAME,
     ver_join,
     ver_split,
 )
@@ -64,6 +67,11 @@ UPDATE_MODS_DIRS = [
 ]
 
 UPDATE_DATAPACK_DIRS = DATAPACK_FOLDER_PATHS
+
+UPDATE_DEDUPLICATE_DIRS = [
+    os.path.join(SERVER_DIR, DEDUPLICATE_CLIENT_MODS_NAME),
+    os.path.join(SERVER_DIR, DEDUPLICATE_MODS_NAME),
+]
 
 BEGINNING_OF_TIME = datetime.datetime(1, 1, 1)
 
@@ -816,6 +824,11 @@ def parse_args():
         action="store_true",
         help="Only update datapacks, skip mods",
     )
+    parser.add_argument(
+        "--update-only-deduplicate",
+        action="store_true",
+        help="Update deduplicate directories instead of normal mod directories",
+    )
     return parser.parse_args()
 
 
@@ -823,6 +836,19 @@ def main():
     args = parse_args()
 
     sync_mods.main()
+
+    # Just update deduplicate dirs if --update-only-deduplicate
+    if args.only_update_deduplicate:
+        print("\n" + "="*60)
+        print("UPDATING DEDUPLICATE DIRECTORIES")
+        print("="*60 + "\n")
+        update_all(
+            UPDATE_DEDUPLICATE_DIRS,
+            dry_run=args.dry_run,
+            google=args.google,
+            config=MOD_CONFIG,
+        )
+        return
 
     # Update mods (unless --datapacks-only)
     if not args.datapacks_only:
@@ -836,8 +862,8 @@ def main():
             config=MOD_CONFIG,
         )
 
-    # Update datapacks (unless --mods-only)
-    if not args.mods_only:
+    # Update datapacks (unless --mods-only or --update-only-deduplicate)
+    if not args.mods_only and not args.only_update_deduplicate:
         print("\n" + "="*60)
         print("UPDATING DATAPACKS")
         print("="*60 + "\n")

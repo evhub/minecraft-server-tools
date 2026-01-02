@@ -132,6 +132,7 @@ NON_CURSEFORGE_MODS = [
     "preview opti fine",
     "create structures",
     "memoryleakfix",
+    "tweaked",
 ]
 
 DATAPACK_INSTALL_FOLDERS = [
