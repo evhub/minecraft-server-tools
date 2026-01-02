@@ -29,7 +29,6 @@ from minecraft_server_tools.constants import (
     NON_CURSEFORGE_MODS,
     MODLOADER,
     WRONG_MODLOADERS,
-    MAYBE_WRONG_MODLOADERS,
     MOD_PAGE_NAME_SUFFICES,
     CURSEFORGE_NAMES_FILE,
     CURSEFORGE_IDS_CACHE_FILE,
@@ -367,9 +366,9 @@ def run_curseforge_api_cmd(cmd, class_id=None):
 
 
 def has_bad_modloader(name):
-    if any(wrong_modloader.lower() in name.lower() for wrong_modloader in WRONG_MODLOADERS + MAYBE_WRONG_MODLOADERS):
+    if any(wrong_modloader.lower() in name.lower() for wrong_modloader in WRONG_MODLOADERS):
         non_wrong_modloader_name = name.lower()
-        for wrong_modloader in WRONG_MODLOADERS + MAYBE_WRONG_MODLOADERS:
+        for wrong_modloader in WRONG_MODLOADERS:
             non_wrong_modloader_name = non_wrong_modloader_name.replace(wrong_modloader.lower(), " ")
         return MODLOADER.lower() not in non_wrong_modloader_name
     return False

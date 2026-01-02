@@ -82,7 +82,7 @@ NO_STRS = [
 # Commonly changed constants
 
 MC_VERSION = (1, 21, 1)
-FORGE_VERSION = (21, 1, 215)
+FORGE_VERSION = (21, 1, 217)
 
 GRAAL_VERSION = 25
 
@@ -115,7 +115,6 @@ else:
 
 MODLOADER = "NeoForge"
 WRONG_MODLOADERS = ["Quilt"]
-MAYBE_WRONG_MODLOADERS = ["Forge", "Fabric"]
 
 ALWAYS_USE_LATEST_VERSION_FOR_MODS = [
     "jei",
@@ -467,7 +466,6 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
             "-XX:+EagerJVMCI",  # brucethemoose
             "-Djdk.graal.TuneInlinerExploration=1",  # brucethemoose: 1
             "-Djdk.graal.LoopRotation=true",  # claude suggestion
-            "-Djdk.graal.OptWriteMotion=true",  # claude suggestion
         ]
     else:
         raise ValueError(f"unknown java VM {vm!r}")
@@ -506,9 +504,9 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         args += [
             "-XX:+UseZGC",
             "-XX:AllocatePrefetchStyle=1",  # brucethemoose: 1; default: 1
-            # "-XX:-ZProactive",  # brucethemoose (incompatible with +ZGenerational)
-            "-XX:+ZGenerational",  # brucethemoose (incompatible with -ZProactive; Java 21+)
-            "-XX:ZMarkStackSpaceLimit=16G",  # java error; default: 8G
+            "-XX:-ZProactive",  # brucethemoose (incompatible with +ZGenerational)
+            # "-XX:+ZGenerational",  # brucethemoose (incompatible with -ZProactive; Java 21+); deprecated by java
+            # "-XX:ZMarkStackSpaceLimit=16G",  # java error; default: 8G; deprecated by java
         ]
     else:
         raise ValueError(f"unknown java GC {gc!r}")
