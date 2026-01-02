@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x23fa80c5
+# __coconut_hash__ = 0x6061b48
 
 # Compiled with Coconut version 3.2.0-post_dev1
 
@@ -118,7 +118,7 @@ def install_extras(source_dir, do_optional=True, clean=True):  #56 (line in Coco
         print("\t{_coconut_format_0}...".format(_coconut_format_0=(install_dir)))  #61 (line in Coconut source)
         cleaned = False  #62 (line in Coconut source)
         if clean and os.path.exists(to_dir):  #63 (line in Coconut source)
-            shutil.rmtree(to_dir)  #64 (line in Coconut source)
+            launch_server.remove_dir_if_exists(to_dir)  #64 (line in Coconut source)
             cleaned = True  #65 (line in Coconut source)
         if os.path.exists(from_dir):  #66 (line in Coconut source)
             shutil.copytree(from_dir, to_dir, dirs_exist_ok=True)  #67 (line in Coconut source)

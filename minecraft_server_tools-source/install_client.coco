@@ -61,7 +61,7 @@ def install_extras(source_dir, do_optional=True, clean=True):
         print(f"\t{install_dir}...")
         cleaned = False
         if clean and os.path.exists(to_dir):
-            shutil.rmtree(to_dir)
+            launch_server.remove_dir_if_exists(to_dir)
             cleaned = True
         if os.path.exists(from_dir):
             shutil.copytree(from_dir, to_dir, dirs_exist_ok=True)
