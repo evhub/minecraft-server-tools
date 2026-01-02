@@ -513,7 +513,11 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         ]
     else:
         raise ValueError(f"unknown java GC {gc!r}")
-
+    # taken from https://github.com/architectury/architectury-api/issues/528
+    args += [
+        "-Duser.country=US",
+        "-Duser.language=en",
+    ]
     return args
 
 LOG4J_CONFIG_FILE = os.path.join(SERVER_DIR, "log4jconfig.xml")
