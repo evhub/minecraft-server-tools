@@ -838,7 +838,7 @@ def main():
     sync_mods.main()
 
     # Just update deduplicate dirs if --update-only-deduplicate
-    if args.only_update_deduplicate:
+    if args.update_only_deduplicate:
         print("\n" + "="*60)
         print("UPDATING DEDUPLICATE DIRECTORIES")
         print("="*60 + "\n")

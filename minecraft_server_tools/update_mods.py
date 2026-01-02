@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x736479b6
+# __coconut_hash__ = 0xaccf4fc4
 
 # Compiled with Coconut version 3.2.0-post_dev1
 
@@ -914,7 +914,7 @@ def main():  #835 (line in Coconut source)
     sync_mods.main()  #838 (line in Coconut source)
 
 # Just update deduplicate dirs if --update-only-deduplicate
-    if args.only_update_deduplicate:  #841 (line in Coconut source)
+    if args.update_only_deduplicate:  #841 (line in Coconut source)
         print("\n" + "=" * 60)  #842 (line in Coconut source)
         print("UPDATING DEDUPLICATE DIRECTORIES")  #843 (line in Coconut source)
         print("=" * 60 + "\n")  #844 (line in Coconut source)
