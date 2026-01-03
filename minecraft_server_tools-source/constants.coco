@@ -84,7 +84,7 @@ NO_STRS = [
 MC_VERSION = (1, 21, 1)
 FORGE_VERSION = (21, 1, 217)
 
-GRAAL_VERSION = 25
+GRAAL_VERSION = 21
 
 SERVER_DIR = first_that_exists([
     os.getenv("MINECRAFT_SERVER_DIR"),
@@ -108,8 +108,8 @@ DOWNLOADS_PATH = first_that_exists([
 IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
 
 if IS_MOD_SERVER:
-    CLIENT_RAM = "29G"
-    SERVER_RAM = "29G"
+    CLIENT_RAM = "26G"
+    SERVER_RAM = "26G"
 else:
     CLIENT_RAM = SERVER_RAM = "5G"
 
@@ -392,7 +392,7 @@ GRAAL_URL = f"https://download.oracle.com/graalvm/{GRAAL_VERSION}/latest/{GRAAL_
 GRAAL_BASE_DIR = os.path.join(ROOT_DIR, "graal")
 GRAAL_ZIP_PATH = os.path.join(GRAAL_BASE_DIR, GRAAL_ZIP_NAME)
 
-CLIENT_GC = "Z" if psutil.cpu_count(logical=False) > 8 else "G1"  # brucethemoose: G1, Shenandoah, or ZGenerational
+CLIENT_GC = "G1"  # "Z" if psutil.cpu_count(logical=False) > 8 else "G1"  # brucethemoose: G1, Shenandoah, or ZGenerational
 SERVER_GC = "Z"  # brucethemoose: G1 or Z
 
 def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
@@ -403,7 +403,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         "-Xss4M",
 
         "-XX:+UnlockExperimentalVMOptions",  # always
-        "-XX:+UnlockDiagnosticVMOptions",  # brucethemoose
+        "-XX:+UnlockDiagnosticVMOptions",  # brucethemoose, Obydux
         "-XX:+AlwaysPreTouch",  # always
         "-XX:+DisableExplicitGC",  # always
         # "-XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses",  # OLD
@@ -419,22 +419,22 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         # "-XX:+UseLargePagesInMetaspace",  # OLD
         # "-XX:-UseBiasedLocking",  # hilltty-flags, deprecated by java
         "-XX:+AlwaysActAsServerClassMachine",  # brucethemoose
-        "-XX:-DontCompileHugeMethods",  # brucethemoose
-        "-XX:+UseFastUnorderedTimeStamps",  # brucethemoose
-        "-XX:+UseCriticalJavaThreadPriority",  # brucethemoose
+        "-XX:-DontCompileHugeMethods",  # brucethemoose, Obydux
+        "-XX:+UseFastUnorderedTimeStamps",  # brucethemoose, Obydux
+        "-XX:+UseCriticalJavaThreadPriority",  # brucethemoose, Obydux
         "-XX:+EnableDynamicAgentLoading",  # java warning
 
-        "-XX:MaxGCPauseMillis=37",  # brucethemoose: 37; atm: 200; default: 200
-        # "-XX:NmethodSweepActivity=1",  # brucethemoose: 1; deprecated by java
+        "-XX:MaxGCPauseMillis=37",  # brucethemoose: 37; atm: 200; Obydux: 130; default: 200
+        # "-XX:NmethodSweepActivity=1",  # brucethemoose, Obydux: 1; deprecated by java
         "-XX:ThreadPriorityPolicy=1",  # brucethemoose: 1
 
         "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
 
         # ReservedCodeCacheSize = NonNMethodCodeHeapSize + ProfiledCodeHeapSize + NonProfiledCodeHeapSize
-        f"-XX:ReservedCodeCacheSize={400*code_cache_mul}M",  # brucethemoose: 400M
-        f"-XX:NonNMethodCodeHeapSize={12*code_cache_mul}M",  # brucethemoose: 12M
-        f"-XX:ProfiledCodeHeapSize={194*code_cache_mul}M",  # brucethemoose: 194M
-        f"-XX:NonProfiledCodeHeapSize={194*code_cache_mul}M",  # brucethemoose: 194M
+        f"-XX:ReservedCodeCacheSize={400*code_cache_mul}M",  # brucethemoose, Obydux: 400M
+        f"-XX:NonNMethodCodeHeapSize={12*code_cache_mul}M",  # brucethemoose, Obydux: 12M
+        f"-XX:ProfiledCodeHeapSize={194*code_cache_mul}M",  # brucethemoose, Obydux: 194M
+        f"-XX:NonProfiledCodeHeapSize={194*code_cache_mul}M",  # brucethemoose, Obydux: 194M
         f"-XX:InitialCodeCacheSize={200*code_cache_mul}M",  # default: 160K
         f"-XX:CodeCacheExpansionSize={1*code_cache_mul}M",  # default: 64K
 
@@ -449,17 +449,18 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
     ]
     if not JPS_DEBUG:
         args += [
-            "-XX:+PerfDisableSharedMem",  # aikar-flags, brucethemoose, atm
+            "-XX:+PerfDisableSharedMem",  # aikar-flags, brucethemoose, atm, Obydux
         ]
     if large_pages:
         args += [
             "-XX:+UseLargePages",  # hilltty-flags, brucethemoose
             "-XX:LargePageSizeInBytes=2M",  # hilltty-flags, brucethemoose
+            # "-XX:+UseTransparentHugePages",  # Obydux
         ]
 
     if vm == "java":
         args += [
-            "-XX:+UseNUMA",  # hilltty-flags, brucethemoose: True; mukul1127: False
+            "-XX:+UseNUMA",  # hilltty-flags, brucethemoose: True; mukul1127: False; Obydux: True
             "-XX:+UseVectorCmov",  # brucethemoose
             "-XX:MaxNodeLimit=240000",  # brucethemoose: 240000
             "-XX:NodeLimitFudgeFactor=8000",  # brucethemoose: 8000
@@ -467,8 +468,10 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
     elif vm == "graal":
         args += [
             "-XX:+EagerJVMCI",  # brucethemoose
-            "-Djdk.graal.TuneInlinerExploration=1",  # brucethemoose: 1
-            "-Djdk.graal.LoopRotation=true",  # claude suggestion
+            "-Dgraal.TuneInlinerExploration=1",  # brucethemoose: 1
+            "-Dgraal.LoopRotation=true",  # Obydux
+            "-Dgraal.CompilerConfiguration=enterprise",  # Obydux
+            # "-Dgraal.OptWriteMotion=true",  # Obydux; deprecated by java
         ]
     else:
         raise ValueError(f"unknown java VM {vm!r}")
@@ -476,24 +479,24 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
     if gc == "G1":
         args += [
             "-XX:+UseG1GC",
-            "-XX:AllocatePrefetchStyle=3",  # brucethemoose: 3; default: 1
+            "-XX:AllocatePrefetchStyle=3",  # brucethemoose, Obydux: 3; default: 1
             # "-XX:TargetSurvivorRatio=90",  # atm: 32; default: 50
-            "-XX:SurvivorRatio=32",  # atm: 32; brucethemoose: 32; default: 8
-            "-XX:InitiatingHeapOccupancyPercent=10",  # brucethemoose: 10; atm: 15; aikar: 20; default: 45
-            "-XX:MaxTenuringThreshold=1",  # brucethemoose: 1; atm: 1; default: 15
-            "-XX:G1ReservePercent=20",  # brucethemoose: 20; atm: 20; aikar: 15
-            "-XX:G1NewSizePercent=23",  # brucethemoose: 23; atm: 30; aikar: 40
-            "-XX:G1HeapRegionSize=32M",  # brucethemoose: 16M; atm: 8M; aikar: 16M
-            "-XX:G1MixedGCCountTarget=3",  # brucethemoose: 3; atm: 4; default: 8
-            "-XX:G1RSetUpdatingPauseTimePercent=0",  # brucethemoose: 0; atm: 5; default: 10
-            # "-XX:G1MixedGCLiveThresholdPercent=35",  # atm: 90; default: 85
+            "-XX:SurvivorRatio=32",  # atm: 32; brucethemoose: 32; default: 8; Obydux: 32
+            "-XX:InitiatingHeapOccupancyPercent=10",  # brucethemoose: 10; atm: 15; aikar: 20; default: 45; Obydux: 10
+            "-XX:MaxTenuringThreshold=1",  # brucethemoose: 1; atm: 1; Obydux: 1; default: 15
+            "-XX:G1ReservePercent=20",  # brucethemoose: 20; atm: 20; aikar: 15; Obydux: 20
+            "-XX:G1NewSizePercent=23",  # brucethemoose: 23; atm: 30; aikar: 40; Obydux: 28
+            "-XX:G1HeapRegionSize=32M",  # brucethemoose: 16M; atm: 8M; aikar: 16M; Obydux: 16M
+            "-XX:G1MixedGCCountTarget=3",  # brucethemoose: 3; atm: 4; default: 8; Obydux: 3
+            "-XX:G1RSetUpdatingPauseTimePercent=0",  # brucethemoose: 0; atm: 5; default: 10; Obydux: 0
+            # "-XX:G1MixedGCLiveThresholdPercent=35",  # atm: 90; default: 85; Obydux: 90
             # "-XX:G1MaxNewSizePercent=60",  # atm: 40; aikar: 50; default: 60
             "-XX:G1HeapWastePercent=20",  # brucethemoose: 20; atm: 5; default: 5
-            "-XX:G1SATBBufferEnqueueingThresholdPercent=30",  # brucethemoose: 30; default: 60
-            "-XX:G1ConcMarkStepDurationMillis=5.0",  # brucethemoose: 5; default: 10
+            "-XX:G1SATBBufferEnqueueingThresholdPercent=30",  # brucethemoose, Obydux: 30; default: 60
+            "-XX:G1ConcMarkStepDurationMillis=5.0",  # brucethemoose, Obydux: 5; default: 10
             "-XX:GCTimeRatio=99",  # brucethemoose: 99; default: 12
-            "-XX:G1ConcRSHotCardLimit=16",  # brucethemoose: 16
-            "-XX:G1ConcRefinementServiceIntervalMillis=150",  # brucethemoose: 150
+            "-XX:G1ConcRSHotCardLimit=16",  # brucethemoose, Obydux: 16
+            "-XX:G1ConcRefinementServiceIntervalMillis=150",  # brucethemoose, Obydux: 150
         ]
     elif gc == "Shenandoah":
         assert vm != "graal", "graal doesn't yet support Shenandoah"
@@ -507,16 +510,15 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         args += [
             "-XX:+UseZGC",
             "-XX:AllocatePrefetchStyle=1",  # brucethemoose: 1; default: 1
-            "-XX:-ZProactive",  # brucethemoose (incompatible with +ZGenerational)
-            # "-XX:+ZGenerational",  # brucethemoose (incompatible with -ZProactive; Java 21+); deprecated by java
+            # "-XX:-ZProactive",  # brucethemoose (incompatible with +ZGenerational)
+            "-XX:+ZGenerational",  # brucethemoose (incompatible with -ZProactive; Java 21+; default in Java 23+); deprecated by java
             # "-XX:ZMarkStackSpaceLimit=16G",  # java error; default: 8G; deprecated by java
         ]
     else:
         raise ValueError(f"unknown java GC {gc!r}")
-    # taken from https://github.com/architectury/architectury-api/issues/528
     args += [
-        "-Duser.country=US",
-        "-Duser.language=en",
+        "-Duser.country=US",  # from https://github.com/architectury/architectury-api/issues/528
+        "-Duser.language=en",  # from https://github.com/architectury/architectury-api/issues/528
     ]
     return args
 

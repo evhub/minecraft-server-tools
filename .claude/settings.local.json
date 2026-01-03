@@ -16,7 +16,8 @@
       "WebFetch(domain:www.graalvm.org)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:modrinth.com)",
-      "WebFetch(domain:docs.curseforge.com)"
+      "WebFetch(domain:docs.curseforge.com)",
+      "Bash(tasklist:*)"
     ]
   }
 }
