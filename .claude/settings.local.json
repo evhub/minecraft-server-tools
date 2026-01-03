@@ -15,18 +15,17 @@
       "Bash(git:*)",
       "Bash(node:*)",
       "Bash(tasklist:*)",
+      "Bash(jps:*)",
+      "Bash(jstack:*)",
+      "Bash(zcat:*)",
       "WebFetch(domain:www.curseforge.com)",
       "WebFetch(domain:www.graalvm.org)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:modrinth.com)",
       "WebFetch(domain:docs.curseforge.com)",
       "WebFetch(domain:forums.minecraftforge.net)",
-      "Bash(jps:*)",
-      "Bash(\"C:/Program Files/Eclipse Adoptium/jdk-21.0.5.11-hotspot/bin/jps.exe\" -l)",
-      "Bash(jstack:*)",
       "WebFetch(domain:neoforged.net)",
-      "WebFetch(domain:allthemods.github.io)",
-      "Bash(zcat:*)"
+      "WebFetch(domain:allthemods.github.io)"
     ]
   }
 }

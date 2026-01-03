@@ -493,7 +493,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
             # "-XX:G1MaxNewSizePercent=60",  # atm: 40; aikar: 50; default: 60
             "-XX:G1HeapWastePercent=20",  # brucethemoose: 20; atm: 5; default: 5
             "-XX:G1SATBBufferEnqueueingThresholdPercent=30",  # brucethemoose, Obydux: 30; default: 60
-            "-XX:G1ConcMarkStepDurationMillis=5.0",  # brucethemoose, Obydux: 5; default: 10
+            "-XX:G1ConcMarkStepDurationMillis=5",  # brucethemoose, Obydux: 5; default: 10
             "-XX:GCTimeRatio=99",  # brucethemoose: 99; default: 12
             "-XX:G1ConcRSHotCardLimit=16",  # brucethemoose, Obydux: 16
             "-XX:G1ConcRefinementServiceIntervalMillis=150",  # brucethemoose, Obydux: 150
@@ -512,7 +512,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
             "-XX:AllocatePrefetchStyle=1",  # brucethemoose: 1; default: 1
             # "-XX:-ZProactive",  # brucethemoose (incompatible with +ZGenerational)
             "-XX:+ZGenerational",  # brucethemoose (incompatible with -ZProactive; Java 21+; default in Java 23+); deprecated by java
-            # "-XX:ZMarkStackSpaceLimit=16G",  # java error; default: 8G; deprecated by java
+            "-XX:ZMarkStackSpaceLimit=16G",  # java error; default: 8G; deprecated by java
         ]
     else:
         raise ValueError(f"unknown java GC {gc!r}")
