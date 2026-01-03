@@ -32,6 +32,7 @@ from minecraft_server_tools.constants import (
     BARREL_ROLL_MOD_PREFIX,
     FORGE_PROFILE_NAME,
     USE_GRAAL,
+    fixpath,
 )
 
 MINECRAFT_MODS_DIR = os.path.join(MINECRAFT_DIR, MODS_NAME)
@@ -133,12 +134,19 @@ def get_javaw_path():
             break
     else:
         return None
-    return (
+    path = (
         paths
         |> .splitlines()
         |> .$[0]
         |> .strip()
     )
+    if WINDOWS and not path.endswith(".exe"):
+        path += ".exe"
+        if path.startswith("/c/"):
+            path = "C:" + path[2:]
+        elif path.startswith("c/"):
+            path = "C:" + path[1:]
+    return fixpath(path)
 
 
 def set_jvm_args():
