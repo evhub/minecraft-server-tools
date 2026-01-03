@@ -6,18 +6,20 @@
       "Bash(cd:*)",
       "Bash(ls:*)",
       "Bash(echo:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
       "Bash(python:*)",
       "Bash(gh:*)",
       "Bash(pip:*)",
       "Bash(make:*)",
       "Bash(git:*)",
       "Bash(node:*)",
+      "Bash(tasklist:*)",
       "WebFetch(domain:www.curseforge.com)",
       "WebFetch(domain:www.graalvm.org)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:modrinth.com)",
-      "WebFetch(domain:docs.curseforge.com)",
-      "Bash(tasklist:*)"
+      "WebFetch(domain:docs.curseforge.com)"
     ]
   }
 }

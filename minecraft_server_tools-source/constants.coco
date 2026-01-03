@@ -425,7 +425,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         "-XX:+EnableDynamicAgentLoading",  # java warning
 
         "-XX:MaxGCPauseMillis=37",  # brucethemoose: 37; atm: 200; Obydux: 130; default: 200
-        # "-XX:NmethodSweepActivity=1",  # brucethemoose, Obydux: 1; deprecated by java
+        "-XX:NmethodSweepActivity=1",  # brucethemoose, Obydux: 1; deprecated by java
         "-XX:ThreadPriorityPolicy=1",  # brucethemoose: 1
 
         "-XX:MaxMetaspaceExpansion=64M",  # default: 5M
@@ -455,7 +455,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         args += [
             "-XX:+UseLargePages",  # hilltty-flags, brucethemoose
             "-XX:LargePageSizeInBytes=2M",  # hilltty-flags, brucethemoose
-            # "-XX:+UseTransparentHugePages",  # Obydux
+            "-XX:+UseTransparentHugePages",  # Obydux
         ]
 
     if vm == "java":
@@ -471,7 +471,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
             "-Dgraal.TuneInlinerExploration=1",  # brucethemoose: 1
             "-Dgraal.LoopRotation=true",  # Obydux
             "-Dgraal.CompilerConfiguration=enterprise",  # Obydux
-            # "-Dgraal.OptWriteMotion=true",  # Obydux; deprecated by java
+            "-Dgraal.OptWriteMotion=true",  # Obydux; deprecated by java
         ]
     else:
         raise ValueError(f"unknown java VM {vm!r}")
@@ -485,11 +485,11 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
             "-XX:InitiatingHeapOccupancyPercent=10",  # brucethemoose: 10; atm: 15; aikar: 20; default: 45; Obydux: 10
             "-XX:MaxTenuringThreshold=1",  # brucethemoose: 1; atm: 1; Obydux: 1; default: 15
             "-XX:G1ReservePercent=20",  # brucethemoose: 20; atm: 20; aikar: 15; Obydux: 20
-            "-XX:G1NewSizePercent=23",  # brucethemoose: 23; atm: 30; aikar: 40; Obydux: 28
+            "-XX:G1NewSizePercent=28",  # brucethemoose: 23; atm: 30; aikar: 40; Obydux: 28; default: 5
             "-XX:G1HeapRegionSize=32M",  # brucethemoose: 16M; atm: 8M; aikar: 16M; Obydux: 16M
             "-XX:G1MixedGCCountTarget=3",  # brucethemoose: 3; atm: 4; default: 8; Obydux: 3
             "-XX:G1RSetUpdatingPauseTimePercent=0",  # brucethemoose: 0; atm: 5; default: 10; Obydux: 0
-            # "-XX:G1MixedGCLiveThresholdPercent=35",  # atm: 90; default: 85; Obydux: 90
+            # "-XX:G1MixedGCLiveThresholdPercent=35",  # atm: 90; Obydux: 90; default: 85
             # "-XX:G1MaxNewSizePercent=60",  # atm: 40; aikar: 50; default: 60
             "-XX:G1HeapWastePercent=20",  # brucethemoose: 20; atm: 5; default: 5
             "-XX:G1SATBBufferEnqueueingThresholdPercent=30",  # brucethemoose, Obydux: 30; default: 60
