@@ -10,7 +10,7 @@ Minecraft Server Tools is a Python utility suite for managing Minecraft Forge/Ne
 
 **Important:** There are two directories to be aware of:
 - **This repository** (`minecraft-server-tools/`) - Edit source code here, run `make build` to compile
-- **Server directory** (`constants.SERVER_DIR`, typically `~/OneDrive/Minecraft/"1.21 Mod Server"`) - Run operational commands like `make update-mods` and `make update-mod-names` here
+- **Server directory** (`constants.SERVER_DIR`) - Run operational commands like `make update-mods` and `make update-mod-names` here
 
 ### In this repository:
 ```bash

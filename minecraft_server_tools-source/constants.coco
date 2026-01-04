@@ -88,7 +88,7 @@ GRAAL_VERSION = 21
 
 SERVER_DIR = first_that_exists([
     os.getenv("MINECRAFT_SERVER_DIR"),
-    "~/OneDrive/Minecraft/1.21 Mod Server",
+    "~/Minecraft Servers/1.21 Mod Server",
 ])
 
 ALT_MOD_ZIP_PATH = fixpath("~/Dropbox/Minecraft Mods/Minecraft Mods.zip")
