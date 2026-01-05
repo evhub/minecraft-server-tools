@@ -495,8 +495,8 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
             "-XX:G1SATBBufferEnqueueingThresholdPercent=30",  # brucethemoose, Obydux: 30; default: 60
             "-XX:G1ConcMarkStepDurationMillis=5",  # brucethemoose, Obydux: 5; default: 10
             "-XX:GCTimeRatio=99",  # brucethemoose: 99; default: 12
-            "-XX:G1ConcRSHotCardLimit=16",  # brucethemoose, Obydux: 16
-            "-XX:G1ConcRefinementServiceIntervalMillis=150",  # brucethemoose, Obydux: 150
+            # "-XX:G1ConcRSHotCardLimit=16",  # brucethemoose, Obydux: 16; deprecated by java
+            # "-XX:G1ConcRefinementServiceIntervalMillis=150",  # brucethemoose, Obydux: 150; deprecated by java
         ]
     elif gc == "Shenandoah":
         assert vm != "graal", "graal doesn't yet support Shenandoah"
