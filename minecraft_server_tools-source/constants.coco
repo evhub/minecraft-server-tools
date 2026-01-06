@@ -84,7 +84,7 @@ NO_STRS = [
 MC_VERSION = (1, 21, 1)
 FORGE_VERSION = (21, 1, 217)
 
-GRAAL_VERSION = 21
+GRAAL_VERSION = 25
 
 SERVER_DIR = first_that_exists([
     os.getenv("MINECRAFT_SERVER_DIR"),
@@ -471,7 +471,7 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
             "-Dgraal.TuneInlinerExploration=1",  # brucethemoose: 1
             "-Dgraal.LoopRotation=true",  # Obydux
             "-Dgraal.CompilerConfiguration=enterprise",  # Obydux
-            "-Dgraal.OptWriteMotion=true",  # Obydux; deprecated by java
+            # "-Dgraal.OptWriteMotion=true",  # Obydux; deprecated by java
         ]
     else:
         raise ValueError(f"unknown java VM {vm!r}")
@@ -511,8 +511,8 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
             "-XX:+UseZGC",
             "-XX:AllocatePrefetchStyle=1",  # brucethemoose: 1; default: 1
             # "-XX:-ZProactive",  # brucethemoose (incompatible with +ZGenerational)
-            "-XX:+ZGenerational",  # brucethemoose (incompatible with -ZProactive; Java 21+; default in Java 23+); deprecated by java
-            "-XX:ZMarkStackSpaceLimit=16G",  # java error; default: 8G; deprecated by java
+            # "-XX:+ZGenerational",  # brucethemoose (incompatible with -ZProactive; Java 21+; default in Java 23+); deprecated by java
+            # "-XX:ZMarkStackSpaceLimit=16G",  # java error; default: 8G; deprecated by java
         ]
     else:
         raise ValueError(f"unknown java GC {gc!r}")
