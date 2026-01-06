@@ -466,12 +466,13 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
             "-XX:NodeLimitFudgeFactor=8000",  # brucethemoose: 8000
         ]
     elif vm == "graal":
+        jdk_graal = "jdk.graal" if GRAAL_VERSION >= 22 else "graal"
         args += [
             "-XX:+EagerJVMCI",  # brucethemoose
-            "-Dgraal.TuneInlinerExploration=1",  # brucethemoose: 1
-            "-Dgraal.LoopRotation=true",  # Obydux
-            "-Dgraal.CompilerConfiguration=enterprise",  # Obydux
-            # "-Dgraal.OptWriteMotion=true",  # Obydux; deprecated by java
+            f"-D{jdk_graal}.TuneInlinerExploration=1",  # brucethemoose: 1
+            f"-D{jdk_graal}.LoopRotation=true",  # Obydux
+            f"-D{jdk_graal}.CompilerConfiguration=enterprise",  # Obydux
+            # f"-D{jdk_graal}.OptWriteMotion=true",  # Obydux; deprecated by java
         ]
     else:
         raise ValueError(f"unknown java VM {vm!r}")
