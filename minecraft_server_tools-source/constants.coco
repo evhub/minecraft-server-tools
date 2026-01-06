@@ -392,8 +392,8 @@ GRAAL_URL = f"https://download.oracle.com/graalvm/{GRAAL_VERSION}/latest/{GRAAL_
 GRAAL_BASE_DIR = os.path.join(ROOT_DIR, "graal")
 GRAAL_ZIP_PATH = os.path.join(GRAAL_BASE_DIR, GRAAL_ZIP_NAME)
 
-CLIENT_GC = "G1"  # "Z" if psutil.cpu_count(logical=False) > 8 else "G1"  # brucethemoose: G1, Shenandoah, or ZGenerational
-SERVER_GC = "G1"  # brucethemoose: G1 or Z
+CLIENT_GC = "Z" if psutil.cpu_count(logical=False) > 8 else "G1"  # brucethemoose: G1, Shenandoah, or ZGenerational
+SERVER_GC = "Z"  # brucethemoose: G1 or Z
 
 def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
     code_cache_mul = 2 if gc == "G1" else 1
@@ -481,16 +481,16 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
             "-XX:+UseG1GC",
             "-XX:AllocatePrefetchStyle=3",  # brucethemoose, Obydux: 3; default: 1
             # "-XX:TargetSurvivorRatio=90",  # atm: 32; default: 50
-            "-XX:SurvivorRatio=32",  # atm: 32; brucethemoose: 32; default: 8; Obydux: 32
-            "-XX:InitiatingHeapOccupancyPercent=10",  # brucethemoose: 10; atm: 15; aikar: 20; default: 45; Obydux: 10
+            "-XX:SurvivorRatio=32",  # atm: 32; brucethemoose: 32; Obydux: 32; default: 8
+            "-XX:InitiatingHeapOccupancyPercent=10",  # brucethemoose: 10; atm: 15; aikar: 20; Obydux: 10; default: 45
             "-XX:MaxTenuringThreshold=1",  # brucethemoose: 1; atm: 1; Obydux: 1; default: 15
             "-XX:G1ReservePercent=20",  # brucethemoose: 20; atm: 20; aikar: 15; Obydux: 20
             "-XX:G1NewSizePercent=28",  # brucethemoose: 23; atm: 30; aikar: 40; Obydux: 28; default: 5
-            "-XX:G1HeapRegionSize=32M",  # brucethemoose: 16M; atm: 8M; aikar: 16M; Obydux: 16M
-            "-XX:G1MixedGCCountTarget=3",  # brucethemoose: 3; atm: 4; default: 8; Obydux: 3
+            "-XX:G1HeapRegionSize=16M",  # brucethemoose: 16M; atm: 8M; aikar: 16M; Obydux: 16M
+            "-XX:G1MixedGCCountTarget=3",  # brucethemoose: 3; atm: 4; Obydux: 3; default: 8
             "-XX:G1RSetUpdatingPauseTimePercent=0",  # brucethemoose: 0; atm: 5; default: 10; Obydux: 0
             # "-XX:G1MixedGCLiveThresholdPercent=35",  # atm: 90; Obydux: 90; default: 85
-            # "-XX:G1MaxNewSizePercent=60",  # atm: 40; aikar: 50; default: 60
+            "-XX:G1MaxNewSizePercent=50",  # atm: 40; aikar: 50; default: 60
             "-XX:G1HeapWastePercent=20",  # brucethemoose: 20; atm: 5; default: 5
             "-XX:G1SATBBufferEnqueueingThresholdPercent=30",  # brucethemoose, Obydux: 30; default: 60
             "-XX:G1ConcMarkStepDurationMillis=5",  # brucethemoose, Obydux: 5; default: 10
