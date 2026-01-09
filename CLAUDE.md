@@ -29,8 +29,6 @@ make clean
 
 ### In the server directory:
 ```bash
-cd ~/OneDrive/Minecraft/"1.21 Mod Server"
-
 # Update/download mods from CurseForge
 make update-mods
 
@@ -97,7 +95,7 @@ Run this loop to populate missing mod name mappings:
 
 1. **Run the update command** in the mod server directory:
    ```bash
-   cd ~/OneDrive/Minecraft/"1.21 Mod Server" && make update-mod-names
+   make update-mod-names
    ```
 
 2. **When it fails** with an error like:
