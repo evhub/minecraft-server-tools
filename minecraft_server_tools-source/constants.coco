@@ -268,7 +268,7 @@ COMPONENT_SEPS = [
 
 NON_NAME_COMPONENT_REGEX = full_regex(
     r"[0-9].*|"
-    + r"(?!cave|a$|ae2|rare|da|cfm)((neo|forge|fabric|quilt|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r|f|pre)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+"
+    + r"(?!cave|a$|ae2|rare|da|cfm|distraction)((neo|forge|fabric|quilt|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r|f|pre)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+"
 )
 
 NAME_REGEXES_TO_SPACE = [
@@ -293,7 +293,7 @@ NAME_REGEXES_TO_SPACE = [
         r"quilt\b",
         r"QUILT",
         r"Quilt\b",
-        r"\bdist(ro)?",
+        r"\bdist(ro)?\b",
         r"release",
         r"\balpha\b",
         r"\bALPHA\b",
