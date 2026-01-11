@@ -6,11 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Minecraft Server Tools is a Python utility suite for managing Minecraft Forge/NeoForge servers with large mod collections. Key features include mod installation/synchronization, CurseForge API integration, launcher profile management, and JVM optimization.
 
-## Build and Development Commands
+## Directories
 
-**Important:** There are two directories to be aware of:
+**Important:** There are three directories to be aware of:
 - **This repository** (`minecraft-server-tools/`) - Edit source code here, run `make build` to compile
 - **Server directory** (`constants.SERVER_DIR`) - Run operational commands like `make update-mods` and `make update-mod-names` here
+- **Client directory** (`constants.MINECRAFT_DIR`) - Look for logs or crashes here when debugging client issues
+
+## Build and Development Commands
 
 ### In this repository:
 ```bash
@@ -36,6 +39,15 @@ make update-mods
 make update-mod-names
 ```
 
+## Language: Coconut
+
+This project uses [Coconut](http://coconut-lang.org/), a functional programming superset of Python. Key points:
+
+- Source files use `.coco` extension
+- Compiles to Python 3 with `--strict` mode
+- Uses Coconut-specific syntax: `then`/`else` ternaries, pattern matching, pipeline operators
+- Always run `make build` after editing `.coco` files
+
 ## Architecture
 
 ### Source Code Structure
@@ -58,16 +70,7 @@ make update-mod-names
 - `curseforge_names.json` - Cached CurseForge mod name mappings
 - Requires `CURSEFORGE_API_KEY` environment variable (or `secrets.json` in server dir)
 
-## Language: Coconut
-
-This project uses [Coconut](http://coconut-lang.org/), a functional programming superset of Python. Key points:
-
-- Source files use `.coco` extension
-- Compiles to Python 3 with `--strict` mode
-- Uses Coconut-specific syntax: `then`/`else` ternaries, pattern matching, pipeline operators
-- Always run `make build` after editing `.coco` files
-
-## Configuration
+### Configuration
 
 Key constants in `constants.coco`:
 - `MC_VERSION` / `FORGE_VERSION` - Current Minecraft and NeoForge versions
@@ -75,7 +78,7 @@ Key constants in `constants.coco`:
 - `CLIENT_RAM` / `SERVER_RAM` - Memory allocation (auto-adjusted based on system RAM)
 - `MODLOADER` - Currently "NeoForge"
 
-## Entry Points
+### Entry Points
 
 Run as Python modules after building, e.g.:
 ```bash
@@ -119,3 +122,12 @@ Run this loop to populate missing mod name mappings:
 
 - Some mods have different names on CurseForge vs their internal mod ID (e.g., `"alexscaves"` -> `"Alex's Caves"`).
 - Addon mods often have prefixes like `"Aether Addon: "` in their CurseForge names.
+
+## Debugging Minecraft Mod Crashes
+
+When analyzing Minecraft crash logs to identify problematic mods:
+
+1. **Search for "Suspected Mods"** - The crash reporter performs heuristic analysis and lists likely culprits, and the user may have a list of possible culprits as well. Always grep for each mod that might be a culprit.
+2. **Search for `FATAL`** - This indicates a fatal error, often pointing to the root cause.
+
+Don't get tunnel-visioned on one error - a mod initialization failure earlier in the log can cause cascading errors that appear unrelated (like config loading failures).

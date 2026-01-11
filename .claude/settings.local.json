@@ -19,6 +19,7 @@
       "Bash(jstack:*)",
       "Bash(zcat:*)",
       "Bash(zgrep:*)",
+      "Bash(xxd:*)",
       "WebFetch(domain:www.curseforge.com)",
       "WebFetch(domain:www.graalvm.org)",
       "WebFetch(domain:github.com)",
@@ -26,7 +27,8 @@
       "WebFetch(domain:docs.curseforge.com)",
       "WebFetch(domain:forums.minecraftforge.net)",
       "WebFetch(domain:neoforged.net)",
-      "WebFetch(domain:allthemods.github.io)"
+      "WebFetch(domain:allthemods.github.io)",
+      "WebFetch(domain:spark.lucko.me)"
     ]
   }
 }
