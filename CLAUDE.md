@@ -131,3 +131,73 @@ When analyzing Minecraft crash logs to identify problematic mods:
 2. **Search for `FATAL`** - This indicates a fatal error, often pointing to the root cause.
 
 Don't get tunnel-visioned on one error - a mod initialization failure earlier in the log can cause cascading errors that appear unrelated (like config loading failures).
+
+## Memory Profiling and Analysis
+
+### Taking Heap Dumps
+
+Use JDK tools to capture memory state from a running Minecraft instance:
+
+```bash
+# Find Minecraft process ID
+jps -l
+# Look for cpw.mods.bootstraplauncher.BootstrapLauncher
+
+# Take a heap dump
+jcmd <PID> GC.heap_dump minecraft_heap.hprof
+
+# Get a class histogram (quick overview without full dump)
+jmap -histo <PID> > heap_histo.log
+```
+
+### Analyzing with Eclipse MAT
+
+Eclipse Memory Analyzer (MAT) is essential for deep analysis:
+
+1. **Download MAT** from https://eclipse.dev/mat/downloads.php
+2. **Increase MAT memory** in `MemoryAnalyzer.ini` - set `-Xmx32g` for large dumps
+3. **Run from command line**:
+   ```bash
+   ./ParseHeapDump.bat "path/to/heap.hprof" org.eclipse.mat.api:suspects
+   ```
+4. **Review the Leak Suspects report** - generates HTML in a zip file
+
+### Attributing Memory to Mods
+
+Memory attribution is challenging because most memory is in shared Minecraft classes, not mod-specific classes. Key approaches:
+
+#### 1. Direct Attribution (from histogram)
+Parse the histogram to group by module/mod:
+- Classes contain module info like `(modname@version)`
+- Sum bytes per mod to get direct memory usage
+- This captures memory in mod's own classes only
+
+#### 2. Content-Based Attribution
+Mods register content that ends up in Minecraft's classes:
+- **Blocks** → stored in `BlockState`, `BakedQuad`, `WeightedBakedModel`
+- **Items** → stored in `ItemStack`, `PatchedDataComponentMap`
+- **Entities** → stored in entity classes and component maps
+- Count content registrations per mod and estimate proportional memory
+
+#### 3. Dominator Tree Analysis (MAT)
+MAT's dominator tree shows what's retaining memory:
+- Identifies accumulation points
+- Shows path from GC roots
+- Reveals which objects are holding references
+
+### Key Memory Consumers in Modded Minecraft
+
+| Category | Typical Classes | Notes |
+|----------|-----------------|-------|
+| Block Models | `BakedQuad`, `MultiPartBakedModel`, `SimpleBakedModel`, `WeightedBakedModel` | Scales with block count; variant mods multiply this |
+| Block States | `BlockState` | Each block can have many states |
+| World Data | `PoiRecord`, `BlockPos`, `ChunkSection` | Scales with loaded chunks |
+| Items | `ItemStack`, `PatchedDataComponentMap` | Items in world/inventories |
+| Collections | `HashMap`, `ArrayList`, `Object[]` | Generic storage, hard to attribute |
+| Textures | `byte[]`, `NativeImage` | Texture data |
+
+### Common Issues
+
+1. **Transient "leaks"** - Large object counts during loading that GC cleans up
+2. **POI accumulation** - 100M+ PoiRecord indicates excessive POI data or large explored area
+3. **FTB Backups memory** - Keeps backup data in RAM during operation

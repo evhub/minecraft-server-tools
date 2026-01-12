@@ -243,8 +243,11 @@ installer.log
 __coconut_cache__/
 
 # Profiling
+heap_analysis/
 *.log
 *.hprof
+*.index
+*.threads
 
 # Graal Downloading
 graal/
