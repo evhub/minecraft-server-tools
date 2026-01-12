@@ -244,6 +244,7 @@ __coconut_cache__/
 
 # Profiling
 *.log
+*.hprof
 
 # Graal Downloading
 graal/

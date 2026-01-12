@@ -106,6 +106,7 @@ DOWNLOADS_PATH = first_that_exists([
 ])
 
 IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
+FOR_SINGLE_PLAYER = False
 
 if IS_MOD_SERVER:
     CLIENT_RAM = "29G"
@@ -177,8 +178,8 @@ OPTIONAL_INSTALL_FOLDERS = [
     "ESM",
 ] + DATAPACK_OPTIONAL_INSTALL_FOLDERS
 
-PRINT_DEBUG = bool_env_var("MC_DEBUG_PRINT", False)
 JPS_DEBUG = bool_env_var("MC_DEBUG_JPS", False)  # filter jstack: ^(\s*(at java|at jdk|at sun|at net.minecraft|at io.netty)\b)[^\n]*\n*
+PRINT_DEBUG = bool_env_var("MC_DEBUG_PRINT", False)
 LOG4J_DEBUG = bool_env_var("MC_DEBUG_LOG4J", False)
 
 # update from https://neoforged.net/
@@ -193,7 +194,7 @@ max_client_ram = psutil.virtual_memory().total // GB - 1
 max_server_ram = psutil.virtual_memory().total // GB - 1  # - 3 for AWS
 
 if int(CLIENT_RAM[:-1]) > max_client_ram:
-    if max_client_ram <= 8:
+    if IS_MOD_SERVER and max_client_ram <= 15:
         raise IOError("Insufficient RAM: try to run again on whatever the best gaming PC is that you have.")
     print(f"\nWARNING: Reducing client RAM from {CLIENT_RAM} to {max_client_ram}G.")
     CLIENT_RAM = str(max_client_ram) + "G"
@@ -392,7 +393,11 @@ GRAAL_URL = f"https://download.oracle.com/graalvm/{GRAAL_VERSION}/latest/{GRAAL_
 GRAAL_BASE_DIR = os.path.join(ROOT_DIR, "graal")
 GRAAL_ZIP_PATH = os.path.join(GRAAL_BASE_DIR, GRAAL_ZIP_NAME)
 
-CLIENT_GC = "Z" if psutil.cpu_count(logical=False) > 8 else "G1"  # brucethemoose: G1, Shenandoah, or ZGenerational
+CLIENT_GC = (
+    "G1" if FOR_SINGLE_PLAYER
+    else "Z" if psutil.cpu_count(logical=False) > 8
+    else "G1"
+)  # brucethemoose: G1, Shenandoah, or ZGenerational
 SERVER_GC = "Z"  # brucethemoose: G1 or Z
 
 def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
