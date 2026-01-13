@@ -134,6 +134,8 @@ Don't get tunnel-visioned on one error - a mod initialization failure earlier in
 
 ## Memory Profiling and Analysis
 
+**All memory profiling and analysis files should go in `./heap_analysis/`.**
+
 ### Taking Heap Dumps
 
 Use JDK tools to capture memory state from a running Minecraft instance:
@@ -201,3 +203,31 @@ MAT's dominator tree shows what's retaining memory:
 1. **Transient "leaks"** - Large object counts during loading that GC cleans up
 2. **POI accumulation** - 100M+ PoiRecord indicates excessive POI data or large explored area
 3. **FTB Backups memory** - Keeps backup data in RAM during operation
+
+### Digging Into Game Data Files
+
+When heap analysis shows suspicious data (like excessive POIs), one angle of attack is to go to the actual game files to understand what's in them:
+
+#### POI Data (Point of Interest)
+Located in `saves/<world>/poi/` as `.mca` region files:
+```python
+# Parse MCA file to find POI types
+import zlib, struct, re
+from collections import Counter
+
+with open('poi/r.0.0.mca', 'rb') as f:
+    locations = f.read(4096)  # Location table
+    for i in range(1024):
+        offset = struct.unpack('>I', b'\x00' + locations[i*4:i*4+3])[0]
+        if offset > 0:
+            f.seek(offset * 4096)
+            length = struct.unpack('>I', f.read(4))[0]
+            compression = f.read(1)[0]
+            data = zlib.decompress(f.read(length - 1))
+            # Search for POI type strings
+            poi_types = re.findall(r'minecraft:[a-z_]+', data.decode('latin-1'))
+            print(Counter(poi_types).most_common(10))
+```
+
+Normal POI counts per chunk: single digits (beds, workstations, beehives)
+Abnormal: thousands per chunk indicates a mod bug

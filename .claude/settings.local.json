@@ -23,6 +23,7 @@
       "Bash(zgrep:*)",
       "Bash(gzip:*)",
       "Bash(xxd:*)",
+      "Bash(unzip:*)",
       "WebFetch(domain:www.curseforge.com)",
       "WebFetch(domain:www.graalvm.org)",
       "WebFetch(domain:github.com)",

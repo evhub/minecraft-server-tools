@@ -509,15 +509,16 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         args += [
             "-XX:+UseShenandoahGC",
             "-XX:AllocatePrefetchStyle=1",  # brucethemoose: 1; default: 1
-            "-XX:ShenandoahGCMode=iu",  # hilltty-flags
+            "-XX:ShenandoahGCMode=generational",  # new
+            # "-XX:ShenandoahGCMode=iu",  # hilltty-flags
             "-XX:ShenandoahGuaranteedGCInterval=1000000",  # brucethemoose: 1000000
         ]
     elif gc == "Z":
         args += [
             "-XX:+UseZGC",
             "-XX:AllocatePrefetchStyle=1",  # brucethemoose: 1; default: 1
-            # "-XX:-ZProactive",  # brucethemoose (incompatible with +ZGenerational)
-            # "-XX:+ZGenerational",  # brucethemoose (incompatible with -ZProactive; Java 21+; default in Java 23+); deprecated by java
+            "-XX:+ZGenerational",  # brucethemoose (incompatible with -ZProactive; Java 21+; default in Java 23+); deprecated by java
+            "-XX:-ZProactive",  # brucethemoose (previously incompatible with +ZGenerational)
             # "-XX:ZMarkStackSpaceLimit=16G",  # java error; default: 8G; deprecated by java
         ]
     else:
