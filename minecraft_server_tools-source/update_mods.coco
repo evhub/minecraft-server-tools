@@ -778,11 +778,11 @@ def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interac
         if interact is not False:
             traceback.print_exc()
 
-            from coconut import embed
+            from coconut import \embed
             embed()
         raise
     if interact:
-        from coconut import embed
+        from coconut import \embed
         embed()
 
 

@@ -8,7 +8,7 @@ try:
     from jsoncomment import JsonComment
 except ImportError:
     print("\nWARNING: Could not import jsoncomment.")
-    JsonComment = None
+    \JsonComment = None
 
 
 # Utilities
@@ -106,7 +106,6 @@ DOWNLOADS_PATH = first_that_exists([
 ])
 
 IS_MOD_SERVER = "mod" in SERVER_DIR.lower()
-FOR_SINGLE_PLAYER = False
 
 if IS_MOD_SERVER:
     CLIENT_RAM = "29G"
@@ -187,21 +186,26 @@ FORGE_INSTALLER_JAR = format_vers("neoforge-{forge_version}-installer.jar")
 FORGE_INSTALLER_URL = format_vers("https://maven.neoforged.net/releases/net/neoforged/neoforge/{forge_version}") + f"/{FORGE_INSTALLER_JAR}"
 
 
-# Fix RAMs
+# GC and fix RAM
+
+CLIENT_GC = "Z" if psutil.cpu_count(logical=False) > 8 else "G1"  # brucethemoose: G1, Shenandoah, or ZGenerational
+SERVER_GC = "Z"  # brucethemoose: G1 or Z
 
 GB = 1024**3
 max_client_ram = psutil.virtual_memory().total // GB - 1
 max_server_ram = psutil.virtual_memory().total // GB - 1  # - 3 for AWS
 
 if int(CLIENT_RAM[:-1]) > max_client_ram:
-    if IS_MOD_SERVER and max_client_ram <= 15:
+    if IS_MOD_SERVER and max_client_ram <= 8:
         raise IOError("Insufficient RAM: try to run again on whatever the best gaming PC is that you have.")
     print(f"\nWARNING: Reducing client RAM from {CLIENT_RAM} to {max_client_ram}G.")
     CLIENT_RAM = str(max_client_ram) + "G"
+    CLIENT_GC = "G1"
 
 if int(SERVER_RAM[:-1]) > max_server_ram:
     print(f"\nWARNING: Reducing server RAM from {SERVER_RAM} to {max_server_ram}G.")
     SERVER_RAM = str(max_server_ram) + "G"
+    SERVER_GC = "G1"
 
 
 # Load secrets
@@ -392,13 +396,6 @@ GRAAL_URL = f"https://download.oracle.com/graalvm/{GRAAL_VERSION}/latest/{GRAAL_
 
 GRAAL_BASE_DIR = os.path.join(ROOT_DIR, "graal")
 GRAAL_ZIP_PATH = os.path.join(GRAAL_BASE_DIR, GRAAL_ZIP_NAME)
-
-CLIENT_GC = (
-    "G1" if FOR_SINGLE_PLAYER
-    else "Z" if psutil.cpu_count(logical=False) > 8
-    else "G1"
-)  # brucethemoose: G1, Shenandoah, or ZGenerational
-SERVER_GC = "Z"  # brucethemoose: G1 or Z
 
 def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
     code_cache_mul = 2 if gc == "G1" else 1
