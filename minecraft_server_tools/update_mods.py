@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x94d60be7
+# __coconut_hash__ = 0x58de896c
 
 # Compiled with Coconut version 3.2.0-post_dev7
 
@@ -135,7 +135,7 @@ UPDATE_DEDUPLICATE_DIRS = [os.path.join(SERVER_DIR, DEDUPLICATE_CLIENT_MODS_NAME
 BEGINNING_OF_TIME = datetime.datetime(1, 1, 1)  #76 (line in Coconut source)
 
 # Configuration for different content types (mods vs datapacks)
-ContentTypeConfig = namedtuple('ContentTypeConfig', ['name', 'file_extension', 'curseforge_class_ids', 'use_modloader'])  # ".jar" or ".zip"  # "mod" or "datapack"  # list of CurseForge classIds to search  # whether to filter by modloader  #79 (line in Coconut source)
+ContentTypeConfig = namedtuple('ContentTypeConfig', ['name', 'file_extension', 'curseforge_class_ids', 'use_modloader'])  # list of CurseForge classIds to search  # "mod" or "datapack"  # whether to filter by modloader  # ".jar" or ".zip"  #79 (line in Coconut source)
 
 MOD_CONFIG = ContentTypeConfig(name="mod", file_extension=".jar", curseforge_class_ids=[CURSEFORGE_CLASS_ID_MODS,], use_modloader=True)  #86 (line in Coconut source)
 
@@ -525,417 +525,430 @@ def log_curseforge_results(results, verbose=False):  #424 (line in Coconut sourc
 get_core_name = _coconut_partial(get_mod_name, silent=True)  #431 (line in Coconut source)
 
 
-def get_curseforge_mod(curseforge_name, mod_name, config=None):  #434 (line in Coconut source)
-    if config is None:  #435 (line in Coconut source)
-        config = MOD_CONFIG  #436 (line in Coconut source)
-    core_curseforge_name = get_core_name(curseforge_name)  #437 (line in Coconut source)
+def get_curseforge_mod(curseforge_name, mod_name, config=MOD_CONFIG):  #434 (line in Coconut source)
+    core_curseforge_name = get_core_name(curseforge_name)  #435 (line in Coconut source)
 
 # Try each classId in the config
-    for class_id in config.curseforge_class_ids:  #440 (line in Coconut source)
-        seen_queries = set()  #441 (line in Coconut source)
-        for query_template in CURSEFORGE_QUERY_TEMPLATES:  #442 (line in Coconut source)
-            query = query_template.format(curseforge_name=curseforge_name, core_curseforge_name=core_curseforge_name, mod_name=mod_name)  #443 (line in Coconut source)
-            if query in seen_queries:  #448 (line in Coconut source)
-                continue  #449 (line in Coconut source)
-            seen_queries.add(query)  #450 (line in Coconut source)
+    for class_id in config.curseforge_class_ids:  #438 (line in Coconut source)
+        seen_queries = set()  #439 (line in Coconut source)
+        for query_template in CURSEFORGE_QUERY_TEMPLATES:  #440 (line in Coconut source)
+            query = query_template.format(curseforge_name=curseforge_name, core_curseforge_name=core_curseforge_name, mod_name=mod_name)  #441 (line in Coconut source)
+            if query in seen_queries:  #446 (line in Coconut source)
+                continue  #447 (line in Coconut source)
+            seen_queries.add(query)  #448 (line in Coconut source)
 
-            if config.use_modloader:  #452 (line in Coconut source)
-                modloader_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION), MODLOADER], class_id=class_id)  #453 (line in Coconut source)
-                mod = get_matching_mod(modloader_version_results, curseforge_name, mod_name)  #454 (line in Coconut source)
-                if mod is not None:  #455 (line in Coconut source)
-                    return mod  #456 (line in Coconut source)
-                if PRINT_DEBUG:  #457 (line in Coconut source)
-                    print("\tCould not find mod {_coconut_format_0!r} in modloader-version-specific results for query {_coconut_format_1!r}.".format(_coconut_format_0=(curseforge_name), _coconut_format_1=(query)))  #458 (line in Coconut source)
+            if config.use_modloader:  #450 (line in Coconut source)
+                modloader_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION), MODLOADER], class_id=class_id)  #451 (line in Coconut source)
+                mod = get_matching_mod(modloader_version_results, curseforge_name, mod_name)  #452 (line in Coconut source)
+                if mod is not None:  #453 (line in Coconut source)
+                    return mod  #454 (line in Coconut source)
+                if PRINT_DEBUG:  #455 (line in Coconut source)
+                    print("\tCould not find mod {_coconut_format_0!r} in modloader-version-specific results for query {_coconut_format_1!r}.".format(_coconut_format_0=(curseforge_name), _coconut_format_1=(query)))  #456 (line in Coconut source)
 
-                modloader_compatible_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION[:2]), MODLOADER], class_id=class_id)  #460 (line in Coconut source)
-                mod = get_matching_mod(modloader_compatible_version_results, curseforge_name, mod_name)  #461 (line in Coconut source)
-                if mod is not None:  #462 (line in Coconut source)
-                    return mod  #463 (line in Coconut source)
-                if PRINT_DEBUG:  #464 (line in Coconut source)
-                    print("\tCould not find mod {_coconut_format_0!r} in modloader-compatibly-versioned results for query {_coconut_format_1!r}.".format(_coconut_format_0=(curseforge_name), _coconut_format_1=(query)))  #465 (line in Coconut source)
+                modloader_compatible_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION[:2]), MODLOADER], class_id=class_id)  #458 (line in Coconut source)
+                mod = get_matching_mod(modloader_compatible_version_results, curseforge_name, mod_name)  #459 (line in Coconut source)
+                if mod is not None:  #460 (line in Coconut source)
+                    return mod  #461 (line in Coconut source)
+                if PRINT_DEBUG:  #462 (line in Coconut source)
+                    print("\tCould not find mod {_coconut_format_0!r} in modloader-compatibly-versioned results for query {_coconut_format_1!r}.".format(_coconut_format_0=(curseforge_name), _coconut_format_1=(query)))  #463 (line in Coconut source)
 
-            version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION), ""], class_id=class_id)  #467 (line in Coconut source)
-            mod = get_matching_mod(version_results, curseforge_name, mod_name)  #468 (line in Coconut source)
-            if mod is not None:  #469 (line in Coconut source)
-                return mod  #470 (line in Coconut source)
-            if PRINT_DEBUG:  #471 (line in Coconut source)
-                print("\tCould not find mod {_coconut_format_0!r} in version-specific results for query {_coconut_format_1!r}.".format(_coconut_format_0=(curseforge_name), _coconut_format_1=(query)))  #472 (line in Coconut source)
+            version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION), ""], class_id=class_id)  #465 (line in Coconut source)
+            mod = get_matching_mod(version_results, curseforge_name, mod_name)  #466 (line in Coconut source)
+            if mod is not None:  #467 (line in Coconut source)
+                return mod  #468 (line in Coconut source)
+            if PRINT_DEBUG:  #469 (line in Coconut source)
+                print("\tCould not find mod {_coconut_format_0!r} in version-specific results for query {_coconut_format_1!r}.".format(_coconut_format_0=(curseforge_name), _coconut_format_1=(query)))  #470 (line in Coconut source)
 
-            compatible_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION[:2]), ""], class_id=class_id)  #474 (line in Coconut source)
-            mod = get_matching_mod(compatible_version_results, curseforge_name, mod_name)  #475 (line in Coconut source)
-            if mod is not None:  #476 (line in Coconut source)
-                return mod  #477 (line in Coconut source)
-            if PRINT_DEBUG:  #478 (line in Coconut source)
-                print("\tCould not find mod {_coconut_format_0!r} in compatibly-versioned results for query {_coconut_format_1!r}.".format(_coconut_format_0=(curseforge_name), _coconut_format_1=(query)))  #479 (line in Coconut source)
+            compatible_version_results = run_curseforge_api_cmd(["search", query, ver_join(MC_VERSION[:2]), ""], class_id=class_id)  #472 (line in Coconut source)
+            mod = get_matching_mod(compatible_version_results, curseforge_name, mod_name)  #473 (line in Coconut source)
+            if mod is not None:  #474 (line in Coconut source)
+                return mod  #475 (line in Coconut source)
+            if PRINT_DEBUG:  #476 (line in Coconut source)
+                print("\tCould not find mod {_coconut_format_0!r} in compatibly-versioned results for query {_coconut_format_1!r}.".format(_coconut_format_0=(curseforge_name), _coconut_format_1=(query)))  #477 (line in Coconut source)
 
-            if config.use_modloader:  #481 (line in Coconut source)
-                modloader_results = run_curseforge_api_cmd(["search", query, "", MODLOADER], class_id=class_id)  #482 (line in Coconut source)
-                mod = get_matching_mod(modloader_results, curseforge_name, mod_name)  #483 (line in Coconut source)
-                if mod is not None:  #484 (line in Coconut source)
-                    return mod  #485 (line in Coconut source)
-                if PRINT_DEBUG:  #486 (line in Coconut source)
-                    print("\tCould not find mod {_coconut_format_0!r} in modloader-versioned results for query {_coconut_format_1!r}.".format(_coconut_format_0=(curseforge_name), _coconut_format_1=(query)))  #487 (line in Coconut source)
+            if config.use_modloader:  #479 (line in Coconut source)
+                modloader_results = run_curseforge_api_cmd(["search", query, "", MODLOADER], class_id=class_id)  #480 (line in Coconut source)
+                mod = get_matching_mod(modloader_results, curseforge_name, mod_name)  #481 (line in Coconut source)
+                if mod is not None:  #482 (line in Coconut source)
+                    return mod  #483 (line in Coconut source)
+                if PRINT_DEBUG:  #484 (line in Coconut source)
+                    print("\tCould not find mod {_coconut_format_0!r} in modloader-versioned results for query {_coconut_format_1!r}.".format(_coconut_format_0=(curseforge_name), _coconut_format_1=(query)))  #485 (line in Coconut source)
 
-            versionless_results = run_curseforge_api_cmd(["search", query, "", ""], class_id=class_id)  #489 (line in Coconut source)
-            mod = get_matching_mod(versionless_results, curseforge_name, mod_name)  #490 (line in Coconut source)
-            if mod is not None:  #491 (line in Coconut source)
-                return mod  #492 (line in Coconut source)
-            if PRINT_DEBUG:  #493 (line in Coconut source)
-                print("\tCould not find mod {_coconut_format_0!r} in version-less results for query {_coconut_format_1!r}.".format(_coconut_format_0=(curseforge_name), _coconut_format_1=(query)))  #494 (line in Coconut source)
+            versionless_results = run_curseforge_api_cmd(["search", query, "", ""], class_id=class_id)  #487 (line in Coconut source)
+            mod = get_matching_mod(versionless_results, curseforge_name, mod_name)  #488 (line in Coconut source)
+            if mod is not None:  #489 (line in Coconut source)
+                return mod  #490 (line in Coconut source)
+            if PRINT_DEBUG:  #491 (line in Coconut source)
+                print("\tCould not find mod {_coconut_format_0!r} in version-less results for query {_coconut_format_1!r}.".format(_coconut_format_0=(curseforge_name), _coconut_format_1=(query)))  #492 (line in Coconut source)
 
-    print("\nERROR: Failed to find mod {_coconut_format_0!r} in any results.\n".format(_coconut_format_0=(curseforge_name)))  #496 (line in Coconut source)
-
-
-
-def get_curseforge_id(curseforge_name, mod_name, config=None):  #499 (line in Coconut source)
-    mod = get_curseforge_mod(curseforge_name, mod_name, config=config)  #500 (line in Coconut source)
-    if mod is not None:  #501 (line in Coconut source)
-        return mod["id"]  #502 (line in Coconut source)
+    print("\nERROR: Failed to find mod {_coconut_format_0!r} in any results.\n".format(_coconut_format_0=(curseforge_name)))  #494 (line in Coconut source)
 
 
 
-def get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names, config=None):  #505 (line in Coconut source)
-    curseforge_ids_cache = load_curseforge_ids_cache()  #506 (line in Coconut source)
-    mod_names_to_curseforge_ids = _coconut.dict()  #507 (line in Coconut source)
-    missing_mods = []  #508 (line in Coconut source)
-    try:  #509 (line in Coconut source)
-        for mod_name, curseforge_name in mod_names_to_curseforge_names.items():  #510 (line in Coconut source)
+def get_curseforge_id(curseforge_name, mod_name, **kwargs):  #497 (line in Coconut source)
+    mod = get_curseforge_mod(curseforge_name, mod_name, **kwargs)  #498 (line in Coconut source)
+    if mod is not None:  #499 (line in Coconut source)
+        return mod["id"]  #500 (line in Coconut source)
+
+
+
+def get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names, **kwargs):  #503 (line in Coconut source)
+    curseforge_ids_cache = load_curseforge_ids_cache()  #504 (line in Coconut source)
+    mod_names_to_curseforge_ids = _coconut.dict()  #505 (line in Coconut source)
+    missing_mods = []  #506 (line in Coconut source)
+    try:  #507 (line in Coconut source)
+        for mod_name, curseforge_name in mod_names_to_curseforge_names.items():  #508 (line in Coconut source)
 # Check cache first
-            if curseforge_name in curseforge_ids_cache:  #512 (line in Coconut source)
-                curseforge_id = curseforge_ids_cache[curseforge_name]  #513 (line in Coconut source)
-                print("Using cached CurseForge ID for {_coconut_format_0!r}.".format(_coconut_format_0=(curseforge_name)))  #514 (line in Coconut source)
-            else:  #515 (line in Coconut source)
-                curseforge_id = get_curseforge_id(curseforge_name, mod_name, config=config)  #516 (line in Coconut source)
-                if curseforge_id is not None:  #517 (line in Coconut source)
-                    curseforge_ids_cache[curseforge_name] = curseforge_id  #518 (line in Coconut source)
+            if curseforge_name in curseforge_ids_cache:  #510 (line in Coconut source)
+                curseforge_id = curseforge_ids_cache[curseforge_name]  #511 (line in Coconut source)
+                print("Using cached CurseForge ID for {_coconut_format_0!r}.".format(_coconut_format_0=(curseforge_name)))  #512 (line in Coconut source)
+            else:  #513 (line in Coconut source)
+                curseforge_id = get_curseforge_id(curseforge_name, mod_name, **kwargs)  #514 (line in Coconut source)
+                if curseforge_id is not None:  #515 (line in Coconut source)
+                    curseforge_ids_cache[curseforge_name] = curseforge_id  #516 (line in Coconut source)
 
-            if curseforge_id is None:  #520 (line in Coconut source)
-                missing_mods.append(mod_name)  #521 (line in Coconut source)
-            else:  #522 (line in Coconut source)
-                mod_names_to_curseforge_ids[mod_name] = curseforge_id  #523 (line in Coconut source)
-    finally:  #524 (line in Coconut source)
-        save_curseforge_ids_cache(curseforge_ids_cache)  #525 (line in Coconut source)
-    return mod_names_to_curseforge_ids, missing_mods  #526 (line in Coconut source)
+            if curseforge_id is None:  #518 (line in Coconut source)
+                missing_mods.append(mod_name)  #519 (line in Coconut source)
+            else:  #520 (line in Coconut source)
+                mod_names_to_curseforge_ids[mod_name] = curseforge_id  #521 (line in Coconut source)
+    finally:  #522 (line in Coconut source)
+        save_curseforge_ids_cache(curseforge_ids_cache)  #523 (line in Coconut source)
+    return mod_names_to_curseforge_ids, missing_mods  #524 (line in Coconut source)
 
 
 
-@_coconut_tco  #529 (line in Coconut source)
-def get_curseforge_files(curseforge_id):  #529 (line in Coconut source)
-    return _coconut_tail_call(run_curseforge_api_cmd, ["getfiles", curseforge_id])  #530 (line in Coconut source)
+@_coconut_tco  #527 (line in Coconut source)
+def get_curseforge_files(curseforge_id):  #527 (line in Coconut source)
+    return _coconut_tail_call(run_curseforge_api_cmd, ["getfiles", curseforge_id])  #528 (line in Coconut source)
 
 
 
-def get_curseforge_file_time(curseforge_file, mod_name):  #533 (line in Coconut source)
-    timestamp = curseforge_file["fileDate"]  #534 (line in Coconut source)
-    match_results = TIMESTAMP_FORMAT_REGEX.match(timestamp)  #535 (line in Coconut source)
-    if match_results is None:  #536 (line in Coconut source)
-        raise ValueError("failed to parse timestamp {_coconut_format_0!r}".format(_coconut_format_0=(timestamp)))  #537 (line in Coconut source)
-    parsed_time = datetime.datetime(*(int(match_results[i]) for i in range(1, 7)))  #538 (line in Coconut source)
-    if (AVOID_FILES_PUBLISHED_WITHIN is not None and mod_name not in ALWAYS_USE_LATEST_VERSION_FOR_MODS and datetime.datetime.now() - parsed_time < AVOID_FILES_PUBLISHED_WITHIN):  #539 (line in Coconut source)
-        parsed_time = BEGINNING_OF_TIME  #544 (line in Coconut source)
-    return parsed_time  #545 (line in Coconut source)
+def get_curseforge_file_time(curseforge_file, mod_name):  #531 (line in Coconut source)
+    timestamp = curseforge_file["fileDate"]  #532 (line in Coconut source)
+    match_results = TIMESTAMP_FORMAT_REGEX.match(timestamp)  #533 (line in Coconut source)
+    if match_results is None:  #534 (line in Coconut source)
+        raise ValueError("failed to parse timestamp {_coconut_format_0!r}".format(_coconut_format_0=(timestamp)))  #535 (line in Coconut source)
+    parsed_time = datetime.datetime(*(int(match_results[i]) for i in range(1, 7)))  #536 (line in Coconut source)
+    if (AVOID_FILES_PUBLISHED_WITHIN is not None and mod_name not in ALWAYS_USE_LATEST_VERSION_FOR_MODS and datetime.datetime.now() - parsed_time < AVOID_FILES_PUBLISHED_WITHIN):  #537 (line in Coconut source)
+        parsed_time = BEGINNING_OF_TIME  #542 (line in Coconut source)
+    return parsed_time  #543 (line in Coconut source)
 
 
 
-@_coconut_tco  #548 (line in Coconut source)
-def timestamp_sort(curseforge_files):  #548 (line in Coconut source)
-    return _coconut_tail_call(sorted, curseforge_files, key=lambda f: get_curseforge_file_time(f, mod_name=None), reverse=True)  #548 (line in Coconut source)
+@_coconut_tco  #546 (line in Coconut source)
+def timestamp_sort(curseforge_files):  #546 (line in Coconut source)
+    return _coconut_tail_call(sorted, curseforge_files, key=lambda f: get_curseforge_file_time(f, mod_name=None), reverse=True)  #546 (line in Coconut source)
 
 
 
-@_coconut_tco  #555 (line in Coconut source)
-def get_max_version(versions):  #555 (line in Coconut source)
-    ver_tuples = []  #556 (line in Coconut source)
-    for ver_str in versions:  #557 (line in Coconut source)
-        try:  #558 (line in Coconut source)
-            ver_tuples.append(ver_split(ver_str))  #559 (line in Coconut source)
-        except ValueError:  #560 (line in Coconut source)
-            pass  #561 (line in Coconut source)
-    return _coconut_tail_call(max, ver_tuples)  #562 (line in Coconut source)
+@_coconut_tco  #553 (line in Coconut source)
+def get_max_version(versions):  #553 (line in Coconut source)
+    ver_tuples = []  #554 (line in Coconut source)
+    for ver_str in versions:  #555 (line in Coconut source)
+        try:  #556 (line in Coconut source)
+            ver_tuples.append(ver_split(ver_str))  #557 (line in Coconut source)
+        except ValueError:  #558 (line in Coconut source)
+            pass  #559 (line in Coconut source)
+    return _coconut_tail_call(max, ver_tuples)  #560 (line in Coconut source)
 
 
 
-@_coconut_tco  #565 (line in Coconut source)
-def sort_releases(curseforge_files, mod_name):  #565 (line in Coconut source)
-    return _coconut_tail_call(sorted, curseforge_files, key=lambda f: (get_max_version(f["gameVersions"]), (0 if mod_name in ALWAYS_USE_LATEST_VERSION_FOR_MODS else -f["releaseType"]), get_curseforge_file_time(f, mod_name)), reverse=True)  #565 (line in Coconut source)
+@_coconut_tco  #563 (line in Coconut source)
+def sort_releases(curseforge_files, mod_name):  #563 (line in Coconut source)
+    return _coconut_tail_call(sorted, curseforge_files, key=lambda f: (get_max_version(f["gameVersions"]), (0 if mod_name in ALWAYS_USE_LATEST_VERSION_FOR_MODS else -f["releaseType"]), get_curseforge_file_time(f, mod_name)), reverse=True)  #563 (line in Coconut source)
 
 
 
-def best_release(curseforge_files, mod_name):  #579 (line in Coconut source)
-    return sort_releases(curseforge_files, mod_name)[0]  #580 (line in Coconut source)
+def best_release(curseforge_files, mod_name):  #577 (line in Coconut source)
+    return sort_releases(curseforge_files, mod_name)[0]  #578 (line in Coconut source)
 
 
 
-@_coconut_tco  #583 (line in Coconut source)
-def reconstruct_curseforge_download_url(curseforge_file):  #583 (line in Coconut source)
-    """Reconstruct download URL from file ID when downloadUrl is None."""  #584 (line in Coconut source)
-    file_id = curseforge_file["id"]  #585 (line in Coconut source)
-    filename = curseforge_file["fileName"]  #586 (line in Coconut source)
-    first_part = file_id // 1000  #587 (line in Coconut source)
-    second_part = file_id % 1000  #588 (line in Coconut source)
-    return _coconut_tail_call("https://edge.forgecdn.net/files/{_coconut_format_0}/{_coconut_format_1}/{_coconut_format_2}".format, _coconut_format_0=(first_part), _coconut_format_1=(second_part), _coconut_format_2=(filename))  #589 (line in Coconut source)
+@_coconut_tco  #581 (line in Coconut source)
+def reconstruct_curseforge_download_url(curseforge_file):  #581 (line in Coconut source)
+    """Reconstruct download URL from file ID when downloadUrl is None."""  #582 (line in Coconut source)
+    file_id = curseforge_file["id"]  #583 (line in Coconut source)
+    filename = curseforge_file["fileName"]  #584 (line in Coconut source)
+    first_part = file_id // 1000  #585 (line in Coconut source)
+    second_part = file_id % 1000  #586 (line in Coconut source)
+    return _coconut_tail_call("https://edge.forgecdn.net/files/{_coconut_format_0}/{_coconut_format_1}/{_coconut_format_2}".format, _coconut_format_0=(first_part), _coconut_format_1=(second_part), _coconut_format_2=(filename))  #587 (line in Coconut source)
 
 
 
-@_coconut_tco  #592 (line in Coconut source)
-def get_curseforge_download_url(curseforge_file):  #592 (line in Coconut source)
-    """Get download URL, reconstructing it if necessary."""  #593 (line in Coconut source)
-    url = curseforge_file["downloadUrl"]  #594 (line in Coconut source)
-    if url is None:  #595 (line in Coconut source)
-        return _coconut_tail_call(reconstruct_curseforge_download_url, curseforge_file)  #596 (line in Coconut source)
-    return url  #597 (line in Coconut source)
+@_coconut_tco  #590 (line in Coconut source)
+def get_curseforge_download_url(curseforge_file):  #590 (line in Coconut source)
+    """Get download URL, reconstructing it if necessary."""  #591 (line in Coconut source)
+    url = curseforge_file["downloadUrl"]  #592 (line in Coconut source)
+    if url is None:  #593 (line in Coconut source)
+        return _coconut_tail_call(reconstruct_curseforge_download_url, curseforge_file)  #594 (line in Coconut source)
+    return url  #595 (line in Coconut source)
 
 
 
-def get_jar_name_for_curseforge_file(curseforge_file):  #600 (line in Coconut source)
-    return (((get_curseforge_download_url(curseforge_file)).rsplit("/", 1))[-1])  #600 (line in Coconut source)
+def get_jar_name_for_curseforge_file(curseforge_file):  #598 (line in Coconut source)
+    return (((get_curseforge_download_url(curseforge_file)).rsplit("/", 1))[-1])  #598 (line in Coconut source)
 
 
 
-def correct_modloader(versions, jar_name):  #607 (line in Coconut source)
-    versions = [v.lower() for v in versions]  #608 (line in Coconut source)
+def correct_modloader(versions, jar_name=None):  #605 (line in Coconut source)
+    versions = [v.lower() for v in versions]  #606 (line in Coconut source)
 
-    if MODLOADER.lower() in versions:  #610 (line in Coconut source)
-        return True  #611 (line in Coconut source)
-    if any((wrong_modloader.lower() in versions for wrong_modloader in WRONG_MODLOADERS)):  #612 (line in Coconut source)
-        return False  #613 (line in Coconut source)
+    if MODLOADER.lower() in versions:  #608 (line in Coconut source)
+        return True  #609 (line in Coconut source)
+    if any((wrong_modloader.lower() in versions for wrong_modloader in WRONG_MODLOADERS)):  #610 (line in Coconut source)
+        return False  #611 (line in Coconut source)
 
-    jar_name = jar_name.lower()  #615 (line in Coconut source)
-    if has_bad_modloader(jar_name):  #616 (line in Coconut source)
-        return False  #617 (line in Coconut source)
-
-    return True  #619 (line in Coconut source)
-
-
-
-def find_curseforge_file_for_jar(curseforge_files, find_jar_name):  #622 (line in Coconut source)
-    for file_data in curseforge_files:  #623 (line in Coconut source)
-        jar_name = get_jar_name_for_curseforge_file(file_data)  #624 (line in Coconut source)
-        if jar_name is not None and are_same_jar(jar_name, find_jar_name):  #625 (line in Coconut source)
-            return file_data  #626 (line in Coconut source)
-    return None  #627 (line in Coconut source)
-
-
-
-@_coconut_tco  #630 (line in Coconut source)
-def get_latest_version(mod_name, curseforge_id, old_jar_name, config=None):  #630 (line in Coconut source)
-    if config is None:  #631 (line in Coconut source)
-        config = MOD_CONFIG  #632 (line in Coconut source)
-    curseforge_files = get_curseforge_files(curseforge_id)  #633 (line in Coconut source)
-
-    old_curseforge_file = find_curseforge_file_for_jar(curseforge_files, old_jar_name)  #635 (line in Coconut source)
-    if old_curseforge_file is None:  #636 (line in Coconut source)
-        print("WARNING: Could not find curseforge file for existing jar: {_coconut_format_0}".format(_coconut_format_0=(old_jar_name)))  #637 (line in Coconut source)
-    old_file_time = get_curseforge_file_time(old_curseforge_file, mod_name) if old_curseforge_file is not None else BEGINNING_OF_TIME  #638 (line in Coconut source)
-
-    curseforge_files_and_versions = []  #640 (line in Coconut source)
-    for file_data in curseforge_files:  #641 (line in Coconut source)
-        versions = file_data["gameVersions"]  #642 (line in Coconut source)
-        jar_name = get_jar_name_for_curseforge_file(file_data)  #643 (line in Coconut source)
-# Check modloader only if config requires it
-        modloader_ok = correct_modloader(versions, jar_name) if config.use_modloader else True  #645 (line in Coconut source)
-        if (jar_name is not None and jar_name.endswith(config.file_extension) and modloader_ok and get_curseforge_file_time(file_data, mod_name) >= old_file_time):  #646 (line in Coconut source)
-            curseforge_files_and_versions.append((file_data, versions))  #652 (line in Coconut source)
-
-    correctly_versioned_files = []  #654 (line in Coconut source)
-    for file_data, versions in curseforge_files_and_versions:  #655 (line in Coconut source)
-        if ver_join(MC_VERSION) in versions:  #656 (line in Coconut source)
-            correctly_versioned_files.append(file_data)  #657 (line in Coconut source)
-    if correctly_versioned_files:  #658 (line in Coconut source)
-        return _coconut_tail_call(best_release, correctly_versioned_files, mod_name)  #659 (line in Coconut source)
-    print("No correctly versioned files found for mod {_coconut_format_0!r}.".format(_coconut_format_0=(mod_name)))  #660 (line in Coconut source)
-
-    compatibly_versioned_files = []  #662 (line in Coconut source)
-    for file_data, versions in curseforge_files_and_versions:  #663 (line in Coconut source)
-        for raw_ver in versions:  #664 (line in Coconut source)
-            try:  #665 (line in Coconut source)
-                ver = ver_split(raw_ver)  #666 (line in Coconut source)
-            except ValueError:  #667 (line in Coconut source)
-                pass  #668 (line in Coconut source)
-            else:  #669 (line in Coconut source)
-                if MC_VERSION[:2] <= ver <= MC_VERSION:  #670 (line in Coconut source)
-                    compatibly_versioned_files.append(file_data)  #671 (line in Coconut source)
-    if compatibly_versioned_files:  #672 (line in Coconut source)
-        return _coconut_tail_call(best_release, compatibly_versioned_files, mod_name)  #673 (line in Coconut source)
-
-    maybe_compatible_files = []  #675 (line in Coconut source)
-    for file_data, versions in curseforge_files_and_versions:  #676 (line in Coconut source)
-        for ver in versions:  #677 (line in Coconut source)
-            if ver.startswith(ver_join(MC_VERSION[:2])):  #678 (line in Coconut source)
-                maybe_compatible_files.append(file_data)  #679 (line in Coconut source)
-                break  #680 (line in Coconut source)
-    if maybe_compatible_files:  #681 (line in Coconut source)
-        return _coconut_tail_call(best_release, maybe_compatible_files, mod_name)  #682 (line in Coconut source)
-    print("No compatibly versioned files found for mod {_coconut_format_0!r} in:".format(_coconut_format_0=(mod_name)))  #683 (line in Coconut source)
-    pprint(list(timestamp_sort(curseforge_files))[:MAX_DEBUG_RESULTS])  #684 (line in Coconut source)
-
-
-
-def are_same_jar(jar_name_1, jar_name_2):  #687 (line in Coconut source)
-    return jar_name_1.replace(" ", "+") == jar_name_2.replace(" ", "+")  #688 (line in Coconut source)
-
-
-
-def get_mod_names_to_latest_versions(mod_names_to_curseforge_ids, mod_names_to_jar_names, config=None):  #691 (line in Coconut source)
-    mod_names_to_latest_versions = _coconut.dict()  #692 (line in Coconut source)
-    missing_mods = []  #693 (line in Coconut source)
-    for mod_name, curseforge_id in mod_names_to_curseforge_ids.items():  #694 (line in Coconut source)
-        jar_name = mod_names_to_jar_names[mod_name]  #695 (line in Coconut source)
-        latest_version = get_latest_version(mod_name, curseforge_id, jar_name, config=config)  #696 (line in Coconut source)
-        if latest_version is None:  #697 (line in Coconut source)
-            missing_mods.append(mod_name)  #698 (line in Coconut source)
-        else:  #699 (line in Coconut source)
-            mod_names_to_latest_versions[mod_name] = latest_version  #700 (line in Coconut source)
-    return mod_names_to_latest_versions, missing_mods  #701 (line in Coconut source)
-
-
-
-def get_updated_mod_names_to_files(mod_names_to_jar_names, mod_names_to_latest_versions):  #704 (line in Coconut source)
-    updated_mod_names_to_files = _coconut.dict()  #705 (line in Coconut source)
-    for mod_name, latest_file in mod_names_to_latest_versions.items():  #706 (line in Coconut source)
-        old_jar = mod_names_to_jar_names[mod_name]  #707 (line in Coconut source)
-        new_jar = get_jar_name_for_curseforge_file(latest_file)  #708 (line in Coconut source)
-        if new_jar is not None and not are_same_jar(new_jar, old_jar):  #709 (line in Coconut source)
-            updated_mod_names_to_files[mod_name] = latest_file  #710 (line in Coconut source)
-    return updated_mod_names_to_files  #711 (line in Coconut source)
-
-
-
-def download_file(curseforge_file, updated_mods_dir, mod_name):  #714 (line in Coconut source)
-    jar_name = get_jar_name_for_curseforge_file(curseforge_file)  #715 (line in Coconut source)
-    assert jar_name is not None, "cannot download from curseforge file: {_coconut_format_0!r}".format(_coconut_format_0=(curseforge_file))  #716 (line in Coconut source)
-    url = get_curseforge_download_url(curseforge_file)  #717 (line in Coconut source)
-    new_jar_path = os.path.join(updated_mods_dir, jar_name)  #718 (line in Coconut source)
-    if os.path.exists(new_jar_path):  #719 (line in Coconut source)
-        print("WARNING: attempting to redownload existing jar {_coconut_format_0!r}".format(_coconut_format_0=(jar_name)))  #720 (line in Coconut source)
-    else:  #721 (line in Coconut source)
-        print("Downloading {_coconut_format_0}...".format(_coconut_format_0=(jar_name)))  #722 (line in Coconut source)
-        new_mod_name = get_mod_name(jar_name, silent=True)  #723 (line in Coconut source)
-        if new_mod_name != mod_name:  #724 (line in Coconut source)
-            print("\tWARNING: new mod name: {_coconut_format_0!r} -> {_coconut_format_1!r}".format(_coconut_format_0=(mod_name), _coconut_format_1=(new_mod_name)))  #725 (line in Coconut source)
-        result = requests.get(url)  #726 (line in Coconut source)
-        with open(new_jar_path, "wb") as jar_fobj:  #727 (line in Coconut source)
-            jar_fobj.write(result.content)  #728 (line in Coconut source)
-
-
-
-def update_files(updated_mod_names_to_files, updated_mods_dir):  #731 (line in Coconut source)
-    seen_jar_names = _coconut.dict()  #732 (line in Coconut source)
-    for mod_name, curseforge_file in updated_mod_names_to_files.items():  #733 (line in Coconut source)
-        jar_name = get_jar_name_for_curseforge_file(curseforge_file)  #734 (line in Coconut source)
-        assert jar_name is not None, "cannot update using curseforge file: {_coconut_format_0!r}".format(_coconut_format_0=(curseforge_file))  #735 (line in Coconut source)
-        if jar_name in seen_jar_names:  #736 (line in Coconut source)
-            print("\nWARNING: resolved multiple mod names to same jar name {_coconut_format_0!r}: {_coconut_format_1!r} and {_coconut_format_2!r}\n".format(_coconut_format_0=(jar_name), _coconut_format_1=(seen_jar_names[jar_name]), _coconut_format_2=(mod_name)))  #737 (line in Coconut source)
-        else:  #738 (line in Coconut source)
-            seen_jar_names[jar_name] = mod_name  #739 (line in Coconut source)
-        download_file(curseforge_file, updated_mods_dir, mod_name)  #740 (line in Coconut source)
-
-
-
-def move_old_files(updated_mod_names_to_files, mod_names_to_jar_names, mods_dir, old_mods_dir):  #743 (line in Coconut source)
-    for mod_name in updated_mod_names_to_files:  #744 (line in Coconut source)
-        jar_name = mod_names_to_jar_names[mod_name]  #745 (line in Coconut source)
-        current_jar_path = os.path.join(mods_dir, jar_name)  #746 (line in Coconut source)
-        new_jar_path = os.path.join(old_mods_dir, jar_name)  #747 (line in Coconut source)
-        os.rename(current_jar_path, new_jar_path)  #748 (line in Coconut source)
-
-
-
-def make_dirs(*dirs):  #751 (line in Coconut source)
-    for d in dirs:  #752 (line in Coconut source)
-        if not os.path.exists(d):  #753 (line in Coconut source)
-            os.mkdir(d)  #754 (line in Coconut source)
-
-
-
-def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interact=None, google=False, config=None):  #757 (line in Coconut source)
-    if config is None:  #758 (line in Coconut source)
-        config = MOD_CONFIG  #759 (line in Coconut source)
-    if interact is None and not PRINT_DEBUG:  #760 (line in Coconut source)
-        interact = False  #761 (line in Coconut source)
-    try:  #762 (line in Coconut source)
-        mod_names_to_jar_names = get_mod_names_to_jar_names(mods_dir, file_extension=config.file_extension)  #763 (line in Coconut source)
-        mod_names_to_curseforge_names, nulled_mods = get_curseforge_names_for(mod_names_to_jar_names, google=google)  #764 (line in Coconut source)
-        if not dry_run:  #765 (line in Coconut source)
-            mod_names_to_curseforge_ids, missing_ids_mods = get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names, config=config)  #766 (line in Coconut source)
-            mod_names_to_latest_versions, missing_files_mods = get_mod_names_to_latest_versions(mod_names_to_curseforge_ids, mod_names_to_jar_names, config=config)  #767 (line in Coconut source)
-            updated_mod_names_to_files = get_updated_mod_names_to_files(mod_names_to_jar_names, mod_names_to_latest_versions)  #768 (line in Coconut source)
-            if updated_mod_names_to_files:  #769 (line in Coconut source)
-                make_dirs(updated_mods_dir, old_mods_dir)  #770 (line in Coconut source)
-                update_files(updated_mod_names_to_files, updated_mods_dir)  #771 (line in Coconut source)
-                move_old_files(updated_mod_names_to_files, mod_names_to_jar_names, mods_dir, old_mods_dir)  #772 (line in Coconut source)
-        else:  #773 (line in Coconut source)
-            missing_ids_mods = []  #774 (line in Coconut source)
-            missing_files_mods = []  #775 (line in Coconut source)
-        return nulled_mods + missing_ids_mods + missing_files_mods  #776 (line in Coconut source)
-    except Exception:  #777 (line in Coconut source)
-        if interact is not False:  #778 (line in Coconut source)
-            traceback.print_exc()  #779 (line in Coconut source)
-
-            from coconut import embed  #781 (line in Coconut source)
-            embed()  #782 (line in Coconut source)
-        raise  #783 (line in Coconut source)
-    if interact:  #784 (line in Coconut source)
-        from coconut import embed  #785 (line in Coconut source)
-        embed()  #786 (line in Coconut source)
-
-
-
-def update_all(mods_dirs, dry_run=False, interact=None, google=False, config=None):  #789 (line in Coconut source)
-    couldnt_update = []  #790 (line in Coconut source)
-    for mods_dir in mods_dirs:  #791 (line in Coconut source)
-        if not os.path.exists(mods_dir):  #792 (line in Coconut source)
-            print("Skipping non-existent directory: {_coconut_format_0}".format(_coconut_format_0=(mods_dir)))  #793 (line in Coconut source)
-            continue  #794 (line in Coconut source)
-        updated_mods_dir = mods_dir + UPDATED_MODS_DIR_SUFFIX  #795 (line in Coconut source)
-        old_mods_dir = mods_dir + OLD_MODS_DIR_SUFFIX  #796 (line in Coconut source)
-        couldnt_update += update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=dry_run, interact=interact, google=google, config=config)  #797 (line in Coconut source)
-    config_name = config.name if config is not None else "mod"  #798 (line in Coconut source)
-    for mod_name in couldnt_update:  #799 (line in Coconut source)
-        print("Unable to automatically update {_coconut_format_0}: {_coconut_format_1}".format(_coconut_format_0=(config_name), _coconut_format_1=(mod_name)))  #800 (line in Coconut source)
-
-
-
-@_coconut_tco  #803 (line in Coconut source)
-def parse_args():  #803 (line in Coconut source)
-    parser = argparse.ArgumentParser(description="Update mods and datapacks from CurseForge to their latest versions.")  #804 (line in Coconut source)
-    parser.add_argument("--dry-run", action="store_true", help="Only check for missing CurseForge name mappings without downloading updates")  #807 (line in Coconut source)
-    parser.add_argument("--google", action="store_true", help="Use Google search to find CurseForge names for unknown mods")  #812 (line in Coconut source)
-    parser.add_argument("--mods-only", action="store_true", help="Only update mods, skip datapacks")  #817 (line in Coconut source)
-    parser.add_argument("--datapacks-only", action="store_true", help="Only update datapacks, skip mods")  #822 (line in Coconut source)
-    parser.add_argument("--update-only-deduplicate", action="store_true", help="Update deduplicate directories instead of normal mod directories")  #827 (line in Coconut source)
-    return _coconut_tail_call(parser.parse_args)  #832 (line in Coconut source)
-
-
-
-def main():  #835 (line in Coconut source)
-    args = parse_args()  #836 (line in Coconut source)
-
-    sync_mods.main()  #838 (line in Coconut source)
+    if jar_name is not None:  #613 (line in Coconut source)
+        jar_name = jar_name.lower()  #614 (line in Coconut source)
+        if has_bad_modloader(jar_name):  #615 (line in Coconut source)
+            return False  #616 (line in Coconut source)
+
+    return None  #618 (line in Coconut source)
+
+
+
+def find_curseforge_file_for_jar(curseforge_files, find_jar_name):  #621 (line in Coconut source)
+    for file_data in curseforge_files:  #622 (line in Coconut source)
+        jar_name = get_jar_name_for_curseforge_file(file_data)  #623 (line in Coconut source)
+        if jar_name is not None and are_same_jar(jar_name, find_jar_name):  #624 (line in Coconut source)
+            return file_data  #625 (line in Coconut source)
+    return None  #626 (line in Coconut source)
+
+
+
+@_coconut_tco  #629 (line in Coconut source)
+def get_latest_version(mod_name, curseforge_id, old_jar_name, config=MOD_CONFIG):  #629 (line in Coconut source)
+    curseforge_files = get_curseforge_files(curseforge_id)  #630 (line in Coconut source)
+
+    old_curseforge_file = find_curseforge_file_for_jar(curseforge_files, old_jar_name)  #632 (line in Coconut source)
+    if old_curseforge_file is None:  #633 (line in Coconut source)
+        print("WARNING: Could not find curseforge file for existing jar: {_coconut_format_0}".format(_coconut_format_0=(old_jar_name)))  #634 (line in Coconut source)
+    old_file_time = get_curseforge_file_time(old_curseforge_file, mod_name) if old_curseforge_file is not None else BEGINNING_OF_TIME  #635 (line in Coconut source)
+
+    curseforge_files_and_versions = []  #637 (line in Coconut source)
+    for file_data in curseforge_files:  #638 (line in Coconut source)
+        versions = file_data["gameVersions"]  #639 (line in Coconut source)
+        jar_name = get_jar_name_for_curseforge_file(file_data)  #640 (line in Coconut source)
+        modloader_ok = not config.use_modloader or correct_modloader(versions, jar_name) is not False  #641 (line in Coconut source)
+        if (jar_name is not None and jar_name.endswith(config.file_extension) and modloader_ok and get_curseforge_file_time(file_data, mod_name) >= old_file_time):  #642 (line in Coconut source)
+            curseforge_files_and_versions.append((file_data, versions))  #648 (line in Coconut source)
+
+    if config.use_modloader:  #650 (line in Coconut source)
+        correct_modloader_and_version_files = []  #651 (line in Coconut source)
+        for file_data, versions in curseforge_files_and_versions:  #652 (line in Coconut source)
+            if correct_modloader(versions) and ver_join(MC_VERSION) in versions:  #653 (line in Coconut source)
+                correct_modloader_and_version_files.append(file_data)  #654 (line in Coconut source)
+        if correct_modloader_and_version_files:  #655 (line in Coconut source)
+            return _coconut_tail_call(best_release, correct_modloader_and_version_files, mod_name)  #656 (line in Coconut source)
+
+    correctly_versioned_files = []  #658 (line in Coconut source)
+    for file_data, versions in curseforge_files_and_versions:  #659 (line in Coconut source)
+        if ver_join(MC_VERSION) in versions:  #660 (line in Coconut source)
+            correctly_versioned_files.append(file_data)  #661 (line in Coconut source)
+    if correctly_versioned_files:  #662 (line in Coconut source)
+        return _coconut_tail_call(best_release, correctly_versioned_files, mod_name)  #663 (line in Coconut source)
+    print("No correctly versioned files found for mod {_coconut_format_0!r}.".format(_coconut_format_0=(mod_name)))  #664 (line in Coconut source)
+
+    correct_modloader_compatibly_versioned_files = []  #666 (line in Coconut source)
+    compatibly_versioned_files = []  #667 (line in Coconut source)
+    for file_data, versions in curseforge_files_and_versions:  #668 (line in Coconut source)
+        for raw_ver in versions:  #669 (line in Coconut source)
+            try:  #670 (line in Coconut source)
+                ver = ver_split(raw_ver)  #671 (line in Coconut source)
+            except ValueError:  #672 (line in Coconut source)
+                pass  #673 (line in Coconut source)
+            else:  #674 (line in Coconut source)
+                if MC_VERSION[:2] <= ver <= MC_VERSION:  #675 (line in Coconut source)
+                    if config.use_modloader and correct_modloader(versions):  #676 (line in Coconut source)
+                        correct_modloader_compatibly_versioned_files.append(file_data)  #677 (line in Coconut source)
+                    compatibly_versioned_files.append(file_data)  #678 (line in Coconut source)
+                    break  #679 (line in Coconut source)
+    if correct_modloader_compatibly_versioned_files:  #680 (line in Coconut source)
+        return _coconut_tail_call(best_release, correct_modloader_compatibly_versioned_files, mod_name)  #681 (line in Coconut source)
+    if compatibly_versioned_files:  #682 (line in Coconut source)
+        return _coconut_tail_call(best_release, compatibly_versioned_files, mod_name)  #683 (line in Coconut source)
+
+    correct_modloader_maybe_compatible_files = []  #685 (line in Coconut source)
+    maybe_compatible_files = []  #686 (line in Coconut source)
+    for file_data, versions in curseforge_files_and_versions:  #687 (line in Coconut source)
+        for ver in versions:  #688 (line in Coconut source)
+            if ver.startswith(ver_join(MC_VERSION[:2])):  #689 (line in Coconut source)
+                if config.use_modloader and correct_modloader(versions):  #690 (line in Coconut source)
+                    correct_modloader_maybe_compatible_files.append(file_data)  #691 (line in Coconut source)
+                maybe_compatible_files.append(file_data)  #692 (line in Coconut source)
+                break  #693 (line in Coconut source)
+    if correct_modloader_maybe_compatible_files:  #694 (line in Coconut source)
+        return _coconut_tail_call(best_release, correct_modloader_maybe_compatible_files, mod_name)  #695 (line in Coconut source)
+    if maybe_compatible_files:  #696 (line in Coconut source)
+        return _coconut_tail_call(best_release, maybe_compatible_files, mod_name)  #697 (line in Coconut source)
+    print("No compatibly versioned files found for mod {_coconut_format_0!r} in:".format(_coconut_format_0=(mod_name)))  #698 (line in Coconut source)
+    pprint(list(timestamp_sort(curseforge_files))[:MAX_DEBUG_RESULTS])  #699 (line in Coconut source)
+
+
+
+def are_same_jar(jar_name_1, jar_name_2):  #702 (line in Coconut source)
+    return jar_name_1.replace(" ", "+") == jar_name_2.replace(" ", "+")  #703 (line in Coconut source)
+
+
+
+def get_mod_names_to_latest_versions(mod_names_to_curseforge_ids, mod_names_to_jar_names, **kwargs):  #706 (line in Coconut source)
+    mod_names_to_latest_versions = _coconut.dict()  #707 (line in Coconut source)
+    missing_mods = []  #708 (line in Coconut source)
+    for mod_name, curseforge_id in mod_names_to_curseforge_ids.items():  #709 (line in Coconut source)
+        jar_name = mod_names_to_jar_names[mod_name]  #710 (line in Coconut source)
+        latest_version = get_latest_version(mod_name, curseforge_id, jar_name, **kwargs)  #711 (line in Coconut source)
+        if latest_version is None:  #712 (line in Coconut source)
+            missing_mods.append(mod_name)  #713 (line in Coconut source)
+        else:  #714 (line in Coconut source)
+            mod_names_to_latest_versions[mod_name] = latest_version  #715 (line in Coconut source)
+    return mod_names_to_latest_versions, missing_mods  #716 (line in Coconut source)
+
+
+
+def get_updated_mod_names_to_files(mod_names_to_jar_names, mod_names_to_latest_versions):  #719 (line in Coconut source)
+    updated_mod_names_to_files = _coconut.dict()  #720 (line in Coconut source)
+    for mod_name, latest_file in mod_names_to_latest_versions.items():  #721 (line in Coconut source)
+        old_jar = mod_names_to_jar_names[mod_name]  #722 (line in Coconut source)
+        new_jar = get_jar_name_for_curseforge_file(latest_file)  #723 (line in Coconut source)
+        if new_jar is not None and not are_same_jar(new_jar, old_jar):  #724 (line in Coconut source)
+            updated_mod_names_to_files[mod_name] = latest_file  #725 (line in Coconut source)
+    return updated_mod_names_to_files  #726 (line in Coconut source)
+
+
+
+def download_file(curseforge_file, updated_mods_dir, mod_name):  #729 (line in Coconut source)
+    jar_name = get_jar_name_for_curseforge_file(curseforge_file)  #730 (line in Coconut source)
+    assert jar_name is not None, "cannot download from curseforge file: {_coconut_format_0!r}".format(_coconut_format_0=(curseforge_file))  #731 (line in Coconut source)
+    url = get_curseforge_download_url(curseforge_file)  #732 (line in Coconut source)
+    new_jar_path = os.path.join(updated_mods_dir, jar_name)  #733 (line in Coconut source)
+    if os.path.exists(new_jar_path):  #734 (line in Coconut source)
+        print("WARNING: attempting to redownload existing jar {_coconut_format_0!r}".format(_coconut_format_0=(jar_name)))  #735 (line in Coconut source)
+    else:  #736 (line in Coconut source)
+        print("Downloading {_coconut_format_0}...".format(_coconut_format_0=(jar_name)))  #737 (line in Coconut source)
+        new_mod_name = get_mod_name(jar_name, silent=True)  #738 (line in Coconut source)
+        if new_mod_name != mod_name:  #739 (line in Coconut source)
+            print("\tWARNING: new mod name: {_coconut_format_0!r} -> {_coconut_format_1!r}".format(_coconut_format_0=(mod_name), _coconut_format_1=(new_mod_name)))  #740 (line in Coconut source)
+        result = requests.get(url)  #741 (line in Coconut source)
+        with open(new_jar_path, "wb") as jar_fobj:  #742 (line in Coconut source)
+            jar_fobj.write(result.content)  #743 (line in Coconut source)
+
+
+
+def update_files(updated_mod_names_to_files, updated_mods_dir):  #746 (line in Coconut source)
+    seen_jar_names = _coconut.dict()  #747 (line in Coconut source)
+    for mod_name, curseforge_file in updated_mod_names_to_files.items():  #748 (line in Coconut source)
+        jar_name = get_jar_name_for_curseforge_file(curseforge_file)  #749 (line in Coconut source)
+        assert jar_name is not None, "cannot update using curseforge file: {_coconut_format_0!r}".format(_coconut_format_0=(curseforge_file))  #750 (line in Coconut source)
+        if jar_name in seen_jar_names:  #751 (line in Coconut source)
+            print("\nWARNING: resolved multiple mod names to same jar name {_coconut_format_0!r}: {_coconut_format_1!r} and {_coconut_format_2!r}\n".format(_coconut_format_0=(jar_name), _coconut_format_1=(seen_jar_names[jar_name]), _coconut_format_2=(mod_name)))  #752 (line in Coconut source)
+        else:  #753 (line in Coconut source)
+            seen_jar_names[jar_name] = mod_name  #754 (line in Coconut source)
+        download_file(curseforge_file, updated_mods_dir, mod_name)  #755 (line in Coconut source)
+
+
+
+def move_old_files(updated_mod_names_to_files, mod_names_to_jar_names, mods_dir, old_mods_dir):  #758 (line in Coconut source)
+    for mod_name in updated_mod_names_to_files:  #759 (line in Coconut source)
+        jar_name = mod_names_to_jar_names[mod_name]  #760 (line in Coconut source)
+        current_jar_path = os.path.join(mods_dir, jar_name)  #761 (line in Coconut source)
+        new_jar_path = os.path.join(old_mods_dir, jar_name)  #762 (line in Coconut source)
+        os.rename(current_jar_path, new_jar_path)  #763 (line in Coconut source)
+
+
+
+def make_dirs(*dirs):  #766 (line in Coconut source)
+    for d in dirs:  #767 (line in Coconut source)
+        if not os.path.exists(d):  #768 (line in Coconut source)
+            os.mkdir(d)  #769 (line in Coconut source)
+
+
+
+def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interact=None, google=False, config=MOD_CONFIG):  #772 (line in Coconut source)
+    if interact is None and not PRINT_DEBUG:  #773 (line in Coconut source)
+        interact = False  #774 (line in Coconut source)
+    try:  #775 (line in Coconut source)
+        mod_names_to_jar_names = get_mod_names_to_jar_names(mods_dir, file_extension=config.file_extension)  #776 (line in Coconut source)
+        mod_names_to_curseforge_names, nulled_mods = get_curseforge_names_for(mod_names_to_jar_names, google=google)  #777 (line in Coconut source)
+        if not dry_run:  #778 (line in Coconut source)
+            mod_names_to_curseforge_ids, missing_ids_mods = get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names, config=config)  #779 (line in Coconut source)
+            mod_names_to_latest_versions, missing_files_mods = get_mod_names_to_latest_versions(mod_names_to_curseforge_ids, mod_names_to_jar_names, config=config)  #780 (line in Coconut source)
+            updated_mod_names_to_files = get_updated_mod_names_to_files(mod_names_to_jar_names, mod_names_to_latest_versions)  #781 (line in Coconut source)
+            if updated_mod_names_to_files:  #782 (line in Coconut source)
+                make_dirs(updated_mods_dir, old_mods_dir)  #783 (line in Coconut source)
+                update_files(updated_mod_names_to_files, updated_mods_dir)  #784 (line in Coconut source)
+                move_old_files(updated_mod_names_to_files, mod_names_to_jar_names, mods_dir, old_mods_dir)  #785 (line in Coconut source)
+        else:  #786 (line in Coconut source)
+            missing_ids_mods = []  #787 (line in Coconut source)
+            missing_files_mods = []  #788 (line in Coconut source)
+        return nulled_mods + missing_ids_mods + missing_files_mods  #789 (line in Coconut source)
+    except Exception:  #790 (line in Coconut source)
+        if interact is not False:  #791 (line in Coconut source)
+            traceback.print_exc()  #792 (line in Coconut source)
+
+            from coconut import embed  #794 (line in Coconut source)
+            embed()  #795 (line in Coconut source)
+        raise  #796 (line in Coconut source)
+    if interact:  #797 (line in Coconut source)
+        from coconut import embed  #798 (line in Coconut source)
+        embed()  #799 (line in Coconut source)
+
+
+
+def update_all(mods_dirs, **kwargs):  #802 (line in Coconut source)
+    couldnt_update = []  #803 (line in Coconut source)
+    for mods_dir in mods_dirs:  #804 (line in Coconut source)
+        if not os.path.exists(mods_dir):  #805 (line in Coconut source)
+            print("Skipping non-existent directory: {_coconut_format_0}".format(_coconut_format_0=(mods_dir)))  #806 (line in Coconut source)
+            continue  #807 (line in Coconut source)
+        updated_mods_dir = mods_dir + UPDATED_MODS_DIR_SUFFIX  #808 (line in Coconut source)
+        old_mods_dir = mods_dir + OLD_MODS_DIR_SUFFIX  #809 (line in Coconut source)
+        couldnt_update += update_mods(mods_dir, updated_mods_dir, old_mods_dir, **kwargs)  #810 (line in Coconut source)
+    config_name = config.name if kwargs.get("config") is not None else "mod"  #811 (line in Coconut source)
+    for mod_name in couldnt_update:  #812 (line in Coconut source)
+        print("Unable to automatically update {_coconut_format_0}: {_coconut_format_1}".format(_coconut_format_0=(config_name), _coconut_format_1=(mod_name)))  #813 (line in Coconut source)
+
+
+
+@_coconut_tco  #816 (line in Coconut source)
+def parse_args():  #816 (line in Coconut source)
+    parser = argparse.ArgumentParser(description="Update mods and datapacks from CurseForge to their latest versions.")  #817 (line in Coconut source)
+    parser.add_argument("--dry-run", action="store_true", help="Only check for missing CurseForge name mappings without downloading updates")  #820 (line in Coconut source)
+    parser.add_argument("--google", action="store_true", help="Use Google search to find CurseForge names for unknown mods")  #825 (line in Coconut source)
+    parser.add_argument("--mods-only", action="store_true", help="Only update mods, skip datapacks")  #830 (line in Coconut source)
+    parser.add_argument("--datapacks-only", action="store_true", help="Only update datapacks, skip mods")  #835 (line in Coconut source)
+    parser.add_argument("--update-only-deduplicate", action="store_true", help="Update deduplicate directories instead of normal mod directories")  #840 (line in Coconut source)
+    return _coconut_tail_call(parser.parse_args)  #845 (line in Coconut source)
+
+
+
+def main():  #848 (line in Coconut source)
+    args = parse_args()  #849 (line in Coconut source)
+
+    sync_mods.main()  #851 (line in Coconut source)
 
 # Just update deduplicate dirs if --update-only-deduplicate
-    if args.update_only_deduplicate:  #841 (line in Coconut source)
-        print("\n" + "=" * 60)  #842 (line in Coconut source)
-        print("UPDATING DEDUPLICATE DIRECTORIES")  #843 (line in Coconut source)
-        print("=" * 60 + "\n")  #844 (line in Coconut source)
-        update_all(UPDATE_DEDUPLICATE_DIRS, dry_run=args.dry_run, google=args.google, config=MOD_CONFIG)  #845 (line in Coconut source)
-        return  #851 (line in Coconut source)
+    if args.update_only_deduplicate:  #854 (line in Coconut source)
+        print("\n" + "=" * 60)  #855 (line in Coconut source)
+        print("UPDATING DEDUPLICATE DIRECTORIES")  #856 (line in Coconut source)
+        print("=" * 60 + "\n")  #857 (line in Coconut source)
+        update_all(UPDATE_DEDUPLICATE_DIRS, dry_run=args.dry_run, google=args.google, config=MOD_CONFIG)  #858 (line in Coconut source)
+        return  #864 (line in Coconut source)
 
 # Update mods (unless --datapacks-only)
-    if not args.datapacks_only:  #854 (line in Coconut source)
-        print("\n" + "=" * 60)  #855 (line in Coconut source)
-        print("UPDATING MODS")  #856 (line in Coconut source)
-        print("=" * 60 + "\n")  #857 (line in Coconut source)
-        update_all(UPDATE_MODS_DIRS, dry_run=args.dry_run, google=args.google, config=MOD_CONFIG)  #858 (line in Coconut source)
+    if not args.datapacks_only:  #867 (line in Coconut source)
+        print("\n" + "=" * 60)  #868 (line in Coconut source)
+        print("UPDATING MODS")  #869 (line in Coconut source)
+        print("=" * 60 + "\n")  #870 (line in Coconut source)
+        update_all(UPDATE_MODS_DIRS, dry_run=args.dry_run, google=args.google, config=MOD_CONFIG)  #871 (line in Coconut source)
 
 # Update datapacks (unless --mods-only or --update-only-deduplicate)
-    if not args.mods_only and not args.only_update_deduplicate:  #866 (line in Coconut source)
-        print("\n" + "=" * 60)  #867 (line in Coconut source)
-        print("UPDATING DATAPACKS")  #868 (line in Coconut source)
-        print("=" * 60 + "\n")  #869 (line in Coconut source)
-        update_all(UPDATE_DATAPACK_DIRS, dry_run=args.dry_run, google=args.google, config=DATAPACK_CONFIG)  #870 (line in Coconut source)
+    if not args.mods_only and not args.only_update_deduplicate:  #879 (line in Coconut source)
+        print("\n" + "=" * 60)  #880 (line in Coconut source)
+        print("UPDATING DATAPACKS")  #881 (line in Coconut source)
+        print("=" * 60 + "\n")  #882 (line in Coconut source)
+        update_all(UPDATE_DATAPACK_DIRS, dry_run=args.dry_run, google=args.google, config=DATAPACK_CONFIG)  #883 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #878 (line in Coconut source)
-    main()  #879 (line in Coconut source)
+if __name__ == "__main__":  #891 (line in Coconut source)
+    main()  #892 (line in Coconut source)

@@ -431,9 +431,7 @@ def log_curseforge_results(results, verbose=False):
 get_core_name = get_mod_name$(silent=True)
 
 
-def get_curseforge_mod(curseforge_name, mod_name, config=None):
-    if config is None:
-        config = MOD_CONFIG
+def get_curseforge_mod(curseforge_name, mod_name, config=MOD_CONFIG):
     core_curseforge_name = get_core_name(curseforge_name)
 
     # Try each classId in the config
@@ -496,13 +494,13 @@ def get_curseforge_mod(curseforge_name, mod_name, config=None):
     print(f"\nERROR: Failed to find mod {curseforge_name!r} in any results.\n")
 
 
-def get_curseforge_id(curseforge_name, mod_name, config=None):
-    mod = get_curseforge_mod(curseforge_name, mod_name, config=config)
+def get_curseforge_id(curseforge_name, mod_name, **kwargs):
+    mod = get_curseforge_mod(curseforge_name, mod_name, **kwargs)
     if mod is not None:
         return mod["id"]
 
 
-def get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names, config=None):
+def get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names, **kwargs):
     curseforge_ids_cache = load_curseforge_ids_cache()
     mod_names_to_curseforge_ids = {}
     missing_mods = []
@@ -513,7 +511,7 @@ def get_mod_names_to_curseforge_ids(mod_names_to_curseforge_names, config=None):
                 curseforge_id = curseforge_ids_cache[curseforge_name]
                 print(f"Using cached CurseForge ID for {curseforge_name!r}.")
             else:
-                curseforge_id = get_curseforge_id(curseforge_name, mod_name, config=config)
+                curseforge_id = get_curseforge_id(curseforge_name, mod_name, **kwargs)
                 if curseforge_id is not None:
                     curseforge_ids_cache[curseforge_name] = curseforge_id
 
@@ -604,7 +602,7 @@ def get_jar_name_for_curseforge_file(curseforge_file) = (
 )
 
 
-def correct_modloader(versions, jar_name):
+def correct_modloader(versions, jar_name=None):
     versions = [v.lower() for v in versions]
 
     if MODLOADER.lower() in versions:
@@ -612,11 +610,12 @@ def correct_modloader(versions, jar_name):
     if any(wrong_modloader.lower() in versions for wrong_modloader in WRONG_MODLOADERS):
         return False
 
-    jar_name = jar_name.lower()
-    if has_bad_modloader(jar_name):
-        return False
+    if jar_name is not None:
+        jar_name = jar_name.lower()
+        if has_bad_modloader(jar_name):
+            return False
 
-    return True
+    return None
 
 
 def find_curseforge_file_for_jar(curseforge_files, find_jar_name):
@@ -627,9 +626,7 @@ def find_curseforge_file_for_jar(curseforge_files, find_jar_name):
     return None
 
 
-def get_latest_version(mod_name, curseforge_id, old_jar_name, config=None):
-    if config is None:
-        config = MOD_CONFIG
+def get_latest_version(mod_name, curseforge_id, old_jar_name, config=MOD_CONFIG):
     curseforge_files = get_curseforge_files(curseforge_id)
 
     old_curseforge_file = find_curseforge_file_for_jar(curseforge_files, old_jar_name)
@@ -641,8 +638,7 @@ def get_latest_version(mod_name, curseforge_id, old_jar_name, config=None):
     for file_data in curseforge_files:
         versions = file_data["gameVersions"]
         jar_name = get_jar_name_for_curseforge_file(file_data)
-        # Check modloader only if config requires it
-        modloader_ok = correct_modloader(versions, jar_name) if config.use_modloader else True
+        modloader_ok = not config.use_modloader or correct_modloader(versions, jar_name) is not False
         if (
             jar_name is not None
             and jar_name.endswith(config.file_extension)
@@ -650,6 +646,14 @@ def get_latest_version(mod_name, curseforge_id, old_jar_name, config=None):
             and get_curseforge_file_time(file_data, mod_name) >= old_file_time
         ):
             curseforge_files_and_versions.append((file_data, versions))
+
+    if config.use_modloader:
+        correct_modloader_and_version_files = []
+        for file_data, versions in curseforge_files_and_versions:
+            if correct_modloader(versions) and ver_join(MC_VERSION) in versions:
+                correct_modloader_and_version_files.append(file_data)
+        if correct_modloader_and_version_files:
+            return best_release(correct_modloader_and_version_files, mod_name)
 
     correctly_versioned_files = []
     for file_data, versions in curseforge_files_and_versions:
@@ -659,6 +663,7 @@ def get_latest_version(mod_name, curseforge_id, old_jar_name, config=None):
         return best_release(correctly_versioned_files, mod_name)
     print(f"No correctly versioned files found for mod {mod_name!r}.")
 
+    correct_modloader_compatibly_versioned_files = []
     compatibly_versioned_files = []
     for file_data, versions in curseforge_files_and_versions:
         for raw_ver in versions:
@@ -668,16 +673,26 @@ def get_latest_version(mod_name, curseforge_id, old_jar_name, config=None):
                 pass
             else:
                 if MC_VERSION[:2] <= ver <= MC_VERSION:
+                    if config.use_modloader and correct_modloader(versions):
+                        correct_modloader_compatibly_versioned_files.append(file_data)
                     compatibly_versioned_files.append(file_data)
+                    break
+    if correct_modloader_compatibly_versioned_files:
+        return best_release(correct_modloader_compatibly_versioned_files, mod_name)
     if compatibly_versioned_files:
         return best_release(compatibly_versioned_files, mod_name)
 
+    correct_modloader_maybe_compatible_files = []
     maybe_compatible_files = []
     for file_data, versions in curseforge_files_and_versions:
         for ver in versions:
             if ver.startswith(ver_join(MC_VERSION[:2])):
+                if config.use_modloader and correct_modloader(versions):
+                    correct_modloader_maybe_compatible_files.append(file_data)
                 maybe_compatible_files.append(file_data)
                 break
+    if correct_modloader_maybe_compatible_files:
+        return best_release(correct_modloader_maybe_compatible_files, mod_name)
     if maybe_compatible_files:
         return best_release(maybe_compatible_files, mod_name)
     print(f"No compatibly versioned files found for mod {mod_name!r} in:")
@@ -688,12 +703,12 @@ def are_same_jar(jar_name_1, jar_name_2) =
     jar_name_1.replace(" ", "+") == jar_name_2.replace(" ", "+")
 
 
-def get_mod_names_to_latest_versions(mod_names_to_curseforge_ids, mod_names_to_jar_names, config=None):
+def get_mod_names_to_latest_versions(mod_names_to_curseforge_ids, mod_names_to_jar_names, **kwargs):
     mod_names_to_latest_versions = {}
     missing_mods = []
     for mod_name, curseforge_id in mod_names_to_curseforge_ids.items():
         jar_name = mod_names_to_jar_names[mod_name]
-        latest_version = get_latest_version(mod_name, curseforge_id, jar_name, config=config)
+        latest_version = get_latest_version(mod_name, curseforge_id, jar_name, **kwargs)
         if latest_version is None:
             missing_mods.append(mod_name)
         else:
@@ -754,9 +769,7 @@ def make_dirs(*dirs):
             os.mkdir(d)
 
 
-def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interact=None, google=False, config=None):
-    if config is None:
-        config = MOD_CONFIG
+def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interact=None, google=False, config=MOD_CONFIG):
     if interact is None and not PRINT_DEBUG:
         interact = False
     try:
@@ -786,7 +799,7 @@ def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interac
         embed()
 
 
-def update_all(mods_dirs, dry_run=False, interact=None, google=False, config=None):
+def update_all(mods_dirs, **kwargs):
     couldnt_update = []
     for mods_dir in mods_dirs:
         if not os.path.exists(mods_dir):
@@ -794,8 +807,8 @@ def update_all(mods_dirs, dry_run=False, interact=None, google=False, config=Non
             continue
         updated_mods_dir = mods_dir + UPDATED_MODS_DIR_SUFFIX
         old_mods_dir = mods_dir + OLD_MODS_DIR_SUFFIX
-        couldnt_update += update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=dry_run, interact=interact, google=google, config=config)
-    config_name = config.name if config is not None else "mod"
+        couldnt_update += update_mods(mods_dir, updated_mods_dir, old_mods_dir, **kwargs)
+    config_name = config.name if kwargs.get("config") is not None else "mod"
     for mod_name in couldnt_update:
         print(f"Unable to automatically update {config_name}: {mod_name}")
 
