@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x58de896c
+# __coconut_hash__ = 0xa1aeda00
 
 # Compiled with Coconut version 3.2.0-post_dev7
 
@@ -135,7 +135,7 @@ UPDATE_DEDUPLICATE_DIRS = [os.path.join(SERVER_DIR, DEDUPLICATE_CLIENT_MODS_NAME
 BEGINNING_OF_TIME = datetime.datetime(1, 1, 1)  #76 (line in Coconut source)
 
 # Configuration for different content types (mods vs datapacks)
-ContentTypeConfig = namedtuple('ContentTypeConfig', ['name', 'file_extension', 'curseforge_class_ids', 'use_modloader'])  # list of CurseForge classIds to search  # "mod" or "datapack"  # whether to filter by modloader  # ".jar" or ".zip"  #79 (line in Coconut source)
+ContentTypeConfig = namedtuple('ContentTypeConfig', ['name', 'file_extension', 'curseforge_class_ids', 'use_modloader'])  # ".jar" or ".zip"  # "mod" or "datapack"  # whether to filter by modloader  # list of CurseForge classIds to search  #79 (line in Coconut source)
 
 MOD_CONFIG = ContentTypeConfig(name="mod", file_extension=".jar", curseforge_class_ids=[CURSEFORGE_CLASS_ID_MODS,], use_modloader=True)  #86 (line in Coconut source)
 
@@ -894,7 +894,7 @@ def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interac
 
 
 
-def update_all(mods_dirs, **kwargs):  #802 (line in Coconut source)
+def update_all(mods_dirs, config=MOD_CONFIG, **kwargs):  #802 (line in Coconut source)
     couldnt_update = []  #803 (line in Coconut source)
     for mods_dir in mods_dirs:  #804 (line in Coconut source)
         if not os.path.exists(mods_dir):  #805 (line in Coconut source)
@@ -902,7 +902,7 @@ def update_all(mods_dirs, **kwargs):  #802 (line in Coconut source)
             continue  #807 (line in Coconut source)
         updated_mods_dir = mods_dir + UPDATED_MODS_DIR_SUFFIX  #808 (line in Coconut source)
         old_mods_dir = mods_dir + OLD_MODS_DIR_SUFFIX  #809 (line in Coconut source)
-        couldnt_update += update_mods(mods_dir, updated_mods_dir, old_mods_dir, **kwargs)  #810 (line in Coconut source)
+        couldnt_update += update_mods(mods_dir, updated_mods_dir, old_mods_dir, config=config, **kwargs)  #810 (line in Coconut source)
     config_name = config.name if kwargs.get("config") is not None else "mod"  #811 (line in Coconut source)
     for mod_name in couldnt_update:  #812 (line in Coconut source)
         print("Unable to automatically update {_coconut_format_0}: {_coconut_format_1}".format(_coconut_format_0=(config_name), _coconut_format_1=(mod_name)))  #813 (line in Coconut source)

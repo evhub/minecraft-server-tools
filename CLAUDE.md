@@ -137,6 +137,8 @@ Don't get tunnel-visioned on one error - a mod initialization failure earlier in
 
 **All memory profiling and analysis files should go in `./heap_analysis/`.**
 
+The goal of memory profiling is to identify which *mods* are consuming the most memory, which means you need to try to attribute all memory usage back to the mod that's causing it, even when the memory is held in shared Minecraft classes. When possible, try to look at the actual content of objects on the heap for clues as to what mod might have created them.
+
 ### Taking Heap Dumps
 
 Use JDK tools to capture memory state from a running Minecraft instance:
@@ -157,13 +159,14 @@ jmap -histo <PID> > heap_histo.log
 
 Eclipse Memory Analyzer (MAT) is essential for deep analysis:
 
-1. **Download MAT** from https://eclipse.dev/mat/downloads.php
-2. **Increase MAT memory** in `MemoryAnalyzer.ini` - set `-Xmx32g` for large dumps
-3. **Run from command line**:
+1. **Wait for the user to close Minecraft** to free up sufficient ram
+2. **Download MAT** from https://eclipse.dev/mat/downloads.php and put it in the `heap_analysis` folder if it's not already there
+3. **Increase MAT memory** in `MemoryAnalyzer.ini` - set `-Xmx32g` for large dumps
+4. **Run from command line**:
    ```bash
    ./ParseHeapDump.bat "path/to/heap.hprof" org.eclipse.mat.api:suspects
    ```
-4. **Review the Leak Suspects report** - generates HTML in a zip file
+5. **Review the Leak Suspects report** - generates HTML in a zip file
 
 ### Attributing Memory to Mods
 

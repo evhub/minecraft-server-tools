@@ -799,7 +799,7 @@ def update_mods(mods_dir, updated_mods_dir, old_mods_dir, dry_run=False, interac
         embed()
 
 
-def update_all(mods_dirs, **kwargs):
+def update_all(mods_dirs, config=MOD_CONFIG, **kwargs):
     couldnt_update = []
     for mods_dir in mods_dirs:
         if not os.path.exists(mods_dir):
@@ -807,7 +807,7 @@ def update_all(mods_dirs, **kwargs):
             continue
         updated_mods_dir = mods_dir + UPDATED_MODS_DIR_SUFFIX
         old_mods_dir = mods_dir + OLD_MODS_DIR_SUFFIX
-        couldnt_update += update_mods(mods_dir, updated_mods_dir, old_mods_dir, **kwargs)
+        couldnt_update += update_mods(mods_dir, updated_mods_dir, old_mods_dir, config=config, **kwargs)
     config_name = config.name if kwargs.get("config") is not None else "mod"
     for mod_name in couldnt_update:
         print(f"Unable to automatically update {config_name}: {mod_name}")
