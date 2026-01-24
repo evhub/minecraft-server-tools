@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa1aeda00
+# __coconut_hash__ = 0xc8c52e0f
 
 # Compiled with Coconut version 3.2.0-post_dev7
 
@@ -93,7 +93,7 @@ from minecraft_server_tools.constants import MC_VERSION  #22 (line in Coconut so
 from minecraft_server_tools.constants import COMPONENT_SEPS  #22 (line in Coconut source)
 from minecraft_server_tools.constants import NON_NAME_COMPONENT_REGEX  #22 (line in Coconut source)
 from minecraft_server_tools.constants import NAME_REGEXES_TO_SPACE  #22 (line in Coconut source)
-from minecraft_server_tools.constants import GOOGLE_QUERY_TEMPLATE  #22 (line in Coconut source)
+from minecraft_server_tools.constants import UPDATE_MODS_GOOGLE_TEMPLATE  #22 (line in Coconut source)
 from minecraft_server_tools.constants import NON_CURSEFORGE_MODS  #22 (line in Coconut source)
 from minecraft_server_tools.constants import MODLOADER  #22 (line in Coconut source)
 from minecraft_server_tools.constants import WRONG_MODLOADERS  #22 (line in Coconut source)
@@ -135,7 +135,7 @@ UPDATE_DEDUPLICATE_DIRS = [os.path.join(SERVER_DIR, DEDUPLICATE_CLIENT_MODS_NAME
 BEGINNING_OF_TIME = datetime.datetime(1, 1, 1)  #76 (line in Coconut source)
 
 # Configuration for different content types (mods vs datapacks)
-ContentTypeConfig = namedtuple('ContentTypeConfig', ['name', 'file_extension', 'curseforge_class_ids', 'use_modloader'])  # ".jar" or ".zip"  # "mod" or "datapack"  # whether to filter by modloader  # list of CurseForge classIds to search  #79 (line in Coconut source)
+ContentTypeConfig = namedtuple('ContentTypeConfig', ['name', 'file_extension', 'curseforge_class_ids', 'use_modloader'])  # list of CurseForge classIds to search  # "mod" or "datapack"  # ".jar" or ".zip"  # whether to filter by modloader  #79 (line in Coconut source)
 
 MOD_CONFIG = ContentTypeConfig(name="mod", file_extension=".jar", curseforge_class_ids=[CURSEFORGE_CLASS_ID_MODS,], use_modloader=True)  #86 (line in Coconut source)
 
@@ -262,7 +262,7 @@ _coconut_recursive_func_0 = get_mod_name  #177 (line in Coconut source)
 def get_curseforge_name(mod_name, jar_name, google=False):  #177 (line in Coconut source)
     if mod_name in NON_CURSEFORGE_MODS:  #178 (line in Coconut source)
         return None  #179 (line in Coconut source)
-    query = GOOGLE_QUERY_TEMPLATE.format(mod_name=mod_name, jar_name=jar_name, modloader=MODLOADER, mc_version=ver_join(MC_VERSION), mc_version_2=ver_join(MC_VERSION[:2]), mod_page_name_suffix=MOD_PAGE_NAME_SUFFICES[0])  #180 (line in Coconut source)
+    query = UPDATE_MODS_GOOGLE_TEMPLATE.format(mod_name=mod_name, jar_name=jar_name, modloader=MODLOADER, mc_version=ver_join(MC_VERSION), mc_version_2=ver_join(MC_VERSION[:2]), mod_page_name_suffix=MOD_PAGE_NAME_SUFFICES[0])  #180 (line in Coconut source)
     if not google:  #188 (line in Coconut source)
         raise MissingCurseforgeNameError(mod_name, query)  #189 (line in Coconut source)
     try:  #190 (line in Coconut source)

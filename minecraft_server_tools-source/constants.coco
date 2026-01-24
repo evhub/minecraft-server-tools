@@ -350,7 +350,8 @@ MOD_PAGE_NAME_SUFFICES = (
 )
 
 # must start with {mod_name} {modloader}
-GOOGLE_QUERY_TEMPLATE = 'site:curseforge.com {mod_name} {jar_name} {mc_version_2}'
+UPDATE_MODS_GOOGLE_TEMPLATE = 'site:curseforge.com {mod_name} {jar_name} {mc_version_2}'
+SEARCH_MODS_GOOGLE_TEMPLATE = 'site:curseforge.com {mod_name} {modloader} {mc_version_2}'
 
 MAX_BROWSER_SEARCHES = 10
 

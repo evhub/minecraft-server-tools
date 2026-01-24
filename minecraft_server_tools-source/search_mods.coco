@@ -9,7 +9,7 @@ from minecraft_server_tools.constants import (
     DEDUPLICATE_CLIENT_MODS_NAME,
     MODLOADER,
     MC_VERSION,
-    GOOGLE_QUERY_TEMPLATE,
+    SEARCH_MODS_GOOGLE_TEMPLATE,
     MAX_BROWSER_SEARCHES,
     ver_join,
 )
@@ -20,7 +20,7 @@ DEDUPLICATE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, DEDUPLICATE_CLIENT_MODS_N
 
 
 def get_search_url(mod_name):
-    query = GOOGLE_QUERY_TEMPLATE.format(
+    query = SEARCH_MODS_GOOGLE_TEMPLATE.format(
         mod_name=mod_name,
         modloader=MODLOADER,
         mc_version_2=ver_join(MC_VERSION[:2]),

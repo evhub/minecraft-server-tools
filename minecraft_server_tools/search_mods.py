@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x6873dc7a
+# __coconut_hash__ = 0x7c9c9a7e
 
 # Compiled with Coconut version 3.2.0-post_dev7
 
@@ -83,7 +83,7 @@ from minecraft_server_tools.constants import DEDUPLICATE_MODS_NAME  #6 (line in 
 from minecraft_server_tools.constants import DEDUPLICATE_CLIENT_MODS_NAME  #6 (line in Coconut source)
 from minecraft_server_tools.constants import MODLOADER  #6 (line in Coconut source)
 from minecraft_server_tools.constants import MC_VERSION  #6 (line in Coconut source)
-from minecraft_server_tools.constants import GOOGLE_QUERY_TEMPLATE  #6 (line in Coconut source)
+from minecraft_server_tools.constants import SEARCH_MODS_GOOGLE_TEMPLATE  #6 (line in Coconut source)
 from minecraft_server_tools.constants import MAX_BROWSER_SEARCHES  #6 (line in Coconut source)
 from minecraft_server_tools.constants import ver_join  #6 (line in Coconut source)
 
@@ -93,7 +93,7 @@ DEDUPLICATE_CLIENT_MODS_DIR = os.path.join(SERVER_DIR, DEDUPLICATE_CLIENT_MODS_N
 
 
 def get_search_url(mod_name):  #22 (line in Coconut source)
-    query = GOOGLE_QUERY_TEMPLATE.format(mod_name=mod_name, modloader=MODLOADER, mc_version_2=ver_join(MC_VERSION[:2]))  #23 (line in Coconut source)
+    query = SEARCH_MODS_GOOGLE_TEMPLATE.format(mod_name=mod_name, modloader=MODLOADER, mc_version_2=ver_join(MC_VERSION[:2]))  #23 (line in Coconut source)
     return "https://www.google.com/search?" + urllib.parse.urlencode(_coconut.dict((("q", query),)))  #28 (line in Coconut source)
 
 
