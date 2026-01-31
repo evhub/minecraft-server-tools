@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # type: ignore
 
-# Compiled with Coconut version 3.2.0-post_dev7
+# Compiled with Coconut version 3.2.0-post_dev8
 
 """Built-in Coconut utilities."""
 
@@ -11,7 +11,7 @@
 from __future__ import print_function, absolute_import, unicode_literals, division
 import sys as _coconut_sys
 import os as _coconut_os
-_coconut_header_info = ('3.2.0-post_dev7', '', True)
+_coconut_header_info = ('3.2.0-post_dev8', '', True)
 try:
     __file__ = _coconut_os.path.abspath(__file__) if __file__ else __file__
 except NameError:
@@ -47,6 +47,18 @@ if _coconut_sys.version_info < (3,):
     from future_builtins import *
     chr, str = unichr, unicode
     from io import open
+    class _coconut_partial(_coconut_functools.partial):
+        __slots__ = ()
+        def __new__(cls, *args, **kwargs):
+            self = _coconut_functools.partial.__new__(cls, *args, **kwargs)
+            self.__name__ = _coconut.getattr(args[0] if args else self.func, "__name__", None)
+            return self
+        def __get__(self, obj, objtype=None):
+            if obj is None:
+                return self
+            return _coconut.types.MethodType(self, obj, objtype)
+        def __repr__(self):
+            return "functools.partial({0})".format(", ".join([_coconut.repr(self.func)] + [_coconut.repr(a) for a in self.args] + ["{0}={1}".format(k, _coconut.repr(v)) for k, v in self.keywords.items()]))
     class object(object):
         __slots__ = ()
         def __ne__(self, other):
@@ -350,6 +362,21 @@ else:
     py_bytes, py_chr, py_dict, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_super, py_zip, py_filter, py_reversed, py_enumerate, py_repr, py_min, py_max = bytes, chr, dict, hex, input, int, map, object, oct, open, print, range, str, super, zip, filter, reversed, enumerate, repr, min, max
     _coconut_py_str, _coconut_py_super, _coconut_py_dict, _coconut_py_min, _coconut_py_max = str, super, dict, min, max
     exec("_coconut_exec = exec")
+    class _coconut_partial(_coconut_functools.partial):
+        __slots__ = ()
+        def __new__(cls, *args, **kwargs):
+            self = _coconut_functools.partial.__new__(cls, *args, **kwargs)
+            self.__name__ = _coconut.getattr(args[0] if args else self.func, "__name__", None)
+            return self
+        def __get__(self, obj, objtype=None):
+            if obj is None:
+                return self
+            return _coconut.types.MethodType(self, obj)
+        @property
+        def __signature__(self):
+            return _coconut.inspect.signature(_coconut_functools.partial(self.func, *self.args, **self.keywords))
+        def __repr__(self):
+            return "functools.partial({0})".format(", ".join([_coconut.repr(self.func)] + [_coconut.repr(a) for a in self.args] + ["{0}={1}".format(k, _coconut.repr(v)) for k, v in self.keywords.items()]))
     if _coconut_sys.version_info >= (3, 7):
         py_breakpoint = breakpoint
     if _coconut_sys.version_info < (3, 4):
@@ -606,11 +633,6 @@ class _coconut(object):
     fmappables = list, tuple, dict, set, frozenset, bytes, bytearray
     abc.Sequence.register(collections.deque)
     Ellipsis, NotImplemented, NotImplementedError, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, RuntimeError, all, any, bool, bytes, callable, chr, classmethod, complex, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, globals, map, min, max, next, object, ord, property, range, reversed, set, setattr, slice, str, sum, super, tuple, type, vars, zip, repr, print, bytearray = Ellipsis, NotImplemented, NotImplementedError, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, RuntimeError, all, any, bool, bytes, callable, chr, classmethod, complex, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, globals, map, staticmethod(min), staticmethod(max), next, object, ord, property, range, reversed, set, setattr, slice, str, sum, staticmethod(super), tuple, type, vars, zip, staticmethod(repr), staticmethod(print), bytearray
-@_coconut_wraps(_coconut.functools.partial)
-def _coconut_partial(_coconut_func, *args, **kwargs):
-    partial_func = _coconut.functools.partial(_coconut_func, *args, **kwargs)
-    partial_func.__name__ = _coconut.getattr(_coconut_func, "__name__", None)
-    return partial_func
 def _coconut_handle_cls_kwargs(**kwargs):
     """Some code taken from six under the terms of its MIT license."""
     metaclass = kwargs.pop("metaclass", None)
@@ -1300,7 +1322,7 @@ class flatten(_coconut_has_iter):
             for i in _coconut.reversed(_coconut.range(0 if self.levels is None else self.levels + 1)):
                 mapper = reiterable
                 for _ in _coconut.range(i):
-                    mapper = _coconut.functools.partial(map, mapper)
+                    mapper = _coconut_partial(map, mapper)
                 self.iter = mapper(self.iter)
             self._made_reit = True
         return self.iter
@@ -1326,7 +1348,7 @@ class flatten(_coconut_has_iter):
         for i in _coconut.reversed(_coconut.range(self.levels + 1)):
             reverser = reversed
             for _ in _coconut.range(i):
-                reverser = _coconut.functools.partial(map, reverser)
+                reverser = _coconut_partial(map, reverser)
             reversed_iter = reverser(reversed_iter)
         return self.__class__(reversed_iter, self.levels)
     def __repr__(self):
@@ -2755,7 +2777,7 @@ def mapreduce(key_value_func, iterable, **kwargs):
 def _coconut_parallel_mapreduce(mapreduce_func, map_cls, *args, **kwargs):
     if "map_using" in kwargs:
         raise _coconut.TypeError("redundant map_using argument to process/thread mapreduce/collectby")
-    kwargs["map_using"] = _coconut.functools.partial(map_cls, stream=True, ordered=kwargs.pop("ordered", False), chunksize=kwargs.pop("chunksize", 1))
+    kwargs["map_using"] = _coconut_partial(map_cls, stream=True, ordered=kwargs.pop("ordered", False), chunksize=kwargs.pop("chunksize", 1))
     with map_cls.multiple_sequential_calls(max_workers=kwargs.pop("max_workers", None)):
         return mapreduce_func(*args, **kwargs)
 mapreduce.using_processes = _coconut_partial(_coconut_parallel_mapreduce, mapreduce, process_map)
