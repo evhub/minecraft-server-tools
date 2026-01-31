@@ -82,7 +82,7 @@ NO_STRS = [
 # Commonly changed constants
 
 MC_VERSION = (1, 21, 1)
-FORGE_VERSION = (21, 1, 217)
+FORGE_VERSION = (21, 1, 219)
 
 GRAAL_VERSION = 25
 
