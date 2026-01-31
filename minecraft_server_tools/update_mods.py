@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb914fbd6
+# __coconut_hash__ = 0x357c4e34
 
 # Compiled with Coconut version 3.2.0-post_dev8
 
@@ -135,7 +135,7 @@ UPDATE_DEDUPLICATE_DIRS = [os.path.join(SERVER_DIR, DEDUPLICATE_CLIENT_MODS_NAME
 BEGINNING_OF_TIME = datetime.datetime(1, 1, 1)  #76 (line in Coconut source)
 
 # Configuration for different content types (mods vs datapacks)
-ContentTypeConfig = namedtuple('ContentTypeConfig', ['name', 'file_extension', 'curseforge_class_ids', 'use_modloader'])  # list of CurseForge classIds to search  # ".jar" or ".zip"  # "mod" or "datapack"  # whether to filter by modloader  #79 (line in Coconut source)
+ContentTypeConfig = namedtuple('ContentTypeConfig', ['name', 'file_extension', 'curseforge_class_ids', 'use_modloader'])  # ".jar" or ".zip"  # whether to filter by modloader  # list of CurseForge classIds to search  # "mod" or "datapack"  #79 (line in Coconut source)
 
 MOD_CONFIG = ContentTypeConfig(name="mod", file_extension=".jar", curseforge_class_ids=[CURSEFORGE_CLASS_ID_MODS,], use_modloader=True)  #86 (line in Coconut source)
 
@@ -224,32 +224,32 @@ def get_mod_name(jar_name, silent=None, do_component_splitting=True, use_all_com
 
         mod_name = mod_name.strip().lower()  #160 (line in Coconut source)
 
-        if mod_name in NO_COMPONENT_SPLIT_MODS:  #162 (line in Coconut source)
+        if not use_all_components and mod_name in USE_ALL_COMPONENTS_MODS and not use_all_components:  #162 (line in Coconut source)
             if not silent:  #163 (line in Coconut source)
-                print("Got mod name {_coconut_format_0!r}, but it's marked as no component splitting; redoing without component splitting.".format(_coconut_format_0=(mod_name)))  #164 (line in Coconut source)
+                print("Got mod name {_coconut_format_0!r}, but it's marked as use all components; redoing with all components.".format(_coconut_format_0=(mod_name)))  #164 (line in Coconut source)
             try:  #165 (line in Coconut source)
                 _coconut_tre_check_0 = get_mod_name is _coconut_recursive_func_0  # type: ignore  #165 (line in Coconut source)
             except _coconut.NameError:  #165 (line in Coconut source)
                 _coconut_tre_check_0 = False  #165 (line in Coconut source)
             if _coconut_tre_check_0:  #165 (line in Coconut source)
-                (jar_name, silent, do_component_splitting, use_all_components, file_extension,) = _coconut_mock_0(jar_name, do_component_splitting=False, file_extension=file_extension)  #165 (line in Coconut source)
+                (jar_name, silent, do_component_splitting, use_all_components, file_extension,) = _coconut_mock_0(jar_name, use_all_components=True, file_extension=file_extension)  #165 (line in Coconut source)
                 continue  #165 (line in Coconut source)
             else:  #165 (line in Coconut source)
-                return _coconut_tail_call(get_mod_name, jar_name, do_component_splitting=False, file_extension=file_extension)  #165 (line in Coconut source)
+                return _coconut_tail_call(get_mod_name, jar_name, use_all_components=True, file_extension=file_extension)  #165 (line in Coconut source)
 
 
-        if mod_name in USE_ALL_COMPONENTS_MODS and not use_all_components:  #167 (line in Coconut source)
+        if do_component_splitting and mod_name in NO_COMPONENT_SPLIT_MODS:  #167 (line in Coconut source)
             if not silent:  #168 (line in Coconut source)
-                print("Got mod name {_coconut_format_0!r}, but it's marked as use all components; redoing with all components.".format(_coconut_format_0=(mod_name)))  #169 (line in Coconut source)
+                print("Got mod name {_coconut_format_0!r}, but it's marked as no component splitting; redoing without component splitting.".format(_coconut_format_0=(mod_name)))  #169 (line in Coconut source)
             try:  #170 (line in Coconut source)
                 _coconut_tre_check_0 = get_mod_name is _coconut_recursive_func_0  # type: ignore  #170 (line in Coconut source)
             except _coconut.NameError:  #170 (line in Coconut source)
                 _coconut_tre_check_0 = False  #170 (line in Coconut source)
             if _coconut_tre_check_0:  #170 (line in Coconut source)
-                (jar_name, silent, do_component_splitting, use_all_components, file_extension,) = _coconut_mock_0(jar_name, use_all_components=True, file_extension=file_extension)  #170 (line in Coconut source)
+                (jar_name, silent, do_component_splitting, use_all_components, file_extension,) = _coconut_mock_0(jar_name, do_component_splitting=False, file_extension=file_extension)  #170 (line in Coconut source)
                 continue  #170 (line in Coconut source)
             else:  #170 (line in Coconut source)
-                return _coconut_tail_call(get_mod_name, jar_name, use_all_components=True, file_extension=file_extension)  #170 (line in Coconut source)
+                return _coconut_tail_call(get_mod_name, jar_name, do_component_splitting=False, file_extension=file_extension)  #170 (line in Coconut source)
 
 
         if not silent:  #172 (line in Coconut source)
