@@ -120,10 +120,13 @@ ALWAYS_USE_LATEST_VERSION_FOR_MODS = [
     "jei",
     "toofast",
     "gottagofast",
+    "imfast",
     "supplementaries",
     "packet fixer",
     "embeddium",
     "oculus",
+    "sodium",
+    "iris",
     "immediately fast",
 ]
 
