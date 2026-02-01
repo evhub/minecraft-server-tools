@@ -128,6 +128,21 @@ ALWAYS_USE_LATEST_VERSION_FOR_MODS = [
     "sodium",
     "iris",
     "immediately fast",
+    "letsdo addon compat",
+    "letsdo addon structures",
+    "letsdo api",
+    "letsdo bakery",
+    "letsdo beachparty",
+    "letsdo bloomingnature",
+    "letsdo brewery",
+    "letsdo candlelight",
+    "letsdo herbalbrews",
+    "letsdo meadow",
+    "letsdo nethervinery",
+    "letsdo vinery",
+    "letsdocompat",
+    "letsdo farm and charm",
+    "letsdo wildernature",
 ]
 
 NON_CURSEFORGE_MODS = [
@@ -276,8 +291,7 @@ COMPONENT_SEPS = [
 ]
 
 NON_NAME_COMPONENT_REGEX = full_regex(
-    r"[0-9].*|"
-    + r"(?!cave|a$|ae2|rare|da|cfm|distraction)((neo|forge|fabric|quilt|dist(ro)?|release|alpha|beta)(\..*)?|(mc|v|r|f|pre)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+"
+    r"[0-9].*|(?!cave|a$|ae2|rare|da|cfm|distraction)((neo|forge|fabric|quilt|dist(ro)?|release|alpha|beta|hotfix)(\..*)?|(mc|v|r|f|pre)?[0-9.+_\-x()[\]]*(a|b|c|d|e|m)?)+"
 )
 
 NAME_REGEXES_TO_SPACE = [
@@ -303,7 +317,7 @@ NAME_REGEXES_TO_SPACE = [
         r"QUILT",
         r"Quilt\b",
         r"\bdist(ro)?\b",
-        r"release",
+        r"\brelease\b",
         r"\balpha\b",
         r"\bALPHA\b",
         r"\bAlpha\b",
