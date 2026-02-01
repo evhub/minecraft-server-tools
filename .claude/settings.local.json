@@ -15,6 +15,16 @@
       "Bash(pip:*)",
       "Bash(log \")",
       "Bash(test:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:www.curseforge.com)",
+      "WebFetch(domain:www.graalvm.org)",
+      "WebFetch(domain:modrinth.com)",
+      "WebFetch(domain:docs.curseforge.com)",
+      "WebFetch(domain:forums.minecraftforge.net)",
+      "WebFetch(domain:neoforged.net)",
+      "WebFetch(domain:allthemods.github.io)",
+      "WebFetch(domain:spark.lucko.me)",
       "Bash(make:*)",
       "Bash(git:*)",
       "Bash(node:*)",
@@ -27,16 +37,7 @@
       "Bash(zgrep:*)",
       "Bash(gzip:*)",
       "Bash(xxd:*)",
-      "Bash(unzip:*)",
-      "WebFetch(domain:www.curseforge.com)",
-      "WebFetch(domain:www.graalvm.org)",
-      "WebFetch(domain:github.com)",
-      "WebFetch(domain:modrinth.com)",
-      "WebFetch(domain:docs.curseforge.com)",
-      "WebFetch(domain:forums.minecraftforge.net)",
-      "WebFetch(domain:neoforged.net)",
-      "WebFetch(domain:allthemods.github.io)",
-      "WebFetch(domain:spark.lucko.me)"
+      "Bash(unzip:*)"
     ]
   }
 }
