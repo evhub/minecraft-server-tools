@@ -359,7 +359,7 @@ CURSEFORGE_NAME_ELEMS_TO_STRIP = [
     "...",
 ]
 
-AVOID_FILES_PUBLISHED_WITHIN = timedelta(days=7)
+AVOID_FILES_PUBLISHED_WITHIN = timedelta(days=2)
 
 MOD_PAGE_NAME_SUFFICES = (
     " - Files - Minecraft Mods - Curseforge",
