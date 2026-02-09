@@ -195,6 +195,11 @@ OPTIONAL_INSTALL_FOLDERS = [
     "ESM",
 ] + DATAPACK_OPTIONAL_INSTALL_FOLDERS
 
+WORLD_FOLDERS = [
+    "world",
+    "backups",
+]
+
 JPS_DEBUG = bool_env_var("MC_DEBUG_JPS", False)  # filter jstack: ^(\s*(at java|at jdk|at sun|at net.minecraft|at io.netty)\b)[^\n]*\n*
 PRINT_DEBUG = bool_env_var("MC_DEBUG_PRINT", False)
 LOG4J_DEBUG = bool_env_var("MC_DEBUG_LOG4J", False)
@@ -405,7 +410,7 @@ DATAPACK_FOLDERS = DATAPACK_INSTALL_FOLDERS + DATAPACK_OPTIONAL_INSTALL_FOLDERS
 DATAPACK_FOLDER_PATHS = [os.path.join(SERVER_DIR, folder) for folder in DATAPACK_FOLDERS]
 
 
-# Server start constants
+# Launch server constants
 
 USE_GRAAL = not JPS_DEBUG
 USE_LARGE_PAGES = False
@@ -571,6 +576,8 @@ else:
 FORGE_JAR = format_vers("neoforge-{forge_version}.jar")
 
 OLD_JARS_REGEX = full_regex(format_vers(r"(forge-(?!{mc_version}-{forge_version})[0-9.]+-[0-9.]+(-installer)?|minecraft_server\.(?!{mc_version})[0-9.]+)\.jar"))
+
+WORLD_ZIP_PATH = fixpath("~/OneDrive/Minecraft/World Backup.zip")
 
 
 # Client install constants

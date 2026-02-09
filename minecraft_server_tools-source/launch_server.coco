@@ -4,6 +4,7 @@ import subprocess
 import shutil
 import argparse
 import time
+import zipfile
 from urllib.request import urlretrieve
 from urllib.error import HTTPError
 from contextlib import contextmanager
@@ -36,6 +37,8 @@ from minecraft_server_tools.constants import (
     START_ARGS,
     WORLD_CONFIG_DIR,
     DEFAULTCONFIGS_DIR,
+    WORLD_FOLDERS,
+    WORLD_ZIP_PATH,
 )
 
 FORGE_JAR_PATH = os.path.join(SERVER_DIR, FORGE_JAR)
@@ -259,7 +262,19 @@ def copy_new_world_configs():
                 shutil.copy(world_path, defaultconfigs_path)
 
 
-def start_server(dry_run=False):
+def zip_world_folders():
+    print(f"\nZipping world folders to {WORLD_ZIP_PATH}...")
+    with zipfile.ZipFile(WORLD_ZIP_PATH, "w", zipfile.ZIP_DEFLATED) as zf:
+        for folder in WORLD_FOLDERS:
+            folder_path = os.path.join(SERVER_DIR, folder)
+            for dirpath, dirnames, filenames in os.walk(folder_path):
+                zf.write(dirpath, os.path.relpath(dirpath, SERVER_DIR))
+                for filename in filenames:
+                    filepath = os.path.join(dirpath, filename)
+                    zf.write(filepath, os.path.relpath(filepath, SERVER_DIR))
+
+
+def start_server(dry_run=False, no_zip=False):
     clean_forge_jars()
     ensure_forge_server()
     fix_run_bat()
@@ -272,6 +287,8 @@ def start_server(dry_run=False):
             else:
                 run_high_priority(FORGE_LAUNCH_CMD + FORGE_ARGS)
         copy_new_world_configs()
+        if not no_zip:
+            zip_world_folders()
 
 
 def parse_args():
@@ -283,12 +300,17 @@ def parse_args():
         action="store_true",
         help="Prepare server files without actually launching the server",
     )
+    parser.add_argument(
+        "--no-zip",
+        action="store_true",
+        help="Skip zipping world folders after server stops",
+    )
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
-    start_server(dry_run=args.dry_run)
+    start_server(dry_run=args.dry_run, no_zip=args.no_zip)
 
 
 if __name__ == "__main__":
