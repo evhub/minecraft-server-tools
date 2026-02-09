@@ -9,8 +9,8 @@ _If you need help with any of the below, please just ask me!_
 If I directed you here to install Minecraft mods, you'll need to follow the following steps:
 
 1. Make sure you are using a computer with at least 32GB of RAM; you can try with something less but it's unlikely that it will work.
-2. Install [OneDrive](https://www.microsoft.com/en-us/microsoft-365/onedrive/download) and accept my invitation to access "Minecraft Mods".
-   1. If you're having issues with OneDrive (e.g. [the folder shows up as a `.url` link instead of a real folder](https://answers.microsoft.com/en-us/msoffice/forum/all/onedrive-shared-folders-are-now-a-url-shortcut-i/9cf793c2-c66a-4ebd-b740-2e8485831266)), you can instead install [Dropbox](https://www.dropbox.com/install) and I can send you a Dropbox invite.
+2. Install [OneDrive](https://www.microsoft.com/en-us/microsoft-365/onedrive/download) or [Dropbox](https://www.dropbox.com/install) and accept my invitation to access "Minecraft Mods".
+   1. If you're having issues with OneDrive (e.g. [the folder shows up as a `.url` link instead of a real folder](https://answers.microsoft.com/en-us/msoffice/forum/all/onedrive-shared-folders-are-now-a-url-shortcut-i/9cf793c2-c66a-4ebd-b740-2e8485831266)), use Dropbox instead.
 3. Install the latest [Python](https://www.python.org/downloads/) and [Git](https://git-scm.com/downloads).
 4. Install the Minecraft Legacy Launcher ([Windows Download](https://aka.ms/minecraftClientWindows); [Mac Download](https://aka.ms/minecraftClientMac)).
 5. In the Minecraft launcher, run "Minecraft: Java Edition" at least once on the latest version, then make sure Minecraft is closed.
@@ -25,6 +25,7 @@ If I directed you here to install Minecraft mods, you'll need to follow the foll
     1.  _If it freezes, just give it a bit of time; it's probably just loading._ If it crashes though when you tab out, you might need to try not tabbing away from it.
 11. Once booted, select "Multiplayer" and join "Evan's Mod Server". Joining the server should take ~5 minutes.
     1.  I recommend not tabbing away from Minecraft while it's joining the server; if it freezes, just give it a bit of time as with the initial loading.
+    2.  Also note that it is expected that the game will freeze for a few seconds the first time that you open your inventory.
 
 ## Additional performance optimizations
 

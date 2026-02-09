@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7cc6b92e
+# __coconut_hash__ = 0x9e8cfbe0
 
-# Compiled with Coconut version 3.2.0-post_dev9
+# Compiled with Coconut version 3.2.0-post_dev13
 
 # Coconut Header: -------------------------------------------------------------
 
 from __future__ import print_function, absolute_import, unicode_literals, division
 import sys as _coconut_sys
 import os as _coconut_os
-_coconut_header_info = ('3.2.0-post_dev9', '', True)
+_coconut_header_info = ('3.2.0-post_dev13', '', True)
 _coconut_cached__coconut__ = _coconut_sys.modules.get(str('__coconut__'))
 _coconut_file_dir = _coconut_os.path.dirname(_coconut_os.path.abspath(__file__))
 _coconut_pop_path = False
@@ -34,7 +34,7 @@ if _coconut_cached__coconut__ is None or getattr(_coconut_cached__coconut__, "_c
                         _coconut_v_type.__module__ = _coconut_full_module_name
         _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_tail_call, _coconut_tco, _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_Expected, _coconut_MatchError, _coconut_SupportsAdd, _coconut_SupportsMinus, _coconut_SupportsMul, _coconut_SupportsPow, _coconut_SupportsTruediv, _coconut_SupportsFloordiv, _coconut_SupportsMod, _coconut_SupportsAnd, _coconut_SupportsXor, _coconut_SupportsOr, _coconut_SupportsLshift, _coconut_SupportsRshift, _coconut_SupportsMatmul, _coconut_SupportsInv, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_complex_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_arr_concat_op, _coconut_mk_anon_namedtuple, _coconut_matmul, _coconut_py_str, _coconut_flatten, _coconut_multiset, _coconut_back_none_pipe, _coconut_back_none_star_pipe, _coconut_back_none_dubstar_pipe, _coconut_forward_none_compose, _coconut_back_none_compose, _coconut_forward_none_star_compose, _coconut_back_none_star_compose, _coconut_forward_none_dubstar_compose, _coconut_back_none_dubstar_compose, _coconut_call_or_coefficient, _coconut_in, _coconut_not_in, _coconut_attritemgetter, _coconut_if_op, _coconut_CoconutWarning
+from __coconut__ import _coconut_tail_call, _coconut_tco, _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_Expected, _coconut_MatchError, _coconut_SupportsAdd, _coconut_SupportsMinus, _coconut_SupportsMul, _coconut_SupportsPow, _coconut_SupportsTruediv, _coconut_SupportsFloordiv, _coconut_SupportsMod, _coconut_SupportsAnd, _coconut_SupportsXor, _coconut_SupportsOr, _coconut_SupportsLshift, _coconut_SupportsRshift, _coconut_SupportsMatmul, _coconut_SupportsInv, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_complex_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_arr_concat_op, _coconut_mk_anon_namedtuple, _coconut_matmul, _coconut_py_str, _coconut_flatten, _coconut_multiset, _coconut_back_none_pipe, _coconut_back_none_star_pipe, _coconut_back_none_dubstar_pipe, _coconut_forward_none_compose, _coconut_back_none_compose, _coconut_forward_none_star_compose, _coconut_back_none_star_compose, _coconut_forward_none_dubstar_compose, _coconut_back_none_dubstar_compose, _coconut_call_or_coefficient, _coconut_in, _coconut_not_in, _coconut_attritemgetter, _coconut_if_op, _coconut_CoconutWarning, _coconut_lazy_module, _coconut_type
 if _coconut_pop_path:
     _coconut_sys.path.pop(0)
 try:
@@ -64,17 +64,10 @@ import datetime  #6 (line in Coconut source)
 import time  #7 (line in Coconut source)
 import argparse  #8 (line in Coconut source)
 from pprint import pprint  #9 (line in Coconut source)
-try:  #10 (line in Coconut source)
-    _coconut_sys_0 = sys  # type: ignore  #10 (line in Coconut source)
-except _coconut.NameError:  #10 (line in Coconut source)
-    _coconut_sys_0 = _coconut_sentinel  #10 (line in Coconut source)
-sys = _coconut_sys  #10 (line in Coconut source)
-if sys.version_info >= (3,):  #10 (line in Coconut source)
-    from urllib.parse import unquote  #10 (line in Coconut source)
+if _coconut.typing.TYPE_CHECKING or _coconut_sys.version_info >= (3,):  #10 (line in Coconut source)
+    from urllib.parse import unquote  # type: ignore  #10 (line in Coconut source)
 else:  #10 (line in Coconut source)
     from urllib import unquote  #10 (line in Coconut source)
-if _coconut_sys_0 is not _coconut_sentinel:  #10 (line in Coconut source)
-    sys = _coconut_sys_0  #10 (line in Coconut source)
 from collections import defaultdict  #11 (line in Coconut source)
 from collections import namedtuple  #11 (line in Coconut source)
 
@@ -135,7 +128,7 @@ UPDATE_DEDUPLICATE_DIRS = [os.path.join(SERVER_DIR, DEDUPLICATE_CLIENT_MODS_NAME
 BEGINNING_OF_TIME = datetime.datetime(1, 1, 1)  #76 (line in Coconut source)
 
 # Configuration for different content types (mods vs datapacks)
-ContentTypeConfig = namedtuple('ContentTypeConfig', ['name', 'file_extension', 'curseforge_class_ids', 'use_modloader'])  # whether to filter by modloader  # ".jar" or ".zip"  # "mod" or "datapack"  # list of CurseForge classIds to search  #79 (line in Coconut source)
+ContentTypeConfig = namedtuple('ContentTypeConfig', ['name', 'file_extension', 'curseforge_class_ids', 'use_modloader'])  # ".jar" or ".zip"  # list of CurseForge classIds to search  # whether to filter by modloader  # "mod" or "datapack"  #79 (line in Coconut source)
 
 MOD_CONFIG = ContentTypeConfig(name="mod", file_extension=".jar", curseforge_class_ids=[CURSEFORGE_CLASS_ID_MODS,], use_modloader=True)  #86 (line in Coconut source)
 
