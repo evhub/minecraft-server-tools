@@ -10,6 +10,7 @@ from urllib.error import HTTPError
 from contextlib import contextmanager
 
 import requests
+from tqdm import tqdm
 
 from minecraft_server_tools.constants import (
     WINDOWS,
@@ -262,16 +263,20 @@ def copy_new_world_configs():
                 shutil.copy(world_path, defaultconfigs_path)
 
 
+def get_world_paths_to_zip():
+    for folder in WORLD_FOLDERS:
+        folder_path = os.path.join(SERVER_DIR, folder)
+        for dirpath, dirnames, filenames in os.walk(folder_path):
+            yield dirpath
+            for filename in filenames:
+                yield os.path.join(dirpath, filename)
+
+
 def zip_world_folders():
     print(f"\nZipping world folders to {WORLD_ZIP_PATH}...")
     with zipfile.ZipFile(WORLD_ZIP_PATH, "w", zipfile.ZIP_DEFLATED) as zf:
-        for folder in WORLD_FOLDERS:
-            folder_path = os.path.join(SERVER_DIR, folder)
-            for dirpath, dirnames, filenames in os.walk(folder_path):
-                zf.write(dirpath, os.path.relpath(dirpath, SERVER_DIR))
-                for filename in filenames:
-                    filepath = os.path.join(dirpath, filename)
-                    zf.write(filepath, os.path.relpath(filepath, SERVER_DIR))
+        for filepath in tqdm(list(get_world_paths_to_zip())):
+            zf.write(filepath, os.path.relpath(filepath, SERVER_DIR))
 
 
 def start_server(dry_run=False, no_zip=False):
