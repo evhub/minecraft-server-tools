@@ -1,8 +1,10 @@
 .PHONY: local-install
-local-install: build
-	python -m pip install -Ue .
+local-install: build pip-install
 	npm install --global yarn
 	yarn add node-curseforge
+
+.PHONY: remote-install
+remote-install: update-repo pip-install
 
 .PHONY: aws-install
 aws-install: update-repo fix-spark
@@ -11,6 +13,10 @@ aws-install: update-repo fix-spark
 	sudo tuned-adm profile throughput-performance
 	sudo python3 -m pip install -Ue .
 	sudo python3 -m minecraft_server_tools.setup_large_pages
+
+.PHONY: pip-install
+pip-install:
+	python -m pip install -Ue .
 
 .PHONY: update-repo
 update-repo:
