@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x6cc7fe24
+# __coconut_hash__ = 0xc3c21218
 
 # Compiled with Coconut version 3.2.0-post_dev13
 
@@ -314,22 +314,22 @@ GRAAL_ZIP_PATH = os.path.join(GRAAL_BASE_DIR, GRAAL_ZIP_NAME)  #422 (line in Coc
 
 def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):  #424 (line in Coconut source)
     code_cache_mul = 2 if gc == "G1" else 1  #425 (line in Coconut source)
-    args = ["-server", "-Xss4M", "-XX:+UnlockExperimentalVMOptions", "-XX:+UnlockDiagnosticVMOptions", "-XX:+AlwaysPreTouch", "-XX:+DisableExplicitGC", "-XX:+OptimizeStringConcat", "-XX:+UseCompressedOops", "-XX:+OmitStackTraceInFastThrow", "-XX:+ParallelRefProcEnabled", "-XX:+AlwaysActAsServerClassMachine", "-XX:-DontCompileHugeMethods", "-XX:+UseFastUnorderedTimeStamps", "-XX:+UseCriticalJavaThreadPriority", "-XX:+EnableDynamicAgentLoading", "-XX:MaxGCPauseMillis=37", "-XX:NmethodSweepActivity=1", "-XX:ThreadPriorityPolicy=1", "-XX:MaxMetaspaceExpansion=64M", "-XX:ReservedCodeCacheSize={_coconut_format_0}M".format(_coconut_format_0=(400 * code_cache_mul)), "-XX:NonNMethodCodeHeapSize={_coconut_format_0}M".format(_coconut_format_0=(12 * code_cache_mul)), "-XX:ProfiledCodeHeapSize={_coconut_format_0}M".format(_coconut_format_0=(194 * code_cache_mul)), "-XX:NonProfiledCodeHeapSize={_coconut_format_0}M".format(_coconut_format_0=(194 * code_cache_mul)), "-XX:InitialCodeCacheSize={_coconut_format_0}M".format(_coconut_format_0=(200 * code_cache_mul)), "-XX:CodeCacheExpansionSize={_coconut_format_0}M".format(_coconut_format_0=(1 * code_cache_mul)), "-XX:ParallelGCThreads={_coconut_format_0}".format(_coconut_format_0=(psutil.cpu_count(logical=False))), "-XX:ConcGCThreads={_coconut_format_0}".format(_coconut_format_0=(max(min(psutil.cpu_count(logical=False) - 2, 6), psutil.cpu_count(logical=False) // 4, psutil.cpu_count() * 5 // 8 // 4)))]  # default: True  # brucethemoose, Obydux: 12M  # brucethemoose, Obydux  # brucethemoose, Obydux: 1; deprecated by java  # default: True  # aikar-flags, atm  # brucethemoose, Obydux  # brucethemoose: 37; atm: 200; Obydux: 130; default: 200  # default: 5M  # brucethemoose, Obydux  # brucethemoose, Obydux: 194M  # brucethemoose, Obydux  # brucethemoose, Obydux: 400M  # default: 64K  # always  # java warning  # brucethemoose: real - 2; default: ParallelGCThreads / 4  # brucethemoose: default; default: virtual * 5/8  # always  # brucethemoose: 1  # default: True  # brucethemoose, Obydux: 194M  # always  # default: True  # brucethemoose  # default: 160K  #426 (line in Coconut source)
+    args = ["-server", "-Xss4M", "-XX:+UnlockExperimentalVMOptions", "-XX:+UnlockDiagnosticVMOptions", "-XX:+AlwaysPreTouch", "-XX:+DisableExplicitGC", "-XX:+OptimizeStringConcat", "-XX:+UseCompressedOops", "-XX:+OmitStackTraceInFastThrow", "-XX:+ParallelRefProcEnabled", "-XX:+AlwaysActAsServerClassMachine", "-XX:-DontCompileHugeMethods", "-XX:+UseFastUnorderedTimeStamps", "-XX:+UseCriticalJavaThreadPriority", "-XX:+EnableDynamicAgentLoading", "-XX:MaxGCPauseMillis=37", "-XX:NmethodSweepActivity=1", "-XX:ThreadPriorityPolicy=1", "-XX:MaxMetaspaceExpansion=64M", "-XX:ReservedCodeCacheSize={_coconut_format_0}M".format(_coconut_format_0=(400 * code_cache_mul)), "-XX:NonNMethodCodeHeapSize={_coconut_format_0}M".format(_coconut_format_0=(12 * code_cache_mul)), "-XX:ProfiledCodeHeapSize={_coconut_format_0}M".format(_coconut_format_0=(194 * code_cache_mul)), "-XX:NonProfiledCodeHeapSize={_coconut_format_0}M".format(_coconut_format_0=(194 * code_cache_mul)), "-XX:InitialCodeCacheSize={_coconut_format_0}M".format(_coconut_format_0=(200 * code_cache_mul)), "-XX:CodeCacheExpansionSize={_coconut_format_0}M".format(_coconut_format_0=(1 * code_cache_mul)), "-XX:ParallelGCThreads={_coconut_format_0}".format(_coconut_format_0=(psutil.cpu_count(logical=False))), "-XX:ConcGCThreads={_coconut_format_0}".format(_coconut_format_0=(max(min(psutil.cpu_count(logical=False) - 2, 6), psutil.cpu_count(logical=False) // 4, psutil.cpu_count() * 5 // 8 // 4)))]  # always  # default: 160K  # aikar-flags, atm  # brucethemoose  # default: True  # brucethemoose, Obydux: 12M  # brucethemoose, Obydux  # brucethemoose: 1  # brucethemoose: default; default: virtual * 5/8  # default: 64K  # always  # default: True  # brucethemoose: real - 2; default: ParallelGCThreads / 4  # brucethemoose, Obydux  # brucethemoose, Obydux: 400M  # brucethemoose, Obydux: 1; deprecated by java  # brucethemoose, Obydux  # default: True  # brucethemoose, Obydux  # java warning  # brucethemoose, Obydux: 194M  # default: True  # default: 5M  # brucethemoose, Obydux: 194M  # brucethemoose: 37; atm: 200; Obydux: 130; default: 200  # always  #426 (line in Coconut source)
     if not JPS_DEBUG:  #476 (line in Coconut source)
         args += ["-XX:+PerfDisableSharedMem",]  # aikar-flags, brucethemoose, atm, Obydux  #477 (line in Coconut source)
     if large_pages:  #480 (line in Coconut source)
-        args += ["-XX:+UseLargePages", "-XX:LargePageSizeInBytes=2M", "-XX:+UseTransparentHugePages"]  # hilltty-flags, brucethemoose  # hilltty-flags, brucethemoose  # Obydux  #481 (line in Coconut source)
+        args += ["-XX:+UseLargePages", "-XX:LargePageSizeInBytes=2M", "-XX:+UseTransparentHugePages"]  # Obydux  # hilltty-flags, brucethemoose  # hilltty-flags, brucethemoose  #481 (line in Coconut source)
 
     if vm == "java":  #487 (line in Coconut source)
-        args += ["-XX:+UseNUMA", "-XX:+UseVectorCmov", "-XX:MaxNodeLimit=240000", "-XX:NodeLimitFudgeFactor=8000"]  # hilltty-flags, brucethemoose: True; mukul1127: False; Obydux: True  # brucethemoose: 240000  # brucethemoose: 8000  # brucethemoose  #488 (line in Coconut source)
+        args += ["-XX:+UseNUMA", "-XX:+UseVectorCmov", "-XX:MaxNodeLimit=240000", "-XX:NodeLimitFudgeFactor=8000"]  # brucethemoose  # brucethemoose: 240000  # hilltty-flags, brucethemoose: True; mukul1127: False; Obydux: True  # brucethemoose: 8000  #488 (line in Coconut source)
     elif vm == "graal":  #494 (line in Coconut source)
         jdk_graal = "jdk.graal" if GRAAL_VERSION >= 22 else "graal"  #495 (line in Coconut source)
-        args += ["-XX:+EagerJVMCI", "-D{_coconut_format_0}.TuneInlinerExploration=1".format(_coconut_format_0=(jdk_graal)), "-D{_coconut_format_0}.LoopRotation=true".format(_coconut_format_0=(jdk_graal)), "-D{_coconut_format_0}.CompilerConfiguration=enterprise".format(_coconut_format_0=(jdk_graal))]  # Obydux  # brucethemoose: 1  # brucethemoose  # Obydux  #496 (line in Coconut source)
+        args += ["-XX:+EagerJVMCI", "-D{_coconut_format_0}.TuneInlinerExploration=1".format(_coconut_format_0=(jdk_graal)), "-D{_coconut_format_0}.LoopRotation=true".format(_coconut_format_0=(jdk_graal)), "-D{_coconut_format_0}.CompilerConfiguration=enterprise".format(_coconut_format_0=(jdk_graal))]  # brucethemoose: 1  # Obydux  # Obydux  # brucethemoose  #496 (line in Coconut source)
     else:  #503 (line in Coconut source)
         raise ValueError("unknown java VM {_coconut_format_0!r}".format(_coconut_format_0=(vm)))  #504 (line in Coconut source)
 
     if gc == "G1":  #506 (line in Coconut source)
-        args += ["-XX:+UseG1GC", "-XX:AllocatePrefetchStyle=3", "-XX:SurvivorRatio=32", "-XX:InitiatingHeapOccupancyPercent=10", "-XX:MaxTenuringThreshold=1", "-XX:G1ReservePercent=20", "-XX:G1NewSizePercent=28", "-XX:G1HeapRegionSize=16M", "-XX:G1MixedGCCountTarget=3", "-XX:G1RSetUpdatingPauseTimePercent=0", "-XX:G1MaxNewSizePercent=50", "-XX:G1HeapWastePercent=20", "-XX:G1SATBBufferEnqueueingThresholdPercent=30", "-XX:G1ConcMarkStepDurationMillis=5", "-XX:GCTimeRatio=99"]  # brucethemoose: 3; atm: 4; Obydux: 3; default: 8  # brucethemoose: 0; atm: 5; default: 10; Obydux: 0  # brucethemoose, Obydux: 3; default: 1  # brucethemoose: 20; atm: 5; default: 5  # brucethemoose, Obydux: 30; default: 60  # atm: 32; brucethemoose: 32; Obydux: 32; default: 8  # brucethemoose: 99; default: 12  # brucethemoose: 23; atm: 30; aikar: 40; Obydux: 28; default: 5  # atm: 40; aikar: 50; default: 60  # brucethemoose: 16M; atm: 8M; aikar: 16M; Obydux: 16M  # brucethemoose: 20; atm: 20; aikar: 15; Obydux: 20  # brucethemoose: 1; atm: 1; Obydux: 1; default: 15  # brucethemoose: 10; atm: 15; aikar: 20; Obydux: 10; default: 45  # brucethemoose, Obydux: 5; default: 10  #507 (line in Coconut source)
+        args += ["-XX:+UseG1GC", "-XX:AllocatePrefetchStyle=3", "-XX:SurvivorRatio=32", "-XX:InitiatingHeapOccupancyPercent=10", "-XX:MaxTenuringThreshold=1", "-XX:G1ReservePercent=20", "-XX:G1NewSizePercent=28", "-XX:G1HeapRegionSize=16M", "-XX:G1MixedGCCountTarget=3", "-XX:G1RSetUpdatingPauseTimePercent=0", "-XX:G1MaxNewSizePercent=50", "-XX:G1HeapWastePercent=20", "-XX:G1SATBBufferEnqueueingThresholdPercent=30", "-XX:G1ConcMarkStepDurationMillis=5", "-XX:GCTimeRatio=99"]  # brucethemoose: 1; atm: 1; Obydux: 1; default: 15  # atm: 40; aikar: 50; default: 60  # atm: 32; brucethemoose: 32; Obydux: 32; default: 8  # brucethemoose: 10; atm: 15; aikar: 20; Obydux: 10; default: 45  # brucethemoose: 20; atm: 5; default: 5  # brucethemoose: 99; default: 12  # brucethemoose, Obydux: 3; default: 1  # brucethemoose: 0; atm: 5; default: 10; Obydux: 0  # brucethemoose: 20; atm: 20; aikar: 15; Obydux: 20  # brucethemoose, Obydux: 30; default: 60  # brucethemoose: 23; atm: 30; aikar: 40; Obydux: 28; default: 5  # brucethemoose: 3; atm: 4; Obydux: 3; default: 8  # brucethemoose: 16M; atm: 8M; aikar: 16M; Obydux: 16M  # brucethemoose, Obydux: 5; default: 10  #507 (line in Coconut source)
     elif gc == "Shenandoah":  #528 (line in Coconut source)
         assert vm != "graal", "graal doesn't yet support Shenandoah"  #529 (line in Coconut source)
         args += ["-XX:+UseShenandoahGC", "-XX:AllocatePrefetchStyle=1", "-XX:ShenandoahGCMode=generational", "-XX:ShenandoahGuaranteedGCInterval=1000000"]  # brucethemoose: 1000000  # new  # brucethemoose: 1; default: 1  #530 (line in Coconut source)
@@ -345,57 +345,59 @@ LOG4J_CONFIG_FILE = os.path.join(SERVER_DIR, "log4jconfig.xml")  #553 (line in C
 FML_ARGS = ["-Dfml.queryResult=confirm", "-Dfml.readTimeout=900", "-Dfml.ignoreInvalidMinecraftCertificates=true"] + (['-Dlog4j.configurationFile="' + LOG4J_CONFIG_FILE + '"',] if LOG4J_DEBUG and os.path.exists(LOG4J_CONFIG_FILE) else [])  #554 (line in Coconut source)
 
 FORGE_ARGS = ["nogui",]  #563 (line in Coconut source)
+if bool_env_var("MC_FORCE_UPGRADE", False):  #564 (line in Coconut source)
+    FORGE_ARGS += ["--forceUpgrade", "--eraseCache"]  #565 (line in Coconut source)
 
-START_ARGS = ["/HIGH", "/B", "/I"]  #565 (line in Coconut source)
+START_ARGS = ["/HIGH", "/B", "/I"]  #567 (line in Coconut source)
 
-JVM_ARGS_FILE = os.path.join(SERVER_DIR, "user_jvm_args.txt")  #567 (line in Coconut source)
-WORLD_CONFIG_DIR = os.path.join(SERVER_DIR, "world", "serverconfig")  #568 (line in Coconut source)
-DEFAULTCONFIGS_DIR = os.path.join(SERVER_DIR, "defaultconfigs")  #569 (line in Coconut source)
+JVM_ARGS_FILE = os.path.join(SERVER_DIR, "user_jvm_args.txt")  #569 (line in Coconut source)
+WORLD_CONFIG_DIR = os.path.join(SERVER_DIR, "world", "serverconfig")  #570 (line in Coconut source)
+DEFAULTCONFIGS_DIR = os.path.join(SERVER_DIR, "defaultconfigs")  #571 (line in Coconut source)
 
-if WINDOWS:  #571 (line in Coconut source)
-    FORGE_LAUNCH_CMD = [os.path.join(SERVER_DIR, "run.bat"),]  #572 (line in Coconut source)
-else:  #573 (line in Coconut source)
-    FORGE_LAUNCH_CMD = ["sh", os.path.join(SERVER_DIR, "run.sh")]  #574 (line in Coconut source)
+if WINDOWS:  #573 (line in Coconut source)
+    FORGE_LAUNCH_CMD = [os.path.join(SERVER_DIR, "run.bat"),]  #574 (line in Coconut source)
+else:  #575 (line in Coconut source)
+    FORGE_LAUNCH_CMD = ["sh", os.path.join(SERVER_DIR, "run.sh")]  #576 (line in Coconut source)
 
-FORGE_JAR = format_vers("neoforge-{forge_version}.jar")  #576 (line in Coconut source)
+FORGE_JAR = format_vers("neoforge-{forge_version}.jar")  #578 (line in Coconut source)
 
-OLD_JARS_REGEX = full_regex(format_vers(r"(forge-(?!{mc_version}-{forge_version})[0-9.]+-[0-9.]+(-installer)?|minecraft_server\.(?!{mc_version})[0-9.]+)\.jar"))  #578 (line in Coconut source)
+OLD_JARS_REGEX = full_regex(format_vers(r"(forge-(?!{mc_version}-{forge_version})[0-9.]+-[0-9.]+(-installer)?|minecraft_server\.(?!{mc_version})[0-9.]+)\.jar"))  #580 (line in Coconut source)
 
-WORLD_ZIP_PATH = fixpath("~/OneDrive/Minecraft/World Backup.zip")  #580 (line in Coconut source)
+WORLD_ZIP_PATH = fixpath("~/OneDrive/Minecraft/World Backup.zip")  #582 (line in Coconut source)
 
 
 # Client install constants
 
-if sys.platform.startswith("win"):  #585 (line in Coconut source)
-    MINECRAFT_DIR = fixpath("~/AppData/Roaming/.minecraft")  #586 (line in Coconut source)
-elif sys.platform.startswith("darwin"):  #587 (line in Coconut source)
-    MINECRAFT_DIR = fixpath("~/Library/Application Support/minecraft")  #588 (line in Coconut source)
-else:  #589 (line in Coconut source)
-    MINECRAFT_DIR = fixpath("~/.minecraft")  #590 (line in Coconut source)
+if sys.platform.startswith("win"):  #587 (line in Coconut source)
+    MINECRAFT_DIR = fixpath("~/AppData/Roaming/.minecraft")  #588 (line in Coconut source)
+elif sys.platform.startswith("darwin"):  #589 (line in Coconut source)
+    MINECRAFT_DIR = fixpath("~/Library/Application Support/minecraft")  #590 (line in Coconut source)
+else:  #591 (line in Coconut source)
+    MINECRAFT_DIR = fixpath("~/.minecraft")  #592 (line in Coconut source)
 
-PROFILES_FILE = os.path.join(MINECRAFT_DIR, "launcher_profiles.json")  #592 (line in Coconut source)
-FORGE_PROFILE_NAME = "NeoForge"  #593 (line in Coconut source)
+PROFILES_FILE = os.path.join(MINECRAFT_DIR, "launcher_profiles.json")  #594 (line in Coconut source)
+FORGE_PROFILE_NAME = "NeoForge"  #595 (line in Coconut source)
 
-README_FILE = "README.txt"  #595 (line in Coconut source)
+README_FILE = "README.txt"  #597 (line in Coconut source)
 
-EXTRA_INSTALL_FILES += [README_FILE, FORGE_INSTALLER_JAR]  #597 (line in Coconut source)
+EXTRA_INSTALL_FILES += [README_FILE, FORGE_INSTALLER_JAR]  #599 (line in Coconut source)
 
-BARREL_ROLL_MOD_PREFIX = "do_a_barrel_roll"  #602 (line in Coconut source)
+BARREL_ROLL_MOD_PREFIX = "do_a_barrel_roll"  #604 (line in Coconut source)
 
 
 # Make launcher constants
 
-LAUNCHER_FILE = first_that_exists(["~/Applications/Minecraft.app", "/Applications/Minecraft.app", r"C:\Program Files (x86)\Minecraft Launcher\MinecraftLauncher.exe", r"C:\XboxGames\Minecraft Launcher\Content\Minecraft.exe", r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Minecraft Launcher\Minecraft Launcher.ink", r"C:\Users\Public\Desktop\Minecraft Launcher.ink"])  #607 (line in Coconut source)
+LAUNCHER_FILE = first_that_exists(["~/Applications/Minecraft.app", "/Applications/Minecraft.app", r"C:\Program Files (x86)\Minecraft Launcher\MinecraftLauncher.exe", r"C:\XboxGames\Minecraft Launcher\Content\Minecraft.exe", r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Minecraft Launcher\Minecraft Launcher.ink", r"C:\Users\Public\Desktop\Minecraft Launcher.ink"])  #609 (line in Coconut source)
 
-MODPACK_NAME = "Evan's Modded Minecraft"  #616 (line in Coconut source)
+MODPACK_NAME = "Evan's Modded Minecraft"  #618 (line in Coconut source)
 
 
 # Searchable mods constants
 
-SEARCHABLE_MODS_NAME = MODS_NAME + "-searchable"  #621 (line in Coconut source)
-SEARCHABLE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-searchable"  #622 (line in Coconut source)
+SEARCHABLE_MODS_NAME = MODS_NAME + "-searchable"  #623 (line in Coconut source)
+SEARCHABLE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-searchable"  #624 (line in Coconut source)
 
 
 # Binary search constants
 
-BINARY_SEARCH_FILE = os.path.join(SERVER_DIR, "binary_search.json")  #627 (line in Coconut source)
+BINARY_SEARCH_FILE = os.path.join(SERVER_DIR, "binary_search.json")  #629 (line in Coconut source)

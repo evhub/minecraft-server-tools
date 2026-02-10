@@ -561,6 +561,8 @@ FML_ARGS = [
 ] if LOG4J_DEBUG and os.path.exists(LOG4J_CONFIG_FILE) else [])
 
 FORGE_ARGS = ["nogui"]
+if bool_env_var("MC_FORCE_UPGRADE", False):
+    FORGE_ARGS += ["--forceUpgrade", "--eraseCache"]
 
 START_ARGS = ["/HIGH", "/B", "/I"]
 
