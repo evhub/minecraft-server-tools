@@ -134,11 +134,15 @@ def download_file(url, path):
         fobj.write(got.content)
 
 
-def get_graal_bin_dir():
-    if not os.path.exists(GRAAL_ZIP_PATH):
+def ensure_graal():
+    if USE_GRAAL and not os.path.exists(GRAAL_ZIP_PATH):
         print("Downloading Java GraalVM...")
         download_file(GRAAL_URL, GRAAL_ZIP_PATH)
         shutil.unpack_archive(GRAAL_ZIP_PATH, GRAAL_BASE_DIR)
+
+
+def get_graal_bin_dir():
+    ensure_graal()
 
     graal_bin_dir = None
     graal_bin_dir_time = 0

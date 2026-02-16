@@ -412,7 +412,7 @@ DATAPACK_FOLDER_PATHS = [os.path.join(SERVER_DIR, folder) for folder in DATAPACK
 
 # Launch server constants
 
-USE_GRAAL = not JPS_DEBUG
+USE_GRAAL = not JPS_DEBUG and bool_env_var("MC_USE_GRAAL", True)
 USE_LARGE_PAGES = False
 
 GRAAL_ZIP_NAME = f"graalvm-jdk-{GRAAL_VERSION}_{OS_NAME}-x64_bin.zip"
