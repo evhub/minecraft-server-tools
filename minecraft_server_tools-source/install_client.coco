@@ -83,7 +83,7 @@ def install_extras(source_dir, do_optional=True, clean=True):
 
 def ensure_forge_client(source_dir, force=False):
     if force or not os.path.exists(os.path.join(MINECRAFT_DIR, FORGE_INSTALLER_JAR)):
-        launch_server.ensure_java()
+        launch_server.ensure_graal()
         print("\nOpening forge installer; select 'Install client' and press 'Proceed'.")
         launch_server.run_java(["-jar", os.path.join(source_dir, FORGE_INSTALLER_JAR)])
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd6cdbbee
+# __coconut_hash__ = 0x81b17c7a
 
 # Compiled with Coconut version 3.2.0-post_dev16
 
@@ -141,7 +141,7 @@ def install_extras(source_dir, do_optional=True, clean=True):  #57 (line in Coco
 
 def ensure_forge_client(source_dir, force=False):  #84 (line in Coconut source)
     if force or not os.path.exists(os.path.join(MINECRAFT_DIR, FORGE_INSTALLER_JAR)):  #85 (line in Coconut source)
-        launch_server.ensure_java()  #86 (line in Coconut source)
+        launch_server.ensure_graal()  #86 (line in Coconut source)
         print("\nOpening forge installer; select 'Install client' and press 'Proceed'.")  #87 (line in Coconut source)
         launch_server.run_java(["-jar", os.path.join(source_dir, FORGE_INSTALLER_JAR)])  #88 (line in Coconut source)
 
