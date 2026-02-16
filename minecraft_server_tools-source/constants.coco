@@ -544,6 +544,10 @@ def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):
         ]
     else:
         raise ValueError(f"unknown java GC {gc!r}")
+
+    extra_args = os.getenv("MC_EXTRA_JVM_ARGS")
+    if extra_args:
+        args += extra_args.split()
     args += [
         "-Duser.country=US",  # from https://github.com/architectury/architectury-api/issues/528
         "-Duser.language=en",  # from https://github.com/architectury/architectury-api/issues/528
