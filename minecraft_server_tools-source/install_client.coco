@@ -348,7 +348,7 @@ def main():
             no_files=args.no_files,
         )
     else:
-        raise IOError("Could not find files for install (make sure you have the 'Minecraft Mods' folder in your OneDrive).")
+        raise IOError("Could not find files for install (make sure you have the 'Minecraft Mods' folder in your OneDrive/Dropbox).")
 
     if args.launch:
         launch_minecraft()

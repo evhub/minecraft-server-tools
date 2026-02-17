@@ -99,6 +99,7 @@ MOD_ZIP_PATH = first_that_exists([
     "~/OneDrive/Minecraft Mods/Minecraft Mods.zip",
     ALT_MOD_ZIP_PATH,
     "~/Downloads/Minecraft Mods.zip",
+    "~/Downloads/Minecraft Mods/Minecraft Mods.zip",
 ])
 
 DOWNLOADS_PATH = first_that_exists([
