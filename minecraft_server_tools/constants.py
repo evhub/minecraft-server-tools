@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x679e5533
+# __coconut_hash__ = 0xc7042d5f
 
 # Compiled with Coconut version 3.2.0-post_dev16
 
@@ -314,27 +314,27 @@ GRAAL_ZIP_PATH = os.path.join(GRAAL_BASE_DIR, GRAAL_ZIP_NAME)  #423 (line in Coc
 
 def get_jvm_args(gc, vm, large_pages=USE_LARGE_PAGES):  #425 (line in Coconut source)
     code_cache_mul = 2 if gc == "G1" else 1  #426 (line in Coconut source)
-    args = ["-server", "-Xss4M", "-XX:+UnlockExperimentalVMOptions", "-XX:+UnlockDiagnosticVMOptions", "-XX:+AlwaysPreTouch", "-XX:+DisableExplicitGC", "-XX:+OptimizeStringConcat", "-XX:+UseCompressedOops", "-XX:+OmitStackTraceInFastThrow", "-XX:+ParallelRefProcEnabled", "-XX:+AlwaysActAsServerClassMachine", "-XX:-DontCompileHugeMethods", "-XX:+UseFastUnorderedTimeStamps", "-XX:+UseCriticalJavaThreadPriority", "-XX:+EnableDynamicAgentLoading", "-XX:MaxGCPauseMillis=37", "-XX:NmethodSweepActivity=1", "-XX:ThreadPriorityPolicy=1", "-XX:MaxMetaspaceExpansion=64M", "-XX:ReservedCodeCacheSize={_coconut_format_0}M".format(_coconut_format_0=(400 * code_cache_mul)), "-XX:NonNMethodCodeHeapSize={_coconut_format_0}M".format(_coconut_format_0=(12 * code_cache_mul)), "-XX:ProfiledCodeHeapSize={_coconut_format_0}M".format(_coconut_format_0=(194 * code_cache_mul)), "-XX:NonProfiledCodeHeapSize={_coconut_format_0}M".format(_coconut_format_0=(194 * code_cache_mul)), "-XX:InitialCodeCacheSize={_coconut_format_0}M".format(_coconut_format_0=(200 * code_cache_mul)), "-XX:CodeCacheExpansionSize={_coconut_format_0}M".format(_coconut_format_0=(1 * code_cache_mul)), "-XX:ParallelGCThreads={_coconut_format_0}".format(_coconut_format_0=(psutil.cpu_count(logical=False))), "-XX:ConcGCThreads={_coconut_format_0}".format(_coconut_format_0=(max(min(psutil.cpu_count(logical=False) - 2, 6), psutil.cpu_count(logical=False) // 4, psutil.cpu_count() * 5 // 8 // 4)))]  # default: 160K  # always  # brucethemoose: 37; atm: 200; Obydux: 130; default: 200  # default: True  # default: True  # aikar-flags, atm  # always  # brucethemoose, Obydux  # always  # brucethemoose, Obydux  # brucethemoose, Obydux: 194M  # default: 64K  # brucethemoose, Obydux: 1; deprecated by java  # brucethemoose, Obydux: 12M  # brucethemoose, Obydux: 400M  # brucethemoose  # brucethemoose, Obydux  # default: True  # brucethemoose: default; default: virtual * 5/8  # brucethemoose: 1  # default: True  # default: 5M  # brucethemoose, Obydux: 194M  # java warning  # brucethemoose, Obydux  # brucethemoose: real - 2; default: ParallelGCThreads / 4  #427 (line in Coconut source)
+    args = ["-server", "-Xss4M", "-XX:+UnlockExperimentalVMOptions", "-XX:+UnlockDiagnosticVMOptions", "-XX:+AlwaysPreTouch", "-XX:+DisableExplicitGC", "-XX:+OptimizeStringConcat", "-XX:+UseCompressedOops", "-XX:+OmitStackTraceInFastThrow", "-XX:+ParallelRefProcEnabled", "-XX:+AlwaysActAsServerClassMachine", "-XX:-DontCompileHugeMethods", "-XX:+UseFastUnorderedTimeStamps", "-XX:+UseCriticalJavaThreadPriority", "-XX:+EnableDynamicAgentLoading", "-XX:MaxGCPauseMillis=37", "-XX:NmethodSweepActivity=1", "-XX:ThreadPriorityPolicy=1", "-XX:MaxMetaspaceExpansion=64M", "-XX:ReservedCodeCacheSize={_coconut_format_0}M".format(_coconut_format_0=(400 * code_cache_mul)), "-XX:NonNMethodCodeHeapSize={_coconut_format_0}M".format(_coconut_format_0=(12 * code_cache_mul)), "-XX:ProfiledCodeHeapSize={_coconut_format_0}M".format(_coconut_format_0=(194 * code_cache_mul)), "-XX:NonProfiledCodeHeapSize={_coconut_format_0}M".format(_coconut_format_0=(194 * code_cache_mul)), "-XX:InitialCodeCacheSize={_coconut_format_0}M".format(_coconut_format_0=(200 * code_cache_mul)), "-XX:CodeCacheExpansionSize={_coconut_format_0}M".format(_coconut_format_0=(1 * code_cache_mul)), "-XX:ParallelGCThreads={_coconut_format_0}".format(_coconut_format_0=(psutil.cpu_count(logical=False))), "-XX:ConcGCThreads={_coconut_format_0}".format(_coconut_format_0=(max(min(psutil.cpu_count(logical=False) - 2, 6), psutil.cpu_count(logical=False) // 4, psutil.cpu_count() * 5 // 8 // 4)))]  # always  # default: True  # default: 64K  # default: 160K  # brucethemoose: default; default: virtual * 5/8  # brucethemoose, Obydux: 1; deprecated by java  # brucethemoose, Obydux: 12M  # default: True  # brucethemoose: real - 2; default: ParallelGCThreads / 4  # aikar-flags, atm  # brucethemoose: 1  # brucethemoose, Obydux: 194M  # brucethemoose, Obydux  # always  # brucethemoose: 37; atm: 200; Obydux: 130; default: 200  # brucethemoose  # default: True  # brucethemoose, Obydux: 194M  # brucethemoose, Obydux  # brucethemoose, Obydux  # brucethemoose, Obydux  # default: 5M  # java warning  # always  # default: True  # brucethemoose, Obydux: 400M  #427 (line in Coconut source)
     if not JPS_DEBUG:  #477 (line in Coconut source)
         args += ["-XX:+PerfDisableSharedMem",]  # aikar-flags, brucethemoose, atm, Obydux  #478 (line in Coconut source)
     if large_pages:  #481 (line in Coconut source)
-        args += ["-XX:+UseLargePages", "-XX:LargePageSizeInBytes=2M", "-XX:+UseTransparentHugePages"]  # Obydux  # hilltty-flags, brucethemoose  # hilltty-flags, brucethemoose  #482 (line in Coconut source)
+        args += ["-XX:+UseLargePages", "-XX:LargePageSizeInBytes=2M", "-XX:+UseTransparentHugePages"]  # hilltty-flags, brucethemoose  # hilltty-flags, brucethemoose  # Obydux  #482 (line in Coconut source)
 
     if vm == "java":  #488 (line in Coconut source)
-        args += ["-XX:+UseNUMA", "-XX:+UseVectorCmov", "-XX:MaxNodeLimit=240000", "-XX:NodeLimitFudgeFactor=8000"]  # hilltty-flags, brucethemoose: True; mukul1127: False; Obydux: True  # brucethemoose  # brucethemoose: 8000  # brucethemoose: 240000  #489 (line in Coconut source)
+        args += ["-XX:+UseNUMA", "-XX:+UseVectorCmov", "-XX:MaxNodeLimit=240000", "-XX:NodeLimitFudgeFactor=8000"]  # brucethemoose: 8000  # hilltty-flags, brucethemoose: True; mukul1127: False; Obydux: True  # brucethemoose: 240000  # brucethemoose  #489 (line in Coconut source)
     elif vm == "graal":  #495 (line in Coconut source)
         jdk_graal = "jdk.graal" if GRAAL_VERSION >= 22 else "graal"  #496 (line in Coconut source)
-        args += ["-XX:+EagerJVMCI", "-D{_coconut_format_0}.TuneInlinerExploration=1".format(_coconut_format_0=(jdk_graal)), "-D{_coconut_format_0}.LoopRotation=true".format(_coconut_format_0=(jdk_graal)), "-D{_coconut_format_0}.CompilerConfiguration=enterprise".format(_coconut_format_0=(jdk_graal))]  # Obydux  # brucethemoose  # Obydux  # brucethemoose: 1  #497 (line in Coconut source)
+        args += ["-XX:+EagerJVMCI", "-D{_coconut_format_0}.TuneInlinerExploration=1".format(_coconut_format_0=(jdk_graal)), "-D{_coconut_format_0}.LoopRotation=true".format(_coconut_format_0=(jdk_graal)), "-D{_coconut_format_0}.CompilerConfiguration=enterprise".format(_coconut_format_0=(jdk_graal))]  # brucethemoose: 1  # brucethemoose  # Obydux  # Obydux  #497 (line in Coconut source)
     else:  #504 (line in Coconut source)
         raise ValueError("unknown java VM {_coconut_format_0!r}".format(_coconut_format_0=(vm)))  #505 (line in Coconut source)
 
     if gc == "G1":  #507 (line in Coconut source)
-        args += ["-XX:+UseG1GC", "-XX:AllocatePrefetchStyle=3", "-XX:SurvivorRatio=32", "-XX:InitiatingHeapOccupancyPercent=10", "-XX:MaxTenuringThreshold=1", "-XX:G1ReservePercent=20", "-XX:G1NewSizePercent=28", "-XX:G1HeapRegionSize=16M", "-XX:G1MixedGCCountTarget=3", "-XX:G1RSetUpdatingPauseTimePercent=0", "-XX:G1MaxNewSizePercent=50", "-XX:G1HeapWastePercent=20", "-XX:G1SATBBufferEnqueueingThresholdPercent=30", "-XX:G1ConcMarkStepDurationMillis=5", "-XX:GCTimeRatio=99"]  # brucethemoose, Obydux: 5; default: 10  # brucethemoose: 1; atm: 1; Obydux: 1; default: 15  # brucethemoose: 23; atm: 30; aikar: 40; Obydux: 28; default: 5  # atm: 32; brucethemoose: 32; Obydux: 32; default: 8  # brucethemoose, Obydux: 3; default: 1  # brucethemoose: 99; default: 12  # brucethemoose: 20; atm: 5; default: 5  # brucethemoose, Obydux: 30; default: 60  # brucethemoose: 3; atm: 4; Obydux: 3; default: 8  # atm: 40; aikar: 50; default: 60  # brucethemoose: 20; atm: 20; aikar: 15; Obydux: 20  # brucethemoose: 16M; atm: 8M; aikar: 16M; Obydux: 16M  # brucethemoose: 10; atm: 15; aikar: 20; Obydux: 10; default: 45  # brucethemoose: 0; atm: 5; default: 10; Obydux: 0  #508 (line in Coconut source)
+        args += ["-XX:+UseG1GC", "-XX:AllocatePrefetchStyle=3", "-XX:SurvivorRatio=32", "-XX:InitiatingHeapOccupancyPercent=10", "-XX:MaxTenuringThreshold=1", "-XX:G1ReservePercent=20", "-XX:G1NewSizePercent=28", "-XX:G1HeapRegionSize=16M", "-XX:G1MixedGCCountTarget=3", "-XX:G1RSetUpdatingPauseTimePercent=0", "-XX:G1MaxNewSizePercent=50", "-XX:G1HeapWastePercent=20", "-XX:G1SATBBufferEnqueueingThresholdPercent=30", "-XX:G1ConcMarkStepDurationMillis=5", "-XX:GCTimeRatio=99"]  # brucethemoose: 0; atm: 5; default: 10; Obydux: 0  # brucethemoose, Obydux: 3; default: 1  # brucethemoose: 23; atm: 30; aikar: 40; Obydux: 28; default: 5  # brucethemoose: 20; atm: 20; aikar: 15; Obydux: 20  # brucethemoose: 99; default: 12  # brucethemoose: 1; atm: 1; Obydux: 1; default: 15  # brucethemoose: 3; atm: 4; Obydux: 3; default: 8  # brucethemoose, Obydux: 5; default: 10  # atm: 32; brucethemoose: 32; Obydux: 32; default: 8  # brucethemoose: 10; atm: 15; aikar: 20; Obydux: 10; default: 45  # atm: 40; aikar: 50; default: 60  # brucethemoose: 16M; atm: 8M; aikar: 16M; Obydux: 16M  # brucethemoose, Obydux: 30; default: 60  # brucethemoose: 20; atm: 5; default: 5  #508 (line in Coconut source)
     elif gc == "Shenandoah":  #529 (line in Coconut source)
         assert vm != "graal", "graal doesn't yet support Shenandoah"  #530 (line in Coconut source)
-        args += ["-XX:+UseShenandoahGC", "-XX:AllocatePrefetchStyle=1", "-XX:ShenandoahGCMode=generational", "-XX:ShenandoahGuaranteedGCInterval=1000000"]  # new  # brucethemoose: 1000000  # brucethemoose: 1; default: 1  #531 (line in Coconut source)
+        args += ["-XX:+UseShenandoahGC", "-XX:AllocatePrefetchStyle=1", "-XX:ShenandoahGCMode=generational", "-XX:ShenandoahGuaranteedGCInterval=1000000"]  # new  # brucethemoose: 1; default: 1  # brucethemoose: 1000000  #531 (line in Coconut source)
     elif gc == "Z":  #538 (line in Coconut source)
-        args += ["-XX:+UseZGC", "-XX:AllocatePrefetchStyle=1", "-XX:+ZGenerational", "-XX:-ZProactive"]  # brucethemoose: 1; default: 1  # brucethemoose (previously incompatible with +ZGenerational)  # brucethemoose (incompatible with -ZProactive; Java 21+; default in Java 23+); deprecated by java  #539 (line in Coconut source)
+        args += ["-XX:+UseZGC", "-XX:AllocatePrefetchStyle=1", "-XX:+ZGenerational", "-XX:-ZProactive"]  # brucethemoose (previously incompatible with +ZGenerational)  # brucethemoose: 1; default: 1  # brucethemoose (incompatible with -ZProactive; Java 21+; default in Java 23+); deprecated by java  #539 (line in Coconut source)
     else:  #546 (line in Coconut source)
         raise ValueError("unknown java GC {_coconut_format_0!r}".format(_coconut_format_0=(gc)))  #547 (line in Coconut source)
 
@@ -391,17 +391,17 @@ BARREL_ROLL_MOD_PREFIX = "do_a_barrel_roll"  #609 (line in Coconut source)
 
 # Make launcher constants
 
-LAUNCHER_FILE = first_that_exists(["~/Applications/Minecraft.app", "/Applications/Minecraft.app", r"C:\Program Files (x86)\Minecraft Launcher\MinecraftLauncher.exe", r"C:\XboxGames\Minecraft Launcher\Content\Minecraft.exe", r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Minecraft Launcher\Minecraft Launcher.ink", r"C:\Users\Public\Desktop\Minecraft Launcher.ink"])  #614 (line in Coconut source)
+LAUNCHER_FILE = first_that_exists(["~/Applications/Minecraft.app", "/Applications/Minecraft.app", r"C:\Program Files (x86)\Minecraft Launcher\MinecraftLauncher.exe", r"C:\XboxGames\Minecraft Launcher\Content\Minecraft.exe", r"F:\XboxGames\Minecraft Launcher\Content\Minecraft.exe", r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Minecraft Launcher\Minecraft Launcher.ink", r"C:\Users\Public\Desktop\Minecraft Launcher.ink"])  #614 (line in Coconut source)
 
-MODPACK_NAME = "Evan's Modded Minecraft"  #623 (line in Coconut source)
+MODPACK_NAME = "Evan's Modded Minecraft"  #624 (line in Coconut source)
 
 
 # Searchable mods constants
 
-SEARCHABLE_MODS_NAME = MODS_NAME + "-searchable"  #628 (line in Coconut source)
-SEARCHABLE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-searchable"  #629 (line in Coconut source)
+SEARCHABLE_MODS_NAME = MODS_NAME + "-searchable"  #629 (line in Coconut source)
+SEARCHABLE_CLIENT_MODS_NAME = CLIENT_MODS_NAME + "-searchable"  #630 (line in Coconut source)
 
 
 # Binary search constants
 
-BINARY_SEARCH_FILE = os.path.join(SERVER_DIR, "binary_search.json")  #634 (line in Coconut source)
+BINARY_SEARCH_FILE = os.path.join(SERVER_DIR, "binary_search.json")  #635 (line in Coconut source)
