@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x6238805
+# __coconut_hash__ = 0xb4cfb534
 
 # Compiled with Coconut version 3.2.0-post_dev16
 
@@ -201,7 +201,7 @@ def download_file(url, path):  #128 (line in Coconut source)
 
 def ensure_graal():  #137 (line in Coconut source)
     if USE_GRAAL and not os.path.exists(GRAAL_ZIP_PATH):  #138 (line in Coconut source)
-        print("Downloading Java GraalVM...")  #139 (line in Coconut source)
+        print("Downloading Java GraalVM (this can take a bit)...")  #139 (line in Coconut source)
         download_file(GRAAL_URL, GRAAL_ZIP_PATH)  #140 (line in Coconut source)
         shutil.unpack_archive(GRAAL_ZIP_PATH, GRAAL_BASE_DIR)  #141 (line in Coconut source)
 

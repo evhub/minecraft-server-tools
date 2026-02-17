@@ -136,7 +136,7 @@ def download_file(url, path):
 
 def ensure_graal():
     if USE_GRAAL and not os.path.exists(GRAAL_ZIP_PATH):
-        print("Downloading Java GraalVM...")
+        print("Downloading Java GraalVM (this can take a bit)...")
         download_file(GRAAL_URL, GRAAL_ZIP_PATH)
         shutil.unpack_archive(GRAAL_ZIP_PATH, GRAAL_BASE_DIR)
 
