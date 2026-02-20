@@ -56,7 +56,22 @@ def sync_client_mods(source_dir, do_barrel_roll=True):
 
 def install_extras(source_dir, do_optional=True, clean=True):
     print("\nInstalling other files/folders...")
-    for install_dir in EXTRA_INSTALL_FOLDERS + (OPTIONAL_INSTALL_FOLDERS if do_optional else []):
+
+    if not do_optional:
+        optional_rel_paths = {p.replace("\\", "/") for p in OPTIONAL_INSTALL_FOLDERS + OPTIONAL_INSTALL_FILES}
+        def ignore_optional(directory, contents):
+            ignored = set()
+            for name in contents:
+                rel_path = os.path.relpath(os.path.join(directory, name), source_dir).replace("\\", "/")
+                if rel_path in optional_rel_paths:
+                    print(f"\t\tskipping optional {rel_path}")
+                    ignored.add(name)
+            return ignored
+    else:
+        optional_rel_paths = set()
+        ignore_optional = None
+
+    for install_dir in EXTRA_INSTALL_FOLDERS:
         from_dir = os.path.join(source_dir, install_dir)
         to_dir = os.path.join(MINECRAFT_DIR, install_dir)
         print(f"\t{install_dir}...")
@@ -65,20 +80,58 @@ def install_extras(source_dir, do_optional=True, clean=True):
             launch_server.remove_dir_if_exists(to_dir)
             cleaned = True
         if os.path.exists(from_dir):
-            shutil.copytree(from_dir, to_dir, dirs_exist_ok=True)
+            shutil.copytree(from_dir, to_dir, dirs_exist_ok=True, ignore=ignore_optional)
         elif cleaned:
             print("\t\t(cleaned)")
         else:
             print("\t\t(skipped)")
 
-    for install_file in EXTRA_INSTALL_FILES + (OPTIONAL_INSTALL_FILES if do_optional else []):
+    for install_dir in OPTIONAL_INSTALL_FOLDERS:
+        from_dir = os.path.join(source_dir, install_dir)
+        to_dir = os.path.join(MINECRAFT_DIR, install_dir)
+        if do_optional:
+            print(f"\t{install_dir}...")
+            cleaned = False
+            if clean and os.path.exists(to_dir):
+                launch_server.remove_dir_if_exists(to_dir)
+                cleaned = True
+            if os.path.exists(from_dir):
+                shutil.copytree(from_dir, to_dir, dirs_exist_ok=True)
+            elif cleaned:
+                print("\t\t(cleaned)")
+            else:
+                print("\t\t(skipped)")
+        elif not os.path.exists(to_dir):
+            print(f"\t{install_dir} (missing, installing)...")
+            if os.path.exists(from_dir):
+                shutil.copytree(from_dir, to_dir, dirs_exist_ok=True)
+            else:
+                print("\t\t(skipped)")
+
+    for install_file in EXTRA_INSTALL_FILES:
         from_path = os.path.join(source_dir, install_file)
         to_path = os.path.join(MINECRAFT_DIR, install_file)
+        if install_file.replace("\\", "/") in optional_rel_paths:
+            print(f"\t{install_file} skipped as optional")
+            continue
         print(f"\t{install_file}...")
         if os.path.exists(from_path):
             shutil.copy(from_path, to_path)
         else:
             print("\t\t(skipped)")
+
+    for install_file in OPTIONAL_INSTALL_FILES:
+        from_path = os.path.join(source_dir, install_file)
+        to_path = os.path.join(MINECRAFT_DIR, install_file)
+        if do_optional or not os.path.exists(to_path):
+            if not do_optional:
+                print(f"\t{install_file} (missing, installing)...")
+            else:
+                print(f"\t{install_file}...")
+            if os.path.exists(from_path):
+                shutil.copy(from_path, to_path)
+            else:
+                print("\t\t(skipped)")
 
 
 def ensure_forge_client(source_dir, force=False):
@@ -237,11 +290,11 @@ def install_from_zip(optional=None, barrel_roll=None, no_mods=False, no_files=Fa
     elif optional is False:
         do_optional = False
     else:
-        do_optional = ask_question(f"\nInstall optional files {OPTIONAL_INSTALL_FILES + OPTIONAL_INSTALL_FOLDERS}? [Y/n] ", True)
+        do_optional = ask_question(f"\nOverwrite optional files {OPTIONAL_INSTALL_FILES + OPTIONAL_INSTALL_FOLDERS}? [Y/n] ", True)
     if do_optional:
-        print("Will install optional files.")
+        print("Will overwrite optional files.")
     else:
-        print("Will NOT install optional files.")
+        print("Will NOT overwrite optional files.")
 
     if BARREL_ROLL_MOD_PREFIX is None:
         do_barrel_roll = None
@@ -300,7 +353,7 @@ def parse_args():
     optional_group.add_argument(
         "--yes-optional",
         action="store_true",
-        help="Install optional files without prompting",
+        help="Overwrite optional files without prompting",
     )
     optional_group.add_argument(
         "--no-optional",

@@ -185,6 +185,8 @@ OPTIONAL_INSTALL_FILES = [
     "options.txt",
     "optionsof.txt",
     "optionsshaders.txt",
+    os.path.join("config", "theoneprobe-client.toml"),
+    os.path.join("config", "iris.properties"),
 ]
 
 DATAPACK_OPTIONAL_INSTALL_FOLDERS = [
@@ -192,8 +194,9 @@ DATAPACK_OPTIONAL_INSTALL_FOLDERS = [
 ]
 
 OPTIONAL_INSTALL_FOLDERS = [
-    os.path.join("journeymap", "config"),
     "ESM",
+    os.path.join("journeymap", "config"),
+    os.path.join("config", "jei"),
 ] + DATAPACK_OPTIONAL_INSTALL_FOLDERS
 
 WORLD_FOLDERS = [
