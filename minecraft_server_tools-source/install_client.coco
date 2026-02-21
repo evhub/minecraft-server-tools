@@ -142,12 +142,14 @@ def ensure_forge_client(source_dir, force=False):
 
 
 def get_paths_to_zip():
+    seen: set = set()
     for install_fname in (
         EXTRA_INSTALL_FILES
         + OPTIONAL_INSTALL_FILES
     ):
         fpath = os.path.join(MINECRAFT_DIR, install_fname)
         if os.path.exists(fpath):
+            seen.add(os.path.normpath(fpath))
             yield fpath
         else:
             print(f"\tSkipped {fpath!r}...")
@@ -158,9 +160,16 @@ def get_paths_to_zip():
     ):
         install_dirpath = os.path.join(MINECRAFT_DIR, install_dirname)
         for dirpath, dirnames, filenames in os.walk(install_dirpath):
-            yield dirpath
+            norm_dirpath = os.path.normpath(dirpath)
+            if norm_dirpath not in seen:
+                seen.add(norm_dirpath)
+                yield dirpath
             for fname in filenames:
-                yield os.path.join(dirpath, fname)
+                fpath = os.path.join(dirpath, fname)
+                norm_fpath = os.path.normpath(fpath)
+                if norm_fpath not in seen:
+                    seen.add(norm_fpath)
+                    yield fpath
 
 
 def zip_mods():
