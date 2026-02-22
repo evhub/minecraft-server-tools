@@ -58,26 +58,26 @@ def install_extras(source_dir, do_optional=True, clean=True):
     print("\nInstalling other files/folders...")
 
     if not do_optional:
-        optional_rel_paths = {p.replace("\\", "/") for p in OPTIONAL_INSTALL_FOLDERS + OPTIONAL_INSTALL_FILES}
+        optional_abs_paths = {os.path.normpath(os.path.join(MINECRAFT_DIR, p)) for p in OPTIONAL_INSTALL_FOLDERS + OPTIONAL_INSTALL_FILES}
         def ignore_optional(directory, contents):
             ignored = set()
             for name in contents:
-                rel_path = os.path.relpath(os.path.join(directory, name), source_dir).replace("\\", "/")
-                if rel_path in optional_rel_paths:
-                    print(f"\t\tskipping optional {rel_path}")
+                abs_path = os.path.normpath(os.path.join(MINECRAFT_DIR, os.path.relpath(os.path.join(directory, name), source_dir)))
+                if abs_path in optional_abs_paths:
+                    print(f"\t\tskipping optional {os.path.relpath(abs_path, MINECRAFT_DIR)}")
                     ignored.add(name)
             return ignored
     else:
-        optional_rel_paths = set()
+        optional_abs_paths = None
         ignore_optional = None
 
     for install_dir in EXTRA_INSTALL_FOLDERS:
-        from_dir = os.path.join(source_dir, install_dir)
-        to_dir = os.path.join(MINECRAFT_DIR, install_dir)
+        from_dir = os.path.normpath(os.path.join(source_dir, install_dir))
+        to_dir = os.path.normpath(os.path.join(MINECRAFT_DIR, install_dir))
         print(f"\t{install_dir}...")
         cleaned = False
         if clean and os.path.exists(to_dir):
-            launch_server.remove_dir_if_exists(to_dir)
+            launch_server.remove_dir_if_exists(to_dir, preserve=optional_abs_paths)
             cleaned = True
         if os.path.exists(from_dir):
             shutil.copytree(from_dir, to_dir, dirs_exist_ok=True, ignore=ignore_optional)
@@ -87,8 +87,8 @@ def install_extras(source_dir, do_optional=True, clean=True):
             print("\t\t(skipped)")
 
     for install_dir in OPTIONAL_INSTALL_FOLDERS:
-        from_dir = os.path.join(source_dir, install_dir)
-        to_dir = os.path.join(MINECRAFT_DIR, install_dir)
+        from_dir = os.path.normpath(os.path.join(source_dir, install_dir))
+        to_dir = os.path.normpath(os.path.join(MINECRAFT_DIR, install_dir))
         if do_optional:
             print(f"\t{install_dir}...")
             cleaned = False
@@ -109,9 +109,9 @@ def install_extras(source_dir, do_optional=True, clean=True):
                 print("\t\t(skipped)")
 
     for install_file in EXTRA_INSTALL_FILES:
-        from_path = os.path.join(source_dir, install_file)
-        to_path = os.path.join(MINECRAFT_DIR, install_file)
-        if install_file.replace("\\", "/") in optional_rel_paths:
+        from_path = os.path.normpath(os.path.join(source_dir, install_file))
+        to_path = os.path.normpath(os.path.join(MINECRAFT_DIR, install_file))
+        if optional_abs_paths and to_path in optional_abs_paths:
             print(f"\t{install_file} skipped as optional")
             continue
         print(f"\t{install_file}...")
@@ -121,8 +121,8 @@ def install_extras(source_dir, do_optional=True, clean=True):
             print("\t\t(skipped)")
 
     for install_file in OPTIONAL_INSTALL_FILES:
-        from_path = os.path.join(source_dir, install_file)
-        to_path = os.path.join(MINECRAFT_DIR, install_file)
+        from_path = os.path.normpath(os.path.join(source_dir, install_file))
+        to_path = os.path.normpath(os.path.join(MINECRAFT_DIR, install_file))
         if do_optional or not os.path.exists(to_path):
             if not do_optional:
                 print(f"\t{install_file} (missing, installing)...")
@@ -142,14 +142,12 @@ def ensure_forge_client(source_dir, force=False):
 
 
 def get_paths_to_zip():
-    seen: set = set()
     for install_fname in (
         EXTRA_INSTALL_FILES
         + OPTIONAL_INSTALL_FILES
     ):
-        fpath = os.path.join(MINECRAFT_DIR, install_fname)
+        fpath = os.path.normpath(os.path.join(MINECRAFT_DIR, install_fname))
         if os.path.exists(fpath):
-            seen.add(os.path.normpath(fpath))
             yield fpath
         else:
             print(f"\tSkipped {fpath!r}...")
@@ -160,22 +158,16 @@ def get_paths_to_zip():
     ):
         install_dirpath = os.path.join(MINECRAFT_DIR, install_dirname)
         for dirpath, dirnames, filenames in os.walk(install_dirpath):
-            norm_dirpath = os.path.normpath(dirpath)
-            if norm_dirpath not in seen:
-                seen.add(norm_dirpath)
-                yield dirpath
+            dirpath = os.path.normpath(dirpath)
+            yield dirpath
             for fname in filenames:
-                fpath = os.path.join(dirpath, fname)
-                norm_fpath = os.path.normpath(fpath)
-                if norm_fpath not in seen:
-                    seen.add(norm_fpath)
-                    yield fpath
+                yield os.path.normpath(os.path.join(dirpath, fname))
 
 
 def zip_mods():
     print(f"\nZipping mod files to {MOD_ZIP_PATH}...")
     with zipfile.ZipFile(MOD_ZIP_PATH, "w", zipfile.ZIP_DEFLATED) as zf:
-        for install_path in tqdm(list(get_paths_to_zip())):
+        for install_path in tqdm(set(get_paths_to_zip())):
             zf.write(install_path, os.path.relpath(install_path, MINECRAFT_DIR))
     if ALT_MOD_ZIP_PATH is not None:
         print(f"\tCopying {MOD_ZIP_PATH!r} to {ALT_MOD_ZIP_PATH!r}...")

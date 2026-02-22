@@ -65,26 +65,44 @@ def remove_with_retry(filepath, max_retries=5, initial_delay=0.2):
     return False
 
 
-def remove_dir_if_exists(directory):
-    """Remove a directory if it exists by any means necessary."""
-    if not os.path.exists(directory):
+def remove_dir_if_exists(directory, preserve=None):
+    """Remove a directory if it exists by any means necessary.
+    If preserve is a set of absolute normalized paths,
+    files and directories at or under those paths will be kept."""
+    directory = os.path.normpath(directory)
+
+    if not os.path.exists(directory) or preserve and directory in preserve:
         return
 
-    # First, try shutil.rmtree as a fast path
-    try:
-        shutil.rmtree(directory)
-        return
-    except PermissionError:
-        pass
+    # Check if any preserved paths are inside this directory
+    if preserve:
+        has_preserved = any(p.startswith(directory + os.sep) for p in preserve)
+    else:
+        has_preserved = False
+
+    # First, try shutil.rmtree as a fast path (only when nothing preserved inside)
+    if not has_preserved:
+        try:
+            shutil.rmtree(directory)
+            return
+        except PermissionError:
+            pass
 
     # Remove all remaining contents (files and subdirectories)
     for filename in os.listdir(directory):
-        filepath = os.path.join(directory, filename)
+        filepath = os.path.normpath(os.path.join(directory, filename))
+        if has_preserved:
+            if any(filepath == p or filepath.startswith(p + os.sep) for p in preserve):
+                continue
         if os.path.isdir(filepath):
             # Recursively remove subdirectories
-            remove_dir_if_exists(filepath)
+            remove_dir_if_exists(filepath, preserve=preserve)
         else:
             os.remove(filepath)
+
+    # Don't remove the directory if it contains preserved content
+    if has_preserved:
+        return
 
     # Now try to remove the empty directory with retries
     try:
