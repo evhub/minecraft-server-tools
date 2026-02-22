@@ -201,7 +201,6 @@ OPTIONAL_INSTALL_FOLDERS = [
 
 WORLD_FOLDERS = [
     "world",
-    "backups",
 ]
 
 JPS_DEBUG = bool_env_var("MC_DEBUG_JPS", False)  # filter jstack: ^(\s*(at java|at jdk|at sun|at net.minecraft|at io.netty)\b)[^\n]*\n*
