@@ -95,6 +95,7 @@ ALT_MOD_ZIP_PATH = fixpath("~/Dropbox/Minecraft Mods/Minecraft Mods.zip")
 
 MOD_ZIP_PATH = first_that_exists([
     "D:\\\\Minecraft Mods.zip",
+    "E:\\\\Minecraft Mods.zip",
     "~/OneDrive/Minecraft/Minecraft Mods/Minecraft Mods.zip",
     "~/OneDrive/Minecraft Mods/Minecraft Mods.zip",
     ALT_MOD_ZIP_PATH,
