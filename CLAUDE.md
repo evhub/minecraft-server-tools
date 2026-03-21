@@ -130,6 +130,7 @@ When analyzing Minecraft crash logs to identify problematic mods:
 1. **Always look at `latest.log`** - Crash reports are useful as a starting point, but the biggest source of information is always the full log.
 2. **Search for "Suspected Mods"** - The crash reporter performs heuristic analysis and lists likely culprits, and the user may have a list of possible culprits as well. Always grep for each mod that might be a culprit.
 3. **Search for `FATAL`** - This indicates a fatal error, often pointing to the root cause.
+4. **Search for `Failed to create mod instance.`** - This indicates a mod initialization failure, which is a common root cause of crashes.
 
 Don't get tunnel-visioned on one error - a mod initialization failure earlier in the log can cause cascading errors that appear unrelated (like config loading failures).
 
