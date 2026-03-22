@@ -18,7 +18,7 @@ from minecraft_server_tools.constants import (
     FORGE_INSTALLER_JAR,
     README_FILE,
     MOD_ZIP_PATH,
-    ALT_MOD_ZIP_PATH,
+    MOD_ZIP_TO_PATHS,
     OPTIONAL_INSTALL_FILES,
     OPTIONAL_INSTALL_FOLDERS,
     MODS_NAME,
@@ -165,13 +165,14 @@ def get_paths_to_zip():
 
 
 def zip_mods():
-    print(f"\nZipping mod files to {MOD_ZIP_PATH}...")
-    with zipfile.ZipFile(MOD_ZIP_PATH, "w", zipfile.ZIP_DEFLATED) as zf:
+    main_zip_to_path = MOD_ZIP_TO_PATHS[0]
+    print(f"\nZipping mod files to {main_zip_to_path}...")
+    with zipfile.ZipFile(main_zip_to_path, "w", zipfile.ZIP_DEFLATED) as zf:
         for install_path in tqdm(set(get_paths_to_zip())):
             zf.write(install_path, os.path.relpath(install_path, MINECRAFT_DIR))
-    if ALT_MOD_ZIP_PATH is not None:
-        print(f"\tCopying {MOD_ZIP_PATH!r} to {ALT_MOD_ZIP_PATH!r}...")
-        shutil.copy(MOD_ZIP_PATH, ALT_MOD_ZIP_PATH)
+    for alt_mod_zip_path in MOD_ZIP_TO_PATHS[1:]:
+        print(f"\tCopying {main_zip_to_path!r} to {alt_mod_zip_path!r}...")
+        shutil.copy(main_zip_to_path, alt_mod_zip_path)
 
 
 def get_javaw_path():
