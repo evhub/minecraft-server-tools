@@ -42,7 +42,7 @@
       "Bash(gzip:*)",
       "Bash(xxd:*)",
       "Bash(unzip:*)",
-      "Read(//c/$APPDATA/.minecraft/logs/**)"
+      "Read(/$APPDATA/.minecraft/**)"
     ]
   }
 }
