@@ -42,7 +42,8 @@
       "Bash(gzip:*)",
       "Bash(xxd:*)",
       "Bash(unzip:*)",
-      "Read(/$APPDATA/.minecraft/**)"
+      "Read(/$APPDATA/.minecraft/**)",
+      "WebFetch(domain:docs.blamejared.com)"
     ]
   }
 }
