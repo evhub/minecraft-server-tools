@@ -90,7 +90,7 @@ python -m minecraft_server_tools.sync_mods
 
 ## Updating Mod Name Mappings
 
-When adding new mods or updating to a new Minecraft version, the `curseforge_names.json` file may need new entries mapping internal mod names to their CurseForge display names.
+When adding new mods or updating to a new Minecraft version, the `curseforge_names.json` file may need new entries mapping internal mod names to their CurseForge display names. New entries should always be added at the bottom.
 
 ### The Update Loop
 
@@ -111,7 +111,7 @@ Run this loop to populate missing mod name mappings:
    "some mod name" curseforge minecraft 1.21 NeoForge mod
    ```
 
-4. **Add the mapping** to `curseforge_names.json`:
+4. **Add the mapping** to `curseforge_names.json` (at the bottom):
    ```json
    "some mod name": "Exact CurseForge Display Name"
    ```
