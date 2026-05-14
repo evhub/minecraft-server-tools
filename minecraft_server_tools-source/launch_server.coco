@@ -122,25 +122,27 @@ def remove_dir_if_exists(directory, preserve=None):
             raise
 
 
-def run_cmd(cmd, check=True, shell=False, get_output=False, quiet=False):
+def run_cmd(cmd, check=True, shell=False, get_output=False, quiet=False, cwd=None):
     if not quiet:
         print("> " + " ".join(str(x) for x in cmd))
     kwargs = {}
     if get_output:
         kwargs["stdout"] = kwargs["stderr"] = subprocess.PIPE
+    if cwd is not None:
+        kwargs["cwd"] = cwd
     return subprocess.run(cmd, check=check, shell=shell, **kwargs)
 
 
-def run_high_priority(cmd, name=MODPACK_NAME):
+def run_high_priority(cmd, name=MODPACK_NAME, cwd=None):
     if WINDOWS:
-        return run_cmd(["START", name, "/WAIT"] + START_ARGS + cmd, shell=True)
+        return run_cmd(["START", name, "/WAIT"] + START_ARGS + cmd, shell=True, cwd=cwd)
     else:
-        return run_cmd(cmd)
+        return run_cmd(cmd, cwd=cwd)
 
 
-def run_java(cmd):
+def run_java(cmd, cwd=None):
     with using_graal_java():
-        return run_high_priority(["java"] + cmd)
+        return run_high_priority(["java"] + cmd, cwd=cwd)
 
 
 def download_file(url, path):
@@ -197,7 +199,7 @@ def get_cmd_output(cmd, quiet=True):
 
 def install_forge_server():
     print(f"Installing forge from installer {FORGE_INSTALLER_JAR_PATH}...")
-    run_java(["-jar", FORGE_INSTALLER_JAR_PATH, "--installServer"])
+    run_java(["-jar", FORGE_INSTALLER_JAR_PATH, "--installServer"], cwd=SERVER_DIR)
 
 
 def move_forge_installer():
@@ -310,9 +312,9 @@ def start_server(dry_run=False, no_zip=False):
         with using_graal_java():
             write_jvm_args()
             if os.path.exists(FORGE_JAR_PATH):
-                run_java(get_java_args() + [FORGE_JAR_PATH] + FORGE_ARGS)
+                run_java(get_java_args() + [FORGE_JAR_PATH] + FORGE_ARGS, cwd=SERVER_DIR)
             else:
-                run_high_priority(FORGE_LAUNCH_CMD + FORGE_ARGS)
+                run_high_priority(FORGE_LAUNCH_CMD + FORGE_ARGS, cwd=SERVER_DIR)
         copy_new_world_configs()
         if not no_zip:
             zip_world_folders()
